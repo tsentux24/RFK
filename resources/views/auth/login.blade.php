@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - ePengendalian Provinsi Maluku Utara</title>
+    <title>Login - RFK Provinsi Maluku Utara</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Variabel warna dan font */
@@ -402,14 +402,14 @@
     <div class="main-content">
         <!-- Bagian kiri - Hero text -->
         <section class="hero-section">
-            <h1 class="hero-title">Pengendalian Program Strategis & Realisasi APBD</h1>
-            <p class="hero-subtitle">ePengendalian adalah aplikasi elektronik yang dikelola oleh Biro Administrasi Pembangunan Provinsi Maluku Utara untuk mendukung transparansi, akuntabilitas, dan efektivitas pembangunan daerah.</p>
+            <h1 class="hero-title">RFK (Realisasi Fisik Dan Keuangan)</h1>
+            <p class="hero-subtitle">Digitalisasi Monitoring Realisasi Fisik Dan Keuangan Sebagai Upaya Peningkatan Kualitas Pelaporan Pembangunan .</p>
         </section>
 
         <!-- Bagian kanan - Form login -->
         <section class="login-section">
             <div class="login-card">
-                <h2 class="login-title">Login ke ePengendalian</h2>
+                <h2 class="login-title">Login ke RFK</h2>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     @error('email')
@@ -436,7 +436,7 @@
     </div>
 
     <footer>
-        &copy; 2023 Pemerintah Provinsi Maluku Utara. All rights reserved.Versi 1.0
+        &copy; 2026 Pemerintah Provinsi Maluku Utara. All rights reserved.Versi 1.0
     </footer>
 
     <script>
