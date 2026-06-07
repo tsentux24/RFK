@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin - Sistem Manajemen Data</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -272,15 +273,27 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
+                    <a href="{{ route('rfk.audit') }}" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
+                        <i class="fas fa-search"></i>
+                        <span>Audit RFK</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('validation.engine') }}" class="nav-item flex items-center gap-3 px-4 py-3 text-yellow-300 hover:text-yellow-100 bg-red-500 bg-opacity-10 font-medium">
+                        <i class="fas fa-microchip"></i>
+                        <span>Validation Engine</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('laporan.index') }}" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
                         <i class="fas fa-chart-bar"></i>
                         <span>Laporan</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
-                        <i class="fas fa-archive"></i>
-                        <span>Arsip</span>
+                    <a href="/users" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
+                        <i class="fas fa-user"></i>
+                        <span>Users</span>
                     </a>
                 </li>
                 <li>
@@ -291,14 +304,14 @@
                 </li>
             </ul>
         </div>
-<div class="absolute bottom-0 w-full p-4 border-t border-gray-700">
+        <div class="absolute bottom-0 w-full p-4 border-t border-gray-700">
             <div class="flex items-center gap-3 px-4 py-2">
                 <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
-                    <img src="https://eu.ui-avatars.com/api/?name=John+Doe&bold=true&background=3F3DCE&color=FFFFFF" alt="Profile" class="w-full h-full object-cover">
+                    <img src="https://eu.ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'User') }}&bold=true&background=3F3DCE&color=FFFFFF" alt="Profile" class="w-full h-full object-cover">
                 </div>
                 <div>
-                    <p class="text-sm font-medium text-white">John Doe</p>
-                    <p class="text-xs text-gray-300">Administrator</p>
+                    <p class="text-sm font-medium text-white">{{ Auth::user()->name ?? 'User' }}</p>
+                    <p class="text-xs text-gray-300">{{ ucfirst(Auth::user()->role ?? 'Guest') }}</p>
                 </div>
             </div>
         </div>

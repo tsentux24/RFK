@@ -67,9 +67,31 @@
                                 </div>
                             </div>
                             <div class="p-4 border-t">
-                                <button class="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                                <button id="mark-all-read-btn" class="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
                                     Tandai sudah dibaca
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Detail Modal -->
+                    <div id="notif-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex items-center justify-center p-4">
+                        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform scale-95 transition-transform duration-300" id="notif-detail-content">
+                            <div class="bg-indigo-600 px-6 py-4 flex items-center justify-between">
+                                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-file-invoice-dollar"></i> Detail Pengajuan RFK
+                                </h3>
+                                <button id="close-notif-detail" class="text-indigo-200 hover:text-white transition">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                            <div class="p-6">
+                                <div id="notif-detail-body" class="space-y-4">
+                                    <!-- Dynamic content -->
+                                </div>
+                            </div>
+                            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end">
+                                <button id="close-notif-detail-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm transition shadow-sm">Tutup</button>
                             </div>
                         </div>
                     </div>
@@ -224,44 +246,159 @@
                 e.stopPropagation();
             });
 
-            // Sample notification data (can be replaced with dynamic data)
-            const notifications = [
-                {
-                    type: 'info',
-                    title: 'Data OPD baru ditambahkan',
-                    message: 'Dinas Kesehatan telah terdaftar',
-                    time: '2 menit yang lalu',
-                    icon: 'info-circle'
-                },
-                {
-                    type: 'success',
-                    title: 'Proyek selesai',
-                    message: 'Proyek infrastruktur telah selesai',
-                    time: '1 jam yang lalu',
-                    icon: 'check-circle'
-                },
-                {
-                    type: 'warning',
-                    title: 'Peringatan sistem',
-                    message: 'Backup database diperlukan',
-                    time: '5 jam yang lalu',
-                    icon: 'exclamation-circle'
-                }
-            ];
-
-            // Function to update notification badge
-            function updateNotificationBadge() {
-                const unreadCount = notifications.length;
-                const badge = notificationButton.querySelector('span');
-                if (unreadCount > 0) {
-                    badge.textContent = unreadCount;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
+            // Dynamic Notification Fetch
+            async function loadNotifications() {
+                try {
+                    const response = await fetch('/dashboard/rfk/pending');
+                    if (!response.ok) return;
+                    const result = await response.json();
+                    
+                    if (result.success && result.data) {
+                        const notificationsList = document.querySelector('#notification-modal .p-4.space-y-3');
+                        if (!notificationsList) return;
+                        
+                        let readNotifs = JSON.parse(localStorage.getItem('read_notifs') || '[]');
+                        let unreadData = result.data.filter(item => !readNotifs.includes(item.id));
+                        
+                        let html = '';
+                        unreadData.forEach(item => {
+                            const programName = item.nama_program || 'Program Baru';
+                            const staffName = item.user ? item.user.name : 'Staff';
+                            const opdName = item.opd ? item.opd.nama_opd : 'OPD Tidak Diketahui';
+                            const pagu = item.pagu || 0;
+                            const pendingRealisasi = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0] : null;
+                            const nilaiDiajukan = pendingRealisasi ? pendingRealisasi.nilai_realisasi_keuangan : 0;
+                            const fisikDiajukan = pendingRealisasi ? pendingRealisasi.nilai_realisasi_fisik : 0;
+                            const timeString = new Date(item.created_at).toLocaleString('id-ID');
+                            
+                            html += `
+                                <div class="flex flex-col gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100 shadow-sm mb-3">
+                                    <div class="flex items-start gap-3">
+                                        <div class="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 mt-1 flex-shrink-0">
+                                            <i class="fas fa-file-invoice-dollar"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-bold text-gray-800">${programName}</p>
+                                            <p class="text-xs text-gray-600 font-medium">${opdName}</p>
+                                            <p class="text-xs text-gray-500 mt-1"><i class="far fa-user mr-1"></i>Oleh: ${staffName} • <i class="far fa-clock mx-1"></i>${timeString}</p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white p-2 rounded border border-gray-100 text-xs mt-1">
+                                        <div class="flex justify-between mb-1">
+                                            <span class="text-gray-500">Pagu Master:</span>
+                                            <span class="font-medium text-gray-800">Rp ${new Intl.NumberFormat('id-ID').format(pagu)}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500">Nilai Diajukan:</span>
+                                            <span class="font-medium text-green-600">Rp ${new Intl.NumberFormat('id-ID').format(nilaiDiajukan)} (${fisikDiajukan}%)</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end mt-2">
+                                        <button onclick="showNotifDetail('${encodeURIComponent(JSON.stringify(item))}')" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded transition shadow-sm">
+                                            <i class="fas fa-eye mr-1"></i> View Detail Lengkap
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        if (unreadData.length === 0) {
+                            html = '<div class="text-center py-4 text-gray-500 text-sm">Tidak ada notifikasi baru</div>';
+                        }
+                        
+                        notificationsList.innerHTML = html;
+                        
+                        // Update badge
+                        const badge = notificationButton.querySelector('span');
+                        if (unreadData.length > 0) {
+                            badge.textContent = unreadData.length;
+                            badge.classList.remove('hidden');
+                        } else {
+                            badge.classList.add('hidden');
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error loading notifications:", error);
                 }
             }
 
-            // Initial update
-            updateNotificationBadge();
+            // Show Notif Detail Modal
+            window.showNotifDetail = function(encodedItem) {
+                const item = JSON.parse(decodeURIComponent(encodedItem));
+                const modal = document.getElementById('notif-detail-modal');
+                const body = document.getElementById('notif-detail-body');
+                
+                const programName = item.nama_program || 'Program Baru';
+                const staffName = item.user ? item.user.name : 'Staff';
+                const opdName = item.opd ? item.opd.nama_opd : 'OPD Tidak Diketahui';
+                const pagu = item.pagu || 0;
+                const pendingRealisasi = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0] : null;
+                const nilaiDiajukan = pendingRealisasi ? pendingRealisasi.nilai_realisasi_keuangan : 0;
+                const fisikDiajukan = pendingRealisasi ? pendingRealisasi.nilai_realisasi_fisik : 0;
+                
+                body.innerHTML = `
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-500 font-medium">Program / Instansi OPD</p>
+                        <p class="text-lg font-bold text-gray-800 leading-tight mt-1">${programName}</p>
+                        <p class="text-sm text-indigo-600 font-medium mt-1"><i class="fas fa-building mr-1"></i> ${opdName}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-xs text-gray-500 mb-1">Pagu Master</p>
+                            <p class="font-bold text-gray-800">Rp ${new Intl.NumberFormat('id-ID').format(pagu)}</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-xl border border-green-100 shadow-sm">
+                            <p class="text-xs text-green-600 mb-1">Nilai Realisasi Diajukan</p>
+                            <p class="font-bold text-green-700">Rp ${new Intl.NumberFormat('id-ID').format(nilaiDiajukan)} (${fisikDiajukan}%)</p>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <p class="text-xs text-blue-600 mb-1 font-medium">Informasi Penginput</p>
+                        <p class="text-sm text-blue-800"><i class="far fa-user mr-1"></i> ${staffName}</p>
+                        <p class="text-xs text-blue-500 mt-1"><i class="far fa-clock mr-1"></i> ${new Date(item.created_at).toLocaleString('id-ID')}</p>
+                    </div>
+                `;
+                
+                modal.classList.remove('hidden');
+                setTimeout(() => document.getElementById('notif-detail-content').classList.remove('scale-95'), 10);
+            };
+
+            // Close Notif Detail Modal
+            const closeNotifDetail = () => {
+                const modal = document.getElementById('notif-detail-modal');
+                document.getElementById('notif-detail-content').classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 200);
+            };
+            document.getElementById('close-notif-detail').addEventListener('click', closeNotifDetail);
+            document.getElementById('close-notif-detail-btn').addEventListener('click', closeNotifDetail);
+
+            // Mark as Read Logic
+            document.getElementById('mark-all-read-btn').addEventListener('click', async function() {
+                try {
+                    const response = await fetch('/dashboard/rfk/pending');
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success && result.data) {
+                            const currentIds = result.data.map(item => item.id);
+                            let readNotifs = JSON.parse(localStorage.getItem('read_notifs') || '[]');
+                            readNotifs = [...new Set([...readNotifs, ...currentIds])];
+                            localStorage.setItem('read_notifs', JSON.stringify(readNotifs));
+                            
+                            // Reload and close
+                            loadNotifications();
+                            notificationModal.classList.remove('show');
+                            document.body.style.overflow = '';
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error marking read", error);
+                }
+            });
+
+            // Initial load
+            loadNotifications();
+            
+            // Poll every 30 seconds
+            setInterval(loadNotifications, 30000);
         });
     </script>

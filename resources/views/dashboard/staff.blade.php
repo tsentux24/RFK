@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>RFK (Realisasi Fisik Dan Keuangan) - Dashboard OPD</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
+    /* ============ STYLE SAMA SEPERTI SEBELUMNYA ============ */
     :root {
       --primary: #31326F;
       --secondary: #4FB7B3;
@@ -34,26 +37,6 @@
       min-height: 100vh;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cpath fill='%2331326F' fill-opacity='0.05' d='M200,450 L250,400 L300,450 L350,400 L400,450 L450,400 L500,450 L550,400 L600,450 L650,400 L700,450 L750,400 L800,450 L800,600 L0,600 L0,450 L50,400 L100,450 L150,400 L200,450 Z'/%3E%3Cpath fill='%2331326F' fill-opacity='0.05' d='M250,350 L300,300 L350,350 L400,300 L450,350 L500,300 L550,350 L600,300 L650,350 L700,300 L750,350 L750,450 L250,450 L250,350 Z'/%3E%3Cpath fill='%2331326F' fill-opacity='0.05' d='M300,250 L350,200 L400,250 L450,200 L500,250 L550,200 L600,250 L600,350 L300,350 L300,250 Z'/%3E%3Cpath fill='%2331326F' fill-opacity='0.05' d='M350,150 L400,100 L450,150 L500,100 L550,150 L550,250 L350,250 L350,150 Z'/%3E%3Cpath fill='%2331326F' fill-opacity='0.05' d='M375,50 L425,0 L475,50 L475,150 L375,150 L375,50 Z'/%3E%3Crect x='425' y='100' width='50' height='50' fill='%2331326F' fill-opacity='0.08'/%3E%3Crect x='325' y='200' width='50' height='50' fill='%2331326F' fill-opacity='0.08'/%3E%3Crect x='525' y='200' width='50' height='50' fill='%2331326F' fill-opacity='0.08'/%3E%3Crect x='225' y='300' width='50' height='50' fill='%2331326F' fill-opacity='0.08'/%3E%3Crect x='625' y='300' width='50' height='50' fill='%2331326F' fill-opacity='0.08'/%3E%3C/svg%3E");
-      background-size: cover;
-      background-position: center bottom;
-      background-repeat: no-repeat;
-      opacity: 0.4;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    body.dark-mode::before {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cpath fill='%234FB7B3' fill-opacity='0.08' d='M200,450 L250,400 L300,450 L350,400 L400,450 L450,400 L500,450 L550,400 L600,450 L650,400 L700,450 L750,400 L800,450 L800,600 L0,600 L0,450 L50,400 L100,450 L150,400 L200,450 Z'/%3E%3Cpath fill='%234FB7B3' fill-opacity='0.08' d='M250,350 L300,300 L350,350 L400,300 L450,350 L500,300 L550,350 L600,300 L650,350 L700,300 L750,350 L750,450 L250,450 L250,350 Z'/%3E%3Cpath fill='%234FB7B3' fill-opacity='0.08' d='M300,250 L350,200 L400,250 L450,200 L500,250 L550,200 L600,250 L600,350 L300,350 L300,250 Z'/%3E%3Cpath fill='%234FB7B3' fill-opacity='0.08' d='M350,150 L400,100 L450,150 L500,100 L550,150 L550,250 L350,250 L350,150 Z'/%3E%3Cpath fill='%234FB7B3' fill-opacity='0.08' d='M375,50 L425,0 L475,50 L475,150 L375,150 L375,50 Z'/%3E%3Crect x='425' y='100' width='50' height='50' fill='%234FB7B3' fill-opacity='0.1'/%3E%3Crect x='325' y='200' width='50' height='50' fill='%234FB7B3' fill-opacity='0.1'/%3E%3Crect x='525' y='200' width='50' height='50' fill='%234FB7B3' fill-opacity='0.1'/%3E%3Crect x='225' y='300' width='50' height='50' fill='%234FB7B3' fill-opacity='0.1'/%3E%3Crect x='625' y='300' width='50' height='50' fill='%234FB7B3' fill-opacity='0.1'/%3E%3C/svg%3E");
-    }
-
     body.dark-mode {
       background-color: var(--bg-dark);
       color: var(--text-dark);
@@ -66,8 +49,6 @@
       color: white;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       margin-bottom: 24px;
-      position: relative;
-      z-index: 1;
     }
 
     .logo-container {
@@ -90,17 +71,10 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
       overflow: hidden;
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeSlideUp 0.8s forwards;
-      position: relative;
-      z-index: 1;
-      backdrop-filter: blur(5px);
-      background-color: rgba(255, 255, 255, 0.9);
     }
 
     body.dark-mode .card-custom {
-      background: rgba(30, 30, 30, 0.9);
+      background: var(--card-dark);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
@@ -108,21 +82,6 @@
       transform: translateY(-5px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
     }
-
-    @keyframes fadeSlideUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .stagger-1 { animation-delay: 0.1s; }
-    .stagger-2 { animation-delay: 0.2s; }
-    .stagger-3 { animation-delay: 0.3s; }
-    .stagger-4 { animation-delay: 0.4s; }
-    .stagger-5 { animation-delay: 0.5s; }
-    .stagger-6 { animation-delay: 0.6s; }
-    .stagger-7 { animation-delay: 0.7s; }
 
     .summary-card {
       position: relative;
@@ -161,10 +120,6 @@
       margin-top: 10px;
     }
 
-    body.dark-mode .progress {
-      background-color: #2d2d2d;
-    }
-
     .progress-bar {
       border-radius: 10px;
       background: linear-gradient(to right, var(--primary), var(--secondary));
@@ -186,22 +141,10 @@
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       color: white;
       transition: all 0.3s ease;
-      animation: pulseIcon 2.5s infinite ease-in-out;
     }
 
     .menu-card:hover .menu-icon {
       transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(49, 50, 111, 0.5);
-    }
-
-    .menu-card p {
-      font-weight: 500;
-      margin-bottom: 0;
-    }
-
-    @keyframes pulseIcon {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
     }
 
     .footer-nav {
@@ -213,15 +156,11 @@
       padding: 12px 0;
       display: flex;
       justify-content: space-around;
-      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
-      transition: all 0.4s;
       z-index: 1000;
     }
 
     body.dark-mode .footer-nav {
       background: var(--card-dark);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
     }
 
     .footer-nav a {
@@ -235,7 +174,7 @@
       border-radius: 15px;
     }
 
-    .footer-nav a:hover, .footer-nav a.active {
+    .footer-nav a.active {
       opacity: 1;
       background: rgba(49, 50, 111, 0.1);
       color: var(--primary);
@@ -258,11 +197,6 @@
       justify-content: center;
       color: white;
       transition: all 0.3s ease;
-    }
-
-    .mode-toggle:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: rotate(30deg);
     }
 
     .section-title {
@@ -307,28 +241,32 @@
 
     .modal-content {
       border-radius: 24px;
-      background: var(--card-light);
-      border: none;
     }
+
     body.dark-mode .modal-content {
       background: var(--card-dark);
       color: var(--text-dark);
     }
+
     .form-control, .form-select {
       border-radius: 12px;
       border: 1px solid #dee2e6;
       padding: 10px 14px;
       transition: all 0.2s;
     }
-    body.dark-mode .form-control, body.dark-mode .form-select {
+
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
       background-color: #2c2c2c;
       border-color: #444;
       color: #f1f1f1;
     }
+
     .form-control:focus, .form-select:focus {
       border-color: var(--secondary);
       box-shadow: 0 0 0 0.2rem rgba(79, 183, 179, 0.25);
     }
+
     .btn-primary-gradient {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       border: none;
@@ -337,23 +275,19 @@
       font-weight: 600;
       transition: transform 0.2s;
     }
+
     .btn-primary-gradient:hover {
       transform: scale(1.02);
-      background: linear-gradient(135deg, #2a2b60, #3fa09c);
+      color: white;
     }
+
     .input-group-text-custom {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
       border: none;
       border-radius: 12px 0 0 12px;
     }
-    @media (max-width: 576px) {
-      .summary-card p { font-size: 1.3rem; }
-      .menu-card { padding: 15px 5px; }
-      .menu-icon { width: 45px; height: 45px; line-height: 45px; font-size: 20px; }
-      .logo-img { height: 30px; }
-      .app-header h2 { font-size: 1.3rem; }
-    }
+
     .toast-notif {
       position: fixed;
       bottom: 80px;
@@ -365,17 +299,58 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       border-left: 5px solid var(--secondary);
     }
-    .info-text {
-      font-size: 0.7rem;
-      color: #6c757d;
-      margin-top: 4px;
-    }
+
     .badge-auto {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
       font-size: 0.7rem;
       padding: 4px 8px;
       border-radius: 20px;
+    }
+
+    .form-section {
+      background: rgba(0,0,0,0.02);
+      padding: 15px;
+      border-radius: 16px;
+      margin-bottom: 15px;
+    }
+
+    body.dark-mode .form-section {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .form-section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--primary);
+    }
+
+    .status-badge-pending {
+      background: #ffc107;
+      color: #000;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .status-badge-approve {
+      background: #28a745;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .status-badge-reject {
+      background: #dc3545;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -384,14 +359,14 @@
 <div class="app-header">
   <div class="container">
     <div class="logo-container">
-      <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo Pemerintah Provinsi Maluku Utara" class="logo-img">
+      <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo" class="logo-img">
       <div>
         <h2 class="fw-bold mb-0">RFK (Realisasi Fisik Dan Keuangan)</h2>
         <p class="mb-0 opacity-75">Biro Administrasi Pembangunan Setda Provinsi Maluku Utara</p>
       </div>
     </div>
     <div class="d-flex justify-content-between align-items-center mt-2">
-      <p class="mb-0">Selamat datang, OPD!</p>
+      <p class="mb-0">Selamat datang, {{ Auth::user()->name }} - {{ Auth::user()->opd->nama_opd ?? 'OPD' }}</p>
       <button id="toggleMode" class="mode-toggle"><i class="fas fa-moon"></i></button>
     </div>
   </div>
@@ -401,51 +376,47 @@
   <h5 class="section-title">Ringkasan</h5>
   <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
-      <div class="card-custom summary-card stagger-1">
-        <i class="fas fa-folder-open summary-icon" style="color: var(--primary);"></i>
+      <div class="card-custom summary-card">
+        <i class="fas fa-folder-open summary-icon"></i>
         <h6>Total Program</h6>
-        <p style="color: var(--primary);" id="totalProgramCount">0</p>
-        <div class="progress"><div class="progress-bar" style="width: 100%"></div></div>
+        <p id="totalProgramCount" style="color: var(--primary);">0</p>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="card-custom summary-card stagger-2">
-        <i class="fas fa-chart-line summary-icon" style="color: var(--secondary);"></i>
+      <div class="card-custom summary-card">
+        <i class="fas fa-chart-line summary-icon"></i>
         <h6>TOTAL PAGU (Rp)</h6>
-        <p style="color: var(--secondary);" id="totalKontrakDisplay">0</p>
-        <div class="progress"><div class="progress-bar" style="width: 60%"></div></div>
+        <p id="totalPaguDisplay" style="color: var(--secondary);">0</p>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="card-custom summary-card stagger-3">
-        <i class="fas fa-spinner summary-icon" style="color: var(--accent);"></i>
+      <div class="card-custom summary-card">
+        <i class="fas fa-spinner summary-icon"></i>
         <h6>Progress Berjalan</h6>
-        <p style="color: var(--accent);" id="progressBerjalan">0</p>
-        <div class="progress"><div class="progress-bar" style="width: 32%"></div></div>
+        <p id="progressBerjalan" style="color: var(--accent);">0</p>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="card-custom summary-card stagger-4">
-        <i class="fas fa-exclamation-triangle summary-icon" style="color: var(--warning);"></i>
+      <div class="card-custom summary-card">
+        <i class="fas fa-exclamation-triangle summary-icon"></i>
         <h6>Terlambat</h6>
-        <p style="color: var(--warning);" id="terlambatCount">0</p>
-        <div class="progress"><div class="progress-bar" style="width: 8%"></div></div>
+        <p id="terlambatCount" style="color: var(--warning);">0</p>
       </div>
     </div>
   </div>
 
-  <div class="card-custom p-3 mb-4 stagger-5">
+  <div class="card-custom p-3 mb-4">
     <div class="stats-highlight">
       <div class="row text-center">
-        <div class="col-4"><h4 class="mb-0" style="color: var(--primary);" id="avgFisik">0%</h4><small>Rata-rata Fisik</small></div>
-        <div class="col-4"><h4 class="mb-0" style="color: var(--secondary);" id="avgKeuanganPersen">0%</h4><small>Rata-rata Realisasi Keuangan</small></div>
-        <div class="col-4"><h4 class="mb-0" style="color: var(--accent);" id="totalSisaPag">Rp 0</h4><small>Total Sisa Pagu</small></div>
+        <div class="col-4"><h4 class="mb-0" id="avgFisik" style="color: var(--primary);">0%</h4><small>Rata-rata Fisik</small></div>
+        <div class="col-4"><h4 class="mb-0" id="avgKeuanganPersen" style="color: var(--secondary);">0%</h4><small>Rata-rata Realisasi Keuangan</small></div>
+        <div class="col-4"><h4 class="mb-0" id="totalSisaPag" style="color: var(--accent);">Rp 0</h4><small>Total Sisa Pagu</small></div>
       </div>
     </div>
   </div>
 
   <h5 class="section-title">Progress Fisik Program</h5>
-  <div class="card-custom p-3 mb-4 stagger-5">
+  <div class="card-custom p-3 mb-4">
     <div class="mini-chart" id="dynamicChart"></div>
     <div class="d-flex justify-content-between mt-2"><small>Program terbaru</small><small>Realisasi Fisik %</small></div>
   </div>
@@ -453,14 +424,14 @@
   <h5 class="section-title">Menu Pilihan</h5>
   <div class="row g-3 mb-5">
     <div class="col-6 col-md-4">
-      <div class="card-custom menu-card stagger-6" data-bs-toggle="modal" data-bs-target="#inputRFKModal">
-        <div class="menu-icon pulse-2"><i class="fas fa-tasks"></i></div>
+      <div class="card-custom menu-card" data-bs-toggle="modal" data-bs-target="#inputRFKModal">
+        <div class="menu-icon"><i class="fas fa-tasks"></i></div>
         <p>Input RFK</p>
       </div>
     </div>
     <div class="col-6 col-md-4">
-      <div class="card-custom menu-card stagger-7" id="laporanSayaBtn">
-        <div class="menu-icon pulse-3"><i class="fas fa-chart-bar"></i></div>
+      <div class="card-custom menu-card" id="laporanSayaBtn">
+        <div class="menu-icon"><i class="fas fa-chart-bar"></i></div>
         <p>Laporan Saya</p>
       </div>
     </div>
@@ -474,73 +445,107 @@
   <a href="#"><i class="fas fa-cog footer-icon"></i><span>Pengaturan</span></a>
 </div>
 
-<!-- MODAL INPUT RFK - Realisasi Fisik Otomatis dari (Realisasi Keuangan / PAGU) * 100% -->
+<!-- ============ MODAL INPUT RFK DENGAN FORM YANG DIPERBAIKI ============ -->
 <div class="modal fade" id="inputRFKModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="inputRFKModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-bold" id="inputRFKModalLabel"><i class="fas fa-pen-ruler me-2" style="color: var(--secondary);"></i>Form Input Realisasi RFK</h5>
+        <h5 class="modal-title fw-bold"><i class="fas fa-pen-ruler me-2" style="color: var(--secondary);"></i>Form Input Realisasi RFK</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
       </div>
       <div class="modal-body pt-3">
         <form id="rfkForm">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label fw-semibold"><i class="fas fa-tag me-1"></i>Nama Program <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="namaProgram" placeholder="Contoh: Peningkatan Jalan Daerah" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold"><i class="fas fa-barcode me-1"></i>Kode Program <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" id="kodeProgram" placeholder="Contoh: PRG-001" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold"><i class="fas fa-coins me-1"></i>Sumber Dana</label>
-              <select class="form-select" id="sumberDana">
-                <option value="DAU">DAU (Dana Alokasi Umum)</option>
-                <option value="DAK">DAK (Dana Alokasi Khusus)</option>
-                <option value="DBH">DBH (Dana Bagi Hasil)</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold"><i class="fas fa-calendar-alt me-1"></i>Tahun Anggaran</label>
-              <input type="number" class="form-control" id="tahunAnggaran" placeholder="2025" value="2025" required>
-            </div>
-            <div class="col-md-12">
-              <label class="form-label fw-semibold"><i class="fas fa-money-bill-wave me-1"></i>PAGU (Rp) <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text input-group-text-custom">Rp</span>
-                <input type="number" class="form-control" id="pagu" placeholder="Total Pagu dalam Rupiah" required>
+          @csrf
+
+          <!-- Section 1: Data Program -->
+          <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-tag me-2"></i>Data Program</div>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Kode Program <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="kodeProgram" placeholder="Contoh: PRG-001" required>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label fw-semibold">Nama Program <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="namaProgram" placeholder="Contoh: Peningkatan Infrastruktur Jalan" required>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label fw-semibold">Sub Kategori Program</label>
+                <input type="text" class="form-control" id="subKategoriProgram" placeholder="Contoh: Pembangunan Fisik / Non Fisik">
               </div>
             </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold"><i class="fas fa-chart-line me-1"></i>Realisasi Keuangan (Rp) <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <span class="input-group-text input-group-text-custom">Rp</span>
-                <input type="number" class="form-control" id="realKeuanganRupiah" placeholder="Sudah direalisasikan (Rp)" required>
+          </div>
+
+          <!-- Section 2: Sumber Dana -->
+          <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-coins me-2"></i>Sumber Dana</div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Sumber Dana <span class="text-danger">*</span></label>
+                <select class="form-select" id="sumberDana" required>
+                  <option value="">Pilih Sumber Dana</option>
+                  <option value="APBD">APBD</option>
+                  <option value="APBN">APBN</option>
+                </select>
               </div>
-              <div class="info-text">Masukkan nominal realisasi keuangan dalam Rupiah</div>
+              <div class="col-md-6" id="kategoriAnggaranContainer" style="display:none;">
+                <label class="form-label fw-semibold">Kategori Anggaran</label>
+                <select class="form-select" id="kategoriAnggaran">
+                  <option value="">Pilih Kategori</option>
+                </select>
+              </div>
+              <div class="col-md-6" id="subKategoriAnggaranContainer" style="display:none;">
+                <label class="form-label fw-semibold">Sub Kategori Anggaran</label>
+                <select class="form-select" id="subKategoriAnggaran">
+                  <option value="">Pilih Sub Kategori</option>
+                </select>
+              </div>
+              <div class="col-md-6" id="sumberDanaDetailContainer" style="display:none;">
+                <label class="form-label fw-semibold">Sumber Dana Detail</label>
+                <select class="form-select" id="sumberDanaDetail">
+                  <option value="">Pilih Sumber Dana</option>
+                </select>
+              </div>
             </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold"><i class="fas fa-percent me-1"></i>Realisasi Fisik (%) <i class="fas fa-magic fa-xs text-muted ms-1" title="Dihitung otomatis dari Realisasi Keuangan / PAGU"></i></label>
-              <div class="input-group">
-                <span class="input-group-text input-group-text-custom"><i class="fas fa-calculator"></i></span>
+          </div>
+
+          <!-- Section 3: Anggaran -->
+          <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-chart-line me-2"></i>Detail Anggaran</div>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Tahun Anggaran <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="tahunAnggaran" value="{{ date('Y') }}" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">PAGU (Rp) <span class="text-danger">*</span></label>
+                <input type="text" class="form-control rupiah-input" id="pagu" placeholder="Total Pagu" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Realisasi Keuangan (Rp) <span class="text-danger">*</span></label>
+                <input type="text" class="form-control rupiah-input" id="realKeuanganRupiah" placeholder="Realisasi" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Realisasi Fisik (%) <i class="fas fa-magic fa-xs text-muted"></i></label>
                 <input type="text" class="form-control bg-light" id="realFisikOtomatis" readonly placeholder="Terisi otomatis">
-                <span class="input-group-text">%</span>
               </div>
-              <p><div class="info-text"><span class="badge-auto">Otomatis</span> = (Realisasi Keuangan ÷ PAGU) × 100%</div></p>
-            </div>
-            <div class="col-md-12">
-              <label class="form-label fw-semibold"><i class="fas fa-calculator me-1"></i>Sisa PAGU (Rp)</label>
-              <div class="input-group">
-                <span class="input-group-text input-group-text-custom">Rp</span>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Sisa PAGU (Rp)</label>
                 <input type="text" class="form-control bg-light" id="sisaPagu" readonly placeholder="Terisi otomatis">
               </div>
             </div>
-            <div class="col-12">
-              <label class="form-label fw-semibold"><i class="fas fa-sticky-note me-1"></i>Keterangan</label>
-              <textarea class="form-control" id="keterangan" rows="2" placeholder="Catatan tambahan..."></textarea>
+          </div>
+
+          <!-- Section 4: Keterangan -->
+          <div class="form-section">
+            <div class="form-section-title"><i class="fas fa-sticky-note me-2"></i>Keterangan</div>
+            <div class="row">
+              <div class="col-12">
+                <textarea class="form-control" id="keterangan" rows="3" placeholder="Catatan tambahan..."></textarea>
+              </div>
             </div>
           </div>
+
           <div class="d-flex justify-content-end gap-2 mt-4">
             <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
             <button type="submit" class="btn btn-primary-gradient px-4 text-white">Simpan RFK <i class="fas fa-save ms-1"></i></button>
@@ -549,8 +554,85 @@
       </div>
     </div>
   </div>
+</div><!-- Modal Edit Realisasi -->
+<div class="modal fade" id="editRealisasiModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-edit me-2" style="color: var(--danger);"></i>Perbaiki Realisasi (Ditolak)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body pt-3">
+        <form id="formEditRealisasi">
+          <input type="hidden" id="er_realisasi_id">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Program</label>
+            <input type="text" class="form-control bg-light" id="er_nama_program" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Sisa PAGU (Rp)</label>
+            <input type="text" class="form-control bg-light" id="er_sisa_pagu_display" readonly>
+            <input type="hidden" id="er_sisa_pagu">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nilai Pengajuan Ulang (Rp) <span class="text-danger">*</span></label>
+            <input type="text" class="form-control rupiah-input" id="er_nilai" required>
+            <small class="text-danger" id="er_warning" style="display:none;">Nilai melebihi sisa pagu!</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Keterangan Tambahan</label>
+            <textarea class="form-control" id="er_keterangan" rows="2"></textarea>
+          </div>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-danger px-4 text-white">Ajukan Ulang <i class="fas fa-paper-plane ms-1"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Modal Tambah Realisasi -->
+<div class="modal fade" id="tambahRealisasiModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-plus-circle me-2" style="color: var(--secondary);"></i>Tambah Realisasi (Bertahap)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body pt-3">
+        <form id="formTambahRealisasi">
+          <input type="hidden" id="tr_rfk_id">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Program</label>
+            <input type="text" class="form-control bg-light" id="tr_nama_program" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Sisa PAGU (Rp)</label>
+            <input type="text" class="form-control bg-light" id="tr_sisa_pagu_display" readonly>
+            <input type="hidden" id="tr_sisa_pagu">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nilai Tambahan Keuangan (Rp) <span class="text-danger">*</span></label>
+            <input type="text" class="form-control rupiah-input" id="tr_nilai" required>
+            <small class="text-danger" id="tr_warning" style="display:none;">Nilai melebihi sisa pagu!</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Keterangan Tambahan</label>
+            <textarea class="form-control" id="tr_keterangan" rows="2"></textarea>
+          </div>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary-gradient px-4 text-white">Ajukan Realisasi <i class="fas fa-paper-plane ms-1"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
 <div id="liveToast" class="toast-notif p-3" style="display: none;">
   <div class="d-flex align-items-center">
     <i class="fas fa-check-circle me-2 fs-4" style="color: var(--secondary);"></i>
@@ -561,224 +643,526 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  let rfkDataList = [];
+// ============ LOGIKA FORM DINAMIS SUMBER DANA ============
+const sumberDanaSelect = document.getElementById('sumberDana');
+const kategoriAnggaranContainer = document.getElementById('kategoriAnggaranContainer');
+const kategoriAnggaranSelect = document.getElementById('kategoriAnggaran');
+const subKategoriAnggaranContainer = document.getElementById('subKategoriAnggaranContainer');
+const subKategoriAnggaranSelect = document.getElementById('subKategoriAnggaran');
+const sumberDanaDetailContainer = document.getElementById('sumberDanaDetailContainer');
+const sumberDanaDetailSelect = document.getElementById('sumberDanaDetail');
 
-  const totalProgramSpan = document.getElementById('totalProgramCount');
-  const progressBerjalanSpan = document.getElementById('progressBerjalan');
-  const terlambatSpan = document.getElementById('terlambatCount');
-  const avgFisikSpan = document.getElementById('avgFisik');
-  const avgKeuanganPersenSpan = document.getElementById('avgKeuanganPersen');
-  const totalSisaPagSpan = document.getElementById('totalSisaPag');
-  const totalKontrakDisplay = document.getElementById('totalKontrakDisplay');
-  const chartContainer = document.getElementById('dynamicChart');
+// Data untuk APBD
+const apbdKategori = [
+  { value: 'BELANJA_OPERASI', label: 'Belanja Operasi' },
+  { value: 'BELANJA_MODAL', label: 'Belanja Modal' }
+];
 
-  function formatRupiah(angka) {
-    return new Intl.NumberFormat('id-ID').format(angka);
-  }
+const apbdSubOperasi = [
+  { value: 'BELANJA_PEGAWAI', label: 'Belanja Pegawai' },
+  { value: 'BELANJA_BARANG_JASA', label: 'Belanja Barang Dan Jasa' },
+  { value: 'BELANJA_HIBAH', label: 'Belanja Hibah' }
+];
 
-  function updateDashboard() {
-    const totalProgram = rfkDataList.length;
-    totalProgramSpan.innerText = totalProgram;
+const apbdSubModal = [
+  { value: 'BELANJA_MODAL', label: 'Belanja Modal' },
+  { value: 'BELANJA_MODAL_PERALATAN_MESIN', label: 'Belanja Modal Peralatan Dan Mesin' },
+  { value: 'BELANJA_MODAL_JALAN_IRIGASI', label: 'Belanja Modal Jalan, Irigasi' },
+  { value: 'BELANJA_MODAL_BANGUNAN_GEDUNG', label: 'Belanja Modal Bangunan Gedung' }
+];
 
-    let totalPag = 0;
-    let totalRealisasiKeuRupiah = 0;
-    let totalFisikPersen = 0;
-    let totalSisa = 0;
-    let progressBerjalan = 0;
-    let terlambat = 0;
+// Data untuk APBN
+const apbnSumberDana = [
+  { value: 'DAU', label: 'DAU (Dana Alokasi Umum)' },
+  { value: 'DAK', label: 'DAK (Dana Alokasi Khusus)' },
+  { value: 'DBH', label: 'DBH (Dana Bagi Hasil)' },
+  { value: 'DEKOM', label: 'DEKOM (Dana Dekonsentrasi)' }
+];
 
-    rfkDataList.forEach(item => {
-      totalPag += item.pagu;
-      totalRealisasiKeuRupiah += item.realKeuanganRupiah;
-      totalFisikPersen += item.realFisik;
-      totalSisa += (item.pagu - item.realKeuanganRupiah);
-      if (item.realFisik < 50) progressBerjalan++;
-      if (item.realFisik < 30 && item.tahunAnggaran == new Date().getFullYear()) terlambat++;
+// Event listener untuk Sumber Dana
+sumberDanaSelect.addEventListener('change', function() {
+  const value = this.value;
+
+  // Reset semua
+  kategoriAnggaranContainer.style.display = 'none';
+  subKategoriAnggaranContainer.style.display = 'none';
+  sumberDanaDetailContainer.style.display = 'none';
+  kategoriAnggaranSelect.value = '';
+  subKategoriAnggaranSelect.innerHTML = '<option value="">Pilih Sub Kategori</option>';
+  sumberDanaDetailSelect.innerHTML = '<option value="">Pilih Sumber Dana</option>';
+
+  if (value === 'APBD') {
+    // Tampilkan kategori anggaran
+    kategoriAnggaranContainer.style.display = 'block';
+    kategoriAnggaranSelect.innerHTML = '<option value="">Pilih Kategori</option>';
+    apbdKategori.forEach(k => {
+      kategoriAnggaranSelect.innerHTML += `<option value="${k.value}">${k.label}</option>`;
     });
+  } else if (value === 'APBN') {
+    // Tampilkan sumber dana detail
+    sumberDanaDetailContainer.style.display = 'block';
+    apbnSumberDana.forEach(s => {
+      sumberDanaDetailSelect.innerHTML += `<option value="${s.value}">${s.label}</option>`;
+    });
+  }
+});
 
-    const avgFisik = totalProgram ? (totalFisikPersen / totalProgram).toFixed(1) : 0;
-    const avgKeuPersen = totalPag ? ((totalRealisasiKeuRupiah / totalPag) * 100).toFixed(1) : 0;
+// Event listener untuk Kategori Anggaran (APBD)
+kategoriAnggaranSelect.addEventListener('change', function() {
+  const value = this.value;
+  subKategoriAnggaranContainer.style.display = 'none';
+  subKategoriAnggaranSelect.innerHTML = '<option value="">Pilih Sub Kategori</option>';
 
-    avgFisikSpan.innerText = avgFisik + '%';
-    avgKeuanganPersenSpan.innerText = avgKeuPersen + '%';
-    totalSisaPagSpan.innerText = 'Rp ' + formatRupiah(totalSisa);
-    totalKontrakDisplay.innerText = 'Rp ' + formatRupiah(totalPag);
-    progressBerjalanSpan.innerText = progressBerjalan;
-    terlambatSpan.innerText = terlambat;
+  if (value === 'BELANJA_OPERASI') {
+    subKategoriAnggaranContainer.style.display = 'block';
+    apbdSubOperasi.forEach(s => {
+      subKategoriAnggaranSelect.innerHTML += `<option value="${s.value}">${s.label}</option>`;
+    });
+  } else if (value === 'BELANJA_MODAL') {
+    subKategoriAnggaranContainer.style.display = 'block';
+    apbdSubModal.forEach(s => {
+      subKategoriAnggaranSelect.innerHTML += `<option value="${s.value}">${s.label}</option>`;
+    });
+  }
+});
 
-    const lastPrograms = [...rfkDataList].slice(-7);
-    chartContainer.innerHTML = '';
-    if(lastPrograms.length === 0) {
-      for(let i=0;i<7;i++) {
-        const bar = document.createElement('div');
-        bar.className = 'chart-bar';
-        bar.style.height = '20%';
-        chartContainer.appendChild(bar);
-      }
-    } else {
-      lastPrograms.forEach(prog => {
-        const bar = document.createElement('div');
-        bar.className = 'chart-bar';
-        let tinggi = Math.min(95, Math.max(5, prog.realFisik || 0));
-        bar.style.height = tinggi + '%';
-        bar.setAttribute('title', `${prog.namaProgram} : ${prog.realFisik}%`);
-        chartContainer.appendChild(bar);
-      });
-    }
+// ============ HITUNG OTOMATIS ============
+function parseRupiahStr(str) {
+  if (!str) return 0;
+  return parseFloat(str.replace(/\./g, '').replace(/,/g, '.')) || 0;
+}
+
+function formatRupiahInput(input) {
+  let value = input.value.replace(/[^,\d]/g, '').toString();
+  let split = value.split(',');
+  let sisa = split[0].length % 3;
+  let rupiah = split[0].substr(0, sisa);
+  let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+  if (ribuan) {
+    let separator = sisa ? '.' : '';
+    rupiah += separator + ribuan.join('.');
   }
 
-  // Auto hitung Realisasi Fisik (%) dan Sisa Pagu (Rp)
-  const paguInput = document.getElementById('pagu');
-  const realKeuRupiahInput = document.getElementById('realKeuanganRupiah');
-  const sisaPaguField = document.getElementById('sisaPagu');
-  const realFisikOtomatisField = document.getElementById('realFisikOtomatis');
+  rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+  input.value = rupiah;
+}
 
-  function hitungOtomatis() {
-    const pagu = parseFloat(paguInput.value) || 0;
-    const realKeu = parseFloat(realKeuRupiahInput.value) || 0;
-
-    // Hitung Sisa Pagu
-    const sisa = pagu - realKeu;
-    sisaPaguField.value = sisa >= 0 ? formatRupiah(sisa) : '0';
-    if(sisa < 0) sisaPaguField.value = formatRupiah(0);
-
-    // Hitung Realisasi Fisik (%) = (Realisasi Keuangan / PAGU) * 100
-    let fisikPersen = 0;
-    if(pagu > 0 && realKeu > 0) {
-      fisikPersen = (realKeu / pagu) * 100;
-      if(fisikPersen > 100) fisikPersen = 100;
-      realFisikOtomatisField.value = fisikPersen.toFixed(2);
-    } else if(pagu > 0 && realKeu === 0) {
-      realFisikOtomatisField.value = '0';
-    } else if(pagu === 0) {
-      realFisikOtomatisField.value = '0';
-    } else {
-      realFisikOtomatisField.value = '0';
-    }
-  }
-
-  paguInput.addEventListener('input', hitungOtomatis);
-  realKeuRupiahInput.addEventListener('input', hitungOtomatis);
-
-  const formRFK = document.getElementById('rfkForm');
-  formRFK.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const namaProgram = document.getElementById('namaProgram').value.trim();
-    const kodeProgram = document.getElementById('kodeProgram').value.trim();
-    const sumberDana = document.getElementById('sumberDana').value;
-    const tahunAnggaran = parseInt(document.getElementById('tahunAnggaran').value);
-    const pagu = parseFloat(document.getElementById('pagu').value);
-    const realKeuanganRupiah = parseFloat(document.getElementById('realKeuanganRupiah').value);
-    const realFisik = parseFloat(realFisikOtomatisField.value) || 0;
-    const keterangan = document.getElementById('keterangan').value;
-
-    if(!namaProgram || !kodeProgram || isNaN(pagu) || pagu <= 0) {
-      showToast('Isi Nama Program, Kode Program, dan Pagu (minimal 1 Rupiah)!', 'warning');
-      return;
-    }
-    if(isNaN(realKeuanganRupiah) || realKeuanganRupiah < 0) {
-      showToast('Realisasi Keuangan harus diisi nominal Rupiah yang valid', 'warning');
-      return;
-    }
-    if(realKeuanganRupiah > pagu) {
-      showToast('Realisasi Keuangan tidak boleh melebihi Pagu!', 'error');
-      return;
-    }
-
-    const newRFK = {
-      id: Date.now(),
-      namaProgram, kodeProgram, sumberDana, tahunAnggaran, pagu,
-      realKeuanganRupiah, realFisik, keterangan,
-      sisaPagu: pagu - realKeuanganRupiah
-    };
-    rfkDataList.push(newRFK);
-    updateDashboard();
-    formRFK.reset();
-    sisaPaguField.value = '';
-    realFisikOtomatisField.value = '';
-    const modal = bootstrap.Modal.getInstance(document.getElementById('inputRFKModal'));
-    modal.hide();
-    showToast(`Program "${namaProgram}" berhasil ditambahkan (Fisik: ${realFisik}%)`, 'success');
+const rupiahInputs = document.querySelectorAll('.rupiah-input');
+rupiahInputs.forEach(input => {
+  input.addEventListener('input', function() {
+    formatRupiahInput(this);
   });
+});
 
-  function showToast(msg, type='success') {
-    const toastEl = document.getElementById('liveToast');
-    const toastMsg = document.getElementById('toastMessage');
-    toastMsg.innerText = msg;
-    toastEl.style.display = 'flex';
-    setTimeout(() => { toastEl.style.display = 'none'; }, 2800);
+const paguInput = document.getElementById('pagu');
+const realKeuInput = document.getElementById('realKeuanganRupiah');
+const realFisikField = document.getElementById('realFisikOtomatis');
+const sisaPaguField = document.getElementById('sisaPagu');
+
+function hitungOtomatis() {
+  const pagu = parseRupiahStr(paguInput.value);
+  const realKeu = parseRupiahStr(realKeuInput.value);
+
+  // Hitung Sisa Pagu
+  const sisa = pagu - realKeu;
+  sisaPaguField.value = sisa >= 0 ? formatRupiah(sisa) : '0';
+
+  // Hitung Realisasi Fisik
+  let fisik = 0;
+  if (pagu > 0 && realKeu > 0) {
+    fisik = (realKeu / pagu) * 100;
+    fisik = Math.min(100, fisik);
+    realFisikField.value = fisik.toFixed(2) + '%';
+  } else {
+    realFisikField.value = '0%';
   }
-  window.closeToast = function() { document.getElementById('liveToast').style.display = 'none'; };
+}
 
-  const laporanBtn = document.getElementById('laporanSayaBtn');
-  laporanBtn.addEventListener('click', () => {
-    if(rfkDataList.length === 0) {
-      showToast('Belum ada data RFK. Silakan input terlebih dahulu.', 'info');
-      return;
-    }
-    let tableRows = '';
-    rfkDataList.forEach(item => {
-      const sisa = item.pagu - item.realKeuanganRupiah;
-      tableRows += `<tr>
-        <td class="small">${item.kodeProgram}</td>
-        <td class="small fw-semibold">${item.namaProgram.substring(0,30)}</td>
-        <td class="small">${item.sumberDana}</td>
-        <td class="small">${item.realFisik}%</td>
-        <td class="small">Rp ${formatRupiah(item.realKeuanganRupiah)}</td>
-        <td class="small">Rp ${formatRupiah(sisa)}</td>
-      </tr>`;
+function formatRupiah(angka) {
+  return new Intl.NumberFormat('id-ID').format(angka);
+}
+
+paguInput.addEventListener('input', hitungOtomatis);
+realKeuInput.addEventListener('input', hitungOtomatis);
+
+// ============ SUBMIT FORM ============
+const formRFK = document.getElementById('rfkForm');
+formRFK.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // Kumpulkan data
+  const formData = {
+    kode_program: document.getElementById('kodeProgram').value,
+    nama_program: document.getElementById('namaProgram').value,
+    sub_kategori_program: document.getElementById('subKategoriProgram').value,
+    sumber_dana: document.getElementById('sumberDana').value,
+    kategori_anggaran: document.getElementById('kategoriAnggaran').value,
+    sub_kategori_anggaran: document.getElementById('subKategoriAnggaran').value,
+    sumber_dana_detail: document.getElementById('sumberDanaDetail').value,
+    tahun_anggaran: document.getElementById('tahunAnggaran').value,
+    pagu: parseRupiahStr(document.getElementById('pagu').value),
+    realisasi_keuangan: parseRupiahStr(document.getElementById('realKeuanganRupiah').value),
+    keterangan: document.getElementById('keterangan').value
+  };
+
+  // Validasi
+  if (!formData.kode_program || !formData.nama_program || !formData.sumber_dana) {
+    showToast('Isi Kode Program, Nama Program, dan Sumber Dana!', 'error');
+    return;
+  }
+
+  if (!formData.pagu || formData.pagu <= 0) {
+    showToast('PAGU harus diisi dan lebih dari 0!', 'error');
+    return;
+  }
+
+  if (formData.realisasi_keuangan > formData.pagu) {
+    showToast('Realisasi Keuangan tidak boleh melebihi PAGU!', 'error');
+    return;
+  }
+
+  try {
+    const response = await fetch('{{ route("rfk.store") }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify(formData)
     });
-    const modalLaporan = document.createElement('div');
-    modalLaporan.className = 'modal fade';
-    modalLaporan.innerHTML = `
-      <div class="modal-dialog modal-dialog-scrollable modal-xl">
-        <div class="modal-content">
-          <div class="modal-header bg-gradient text-white" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
-            <h5 class="modal-title"><i class="fas fa-chart-line me-2"></i>Laporan Realisasi RFK</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <div class="table-responsive">
-              <table class="table table-sm table-hover">
-                <thead class="table-light"><tr><th>Kode</th><th>Program</th><th>Sumber Dana</th><th>Fisik %</th><th>Realisasi Keuangan (Rp)</th><th>Sisa Pagu (Rp)</th></tr></thead>
-                <tbody>${tableRows}</tbody>
-              </table>
+
+    const result = await response.json();
+
+    if (result.success) {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('inputRFKModal'));
+      modal.hide();
+      formRFK.reset();
+      sisaPaguField.value = '';
+      realFisikField.value = '';
+      showToast(result.message, 'success');
+      loadDashboardData();
+    } else {
+      showToast(result.message, 'error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    showToast('Terjadi kesalahan saat menyimpan data', 'error');
+  }
+});
+
+// ============ LOAD DASHBOARD DATA ============
+async function loadDashboardData() {
+  try {
+    const response = await fetch('{{ route("rfk.data") }}');
+    const result = await response.json();
+
+    if (result.success) {
+      const stats = result.statistics;
+      const data = result.data;
+
+      // Update ringkasan
+      document.getElementById('totalProgramCount').innerText = stats.total_program;
+      document.getElementById('totalPaguDisplay').innerText = 'Rp ' + formatRupiah(stats.total_pagu);
+      document.getElementById('progressBerjalan').innerText = stats.progress_berjalan;
+      document.getElementById('terlambatCount').innerText = stats.terlambat;
+      document.getElementById('avgFisik').innerHTML = stats.avg_fisik + '%';
+      document.getElementById('avgKeuanganPersen').innerHTML = stats.avg_keuangan_persen + '%';
+      document.getElementById('totalSisaPag').innerHTML = 'Rp ' + formatRupiah(stats.total_sisa_pagu);
+
+      // Update chart
+      updateChart(data);
+    }
+  } catch (error) {
+    console.error('Error loading data:', error);
+  }
+}
+
+function updateChart(data) {
+  const chartContainer = document.getElementById('dynamicChart');
+  chartContainer.innerHTML = '';
+
+  const lastPrograms = data.slice(-7);
+  if (lastPrograms.length === 0) {
+    for (let i = 0; i < 7; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'chart-bar';
+      bar.style.height = '20%';
+      chartContainer.appendChild(bar);
+    }
+  } else {
+    lastPrograms.forEach(prog => {
+      const bar = document.createElement('div');
+      bar.className = 'chart-bar';
+      const tinggi = Math.min(95, Math.max(5, prog.realisasi_fisik || 0));
+      bar.style.height = tinggi + '%';
+      bar.setAttribute('title', `${prog.nama_program}: ${prog.realisasi_fisik}%`);
+      chartContainer.appendChild(bar);
+    });
+  }
+}
+
+// ============ LAPORAN ============
+const laporanBtn = document.getElementById('laporanSayaBtn');
+laporanBtn.addEventListener('click', async () => {
+  try {
+    const response = await fetch('{{ route("rfk.data") }}');
+    const result = await response.json();
+
+    if (result.success && result.data.length > 0) {
+      let tableRows = '';
+      result.data.forEach(item => {
+        const statusBadge = getStatusBadge(item.status);
+        
+        let actionBtn = '';
+        if (item.status === 'PENDING') {
+            actionBtn = `<span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> Menunggu Approval</span>`;
+        } else if (item.status === 'REJECT') {
+            const rRealisasiId = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].id : null;
+            const rNilai = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].nilai_realisasi_keuangan : '';
+            const rKet = (item.realisasis && item.realisasis.length > 0) ? (item.realisasis[0].keterangan || '') : '';
+            
+            actionBtn = `<button class="btn btn-sm btn-outline-danger" onclick="bukaModalEditRealisasi(${rRealisasiId}, '${item.nama_program}', ${item.sisa_pagu}, ${rNilai}, '${rKet}')"><i class="fas fa-edit"></i> Perbaiki</button>`;
+        } else if (item.sisa_pagu <= 0) {
+            actionBtn = `<span class="badge bg-success"><i class="fas fa-check-double"></i> Pagu Habis</span>`;
+        } else {
+            actionBtn = `<button class="btn btn-sm btn-outline-primary" onclick="bukaModalRealisasi(${item.id}, '${item.nama_program}', ${item.sisa_pagu})"><i class="fas fa-plus"></i> Tambah Realisasi</button>`;
+        }
+
+        tableRows += `
+          <tr>
+            <td class="small">${item.kode_program}</td>
+            <td class="small fw-semibold">${item.nama_program.substring(0, 40)}</td>
+            <td class="small">${item.sumber_dana}</td>
+            <td class="small">${item.realisasi_fisik}%</td>
+            <td class="small">Rp ${formatRupiah(item.realisasi_keuangan)}</td>
+            <td class="small">Rp ${formatRupiah(item.sisa_pagu)}</td>
+            <td class="small">${statusBadge}</td>
+            <td class="small">${actionBtn}</td>
+          </tr>
+        `;
+      });
+
+      const modalLaporan = document.createElement('div');
+      modalLaporan.className = 'modal fade';
+      modalLaporan.id = 'laporanModalInstance';
+      modalLaporan.innerHTML = `
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+          <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
+              <h5 class="modal-title"><i class="fas fa-chart-line me-2"></i>Laporan Realisasi RFK</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Kode</th><th>Program</th><th>Sumber Dana</th><th>Fisik %</th>
+                      <th>Realisasi (Rp)</th><th>Sisa Pagu (Rp)</th><th>Status</th><th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>${tableRows}</tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
           </div>
-          <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button></div>
         </div>
-      </div>
-    `;
-    document.body.appendChild(modalLaporan);
-    const modalInstance = new bootstrap.Modal(modalLaporan);
-    modalInstance.show();
-    modalLaporan.addEventListener('hidden.bs.modal', () => modalLaporan.remove());
-  });
-
-  function seedDummyData() {
-    if(rfkDataList.length === 0) {
-      rfkDataList.push({
-        id: 1, namaProgram: 'Peningkatan Infrastruktur Jalan', kodeProgram: 'PRG-101', sumberDana: 'DAU', tahunAnggaran: 2025,
-        pagu: 5000000000, realKeuanganRupiah: 3425000000, realFisik: 68.5, keterangan: 'Progress baik', sisaPagu: 1575000000
-      });
-      rfkDataList.push({
-        id: 2, namaProgram: 'Rehab Gedung Sekolah', kodeProgram: 'PRG-202', sumberDana: 'DAK', tahunAnggaran: 2025,
-        pagu: 3200000000, realKeuanganRupiah: 1440000000, realFisik: 45, keterangan: 'Tahap konstruksi', sisaPagu: 1760000000
-      });
-      rfkDataList.push({
-        id: 3, namaProgram: 'Pengadaan Alat Kesehatan', kodeProgram: 'PRG-303', sumberDana: 'DBH', tahunAnggaran: 2025,
-        pagu: 1800000000, realKeuanganRupiah: 1620000000, realFisik: 90, keterangan: 'Hampir selesai', sisaPagu: 180000000
-      });
+      `;
+      document.body.appendChild(modalLaporan);
+      const modalInstance = new bootstrap.Modal(modalLaporan);
+      modalInstance.show();
+      modalLaporan.addEventListener('hidden.bs.modal', () => modalLaporan.remove());
+    } else {
+      showToast('Belum ada data RFK. Silakan input terlebih dahulu.', 'info');
     }
-    updateDashboard();
+  } catch (error) {
+    showToast('Gagal memuat laporan', 'error');
   }
-  seedDummyData();
+});
 
-  const toggleBtn = document.getElementById('toggleMode');
-  toggleBtn.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-    toggleBtn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-  });
+function getStatusBadge(status) {
+  const badges = {
+    'PENDING': '<span class="status-badge-pending"><i class="fas fa-clock me-1"></i>PENDING</span>',
+    'APPROVE': '<span class="status-badge-approve"><i class="fas fa-check me-1"></i>APPROVE</span>',
+    'REJECT': '<span class="status-badge-reject"><i class="fas fa-times me-1"></i>REJECT</span>'
+  };
+  return badges[status] || badges['PENDING'];
+}
+
+function showToast(msg, type = 'success') {
+  const toastEl = document.getElementById('liveToast');
+  const toastMsg = document.getElementById('toastMessage');
+  toastMsg.innerText = msg;
+  toastEl.style.display = 'flex';
+  setTimeout(() => { toastEl.style.display = 'none'; }, 3000);
+}
+
+window.closeToast = function() {
+  document.getElementById('liveToast').style.display = 'none';
+};
+
+// ============ TAMBAH REALISASI (BERTAHAP) ============
+window.bukaModalRealisasi = function(id, nama, sisaPagu) {
+  // Tutup modal laporan jika ada
+  const laporanModal = bootstrap.Modal.getInstance(document.getElementById('laporanModalInstance'));
+  if (laporanModal) laporanModal.hide();
+
+  document.getElementById('tr_rfk_id').value = id;
+  document.getElementById('tr_nama_program').value = nama;
+  document.getElementById('tr_sisa_pagu_display').value = 'Rp ' + formatRupiah(sisaPagu);
+  document.getElementById('tr_sisa_pagu').value = sisaPagu;
+  document.getElementById('tr_nilai').value = '';
+  document.getElementById('tr_keterangan').value = '';
+  document.getElementById('tr_warning').style.display = 'none';
+
+  const modal = new bootstrap.Modal(document.getElementById('tambahRealisasiModal'));
+  modal.show();
+};
+
+document.getElementById('tr_nilai').addEventListener('input', function() {
+  const sisaPagu = parseFloat(document.getElementById('tr_sisa_pagu').value) || 0;
+  const nilai = parseRupiahStr(this.value);
+  if (nilai > sisaPagu) {
+    document.getElementById('tr_warning').style.display = 'block';
+  } else {
+    document.getElementById('tr_warning').style.display = 'none';
+  }
+});
+
+const formTambahRealisasi = document.getElementById('formTambahRealisasi');
+formTambahRealisasi.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const id = document.getElementById('tr_rfk_id').value;
+  const sisaPagu = parseFloat(document.getElementById('tr_sisa_pagu').value) || 0;
+  const nilai = parseRupiahStr(document.getElementById('tr_nilai').value);
+  
+  if (nilai <= 0 || nilai > sisaPagu) {
+    showToast('Nilai realisasi tidak valid atau melebihi sisa pagu', 'error');
+    return;
+  }
+
+  const formData = {
+    nilai_realisasi_keuangan: nilai,
+    keterangan: document.getElementById('tr_keterangan').value
+  };
+
+  try {
+    const response = await fetch(`/dashboard/rfk/${id}/realisasi`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('tambahRealisasiModal'));
+      modal.hide();
+      formTambahRealisasi.reset();
+      showToast(result.message, 'success');
+      loadDashboardData();
+    } else {
+      showToast(result.message, 'error');
+    }
+  } catch (error) {
+    showToast('Terjadi kesalahan saat mengajukan realisasi', 'error');
+  }
+});
+
+// ============ EDIT REALISASI (DITOLAK) ============
+window.bukaModalEditRealisasi = function(realisasiId, nama, sisaPagu, nilaiLama, ketLama) {
+  if(!realisasiId) {
+      showToast('Data realisasi tidak ditemukan.', 'error');
+      return;
+  }
+  const laporanModal = bootstrap.Modal.getInstance(document.getElementById('laporanModalInstance'));
+  if (laporanModal) laporanModal.hide();
+
+  document.getElementById('er_realisasi_id').value = realisasiId;
+  document.getElementById('er_nama_program').value = nama;
+  document.getElementById('er_sisa_pagu_display').value = 'Rp ' + formatRupiah(sisaPagu);
+  document.getElementById('er_sisa_pagu').value = sisaPagu;
+  document.getElementById('er_nilai').value = nilaiLama ? formatRupiah(nilaiLama) : '';
+  document.getElementById('er_keterangan').value = ketLama || '';
+  document.getElementById('er_warning').style.display = 'none';
+
+  const modal = new bootstrap.Modal(document.getElementById('editRealisasiModal'));
+  modal.show();
+};
+
+document.getElementById('er_nilai').addEventListener('input', function() {
+  const sisaPagu = parseFloat(document.getElementById('er_sisa_pagu').value) || 0;
+  const nilai = parseRupiahStr(this.value);
+  if (nilai > sisaPagu) {
+    document.getElementById('er_warning').style.display = 'block';
+  } else {
+    document.getElementById('er_warning').style.display = 'none';
+  }
+});
+
+const formEditRealisasi = document.getElementById('formEditRealisasi');
+formEditRealisasi.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const id = document.getElementById('er_realisasi_id').value;
+  const sisaPagu = parseFloat(document.getElementById('er_sisa_pagu').value) || 0;
+  const nilai = parseRupiahStr(document.getElementById('er_nilai').value);
+  
+  if (nilai <= 0 || nilai > sisaPagu) {
+    showToast('Nilai realisasi tidak valid atau melebihi sisa pagu', 'error');
+    return;
+  }
+
+  const formData = {
+    nilai_realisasi_keuangan: nilai,
+    keterangan: document.getElementById('er_keterangan').value
+  };
+
+  try {
+    const response = await fetch(`/dashboard/rfk/realisasi/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify(formData)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('editRealisasiModal'));
+      modal.hide();
+      formEditRealisasi.reset();
+      showToast(result.message, 'success');
+      loadDashboardData();
+    } else {
+      showToast(result.message, 'error');
+    }
+  } catch (error) {
+    showToast('Terjadi kesalahan saat mengajukan ulang realisasi', 'error');
+  }
+});
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', () => {
+  loadDashboardData();
+});
+
+// Dark mode toggle
+const toggleBtn = document.getElementById('toggleMode');
+toggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+  toggleBtn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+});
 </script>
 </body>
 </html>

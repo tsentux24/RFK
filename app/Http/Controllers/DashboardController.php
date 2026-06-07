@@ -10,14 +10,14 @@ class DashboardController extends Controller
     public function index()
     {
         // Ambil role dari user login
-        $role = Auth::user()->role; //
+        $role = Auth::user()->role;
 
-        // Render view sesuai role
-        $viewName = "dashboard." . $role;
-        if (view()->exists($viewName)) {
-            return view($viewName);
-        } else {
-            abort(404, "Dashboard view for role '{$role}' not found.");
-        }
+        return match ($role) {
+            'superadmin' => view('dashboard.superadmin'),
+            'administrator' => view('dashboard.administrator'),
+            'staff' => view('dashboard.staff'),
+            'kepala_opd' => view('dashboard.kepala_opd'),
+            default => redirect('/'),
+        };
     }
 }
