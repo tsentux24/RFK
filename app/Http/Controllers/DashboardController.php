@@ -12,8 +12,10 @@ class DashboardController extends Controller
         // Ambil role dari user login
         $role = Auth::user()->role;
 
+        $opds = \App\Models\Opd::orderBy('nama_opd', 'asc')->get();
+
         return match ($role) {
-            'superadmin' => view('dashboard.superadmin'),
+            'superadmin' => view('dashboard.superadmin', compact('opds')),
             'administrator' => view('dashboard.administrator'),
             'staff' => view('dashboard.staff'),
             'kepala_opd' => view('dashboard.kepala_opd'),

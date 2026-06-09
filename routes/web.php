@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/laporan/data', [RfkController::class, 'getLaporanData'])->name('laporan.data');
     Route::post('/dashboard/laporan/generate-pdf', [RfkController::class, 'generateLaporanPdf'])->name('laporan.pdf');
     Route::get('/dashboard/stats', [RfkController::class, 'getDashboardStats'])->name('dashboard.stats');
+    Route::get('/dashboard/superadmin/data', [RfkController::class, 'getSuperadminData'])->name('superadmin.data');
 
     // RFK Realisasi & Approval Routes
     Route::get('/dashboard/rfk/audit', [RfkController::class, 'auditPage'])->name('rfk.audit');

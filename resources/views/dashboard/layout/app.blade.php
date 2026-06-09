@@ -260,6 +260,7 @@
                         <span>Beranda</span>
                     </a>
                 </li>
+                @if(Auth::user()->role !== 'superadmin')
                 <li>
                     <a href="/dataopd" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
                         <i class="fas fa-building"></i>
@@ -284,18 +285,21 @@
                         <span>Validation Engine</span>
                     </a>
                 </li>
+                @endif
                 <li>
                     <a href="{{ route('laporan.index') }}" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
                         <i class="fas fa-chart-bar"></i>
                         <span>Laporan</span>
                     </a>
                 </li>
+                @if(Auth::user()->role !== 'superadmin')
                 <li>
                     <a href="/users" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
                         <i class="fas fa-user"></i>
                         <span>Users</span>
                     </a>
                 </li>
+                @endif
                 <li>
                     <a href="#" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
                         <i class="fas fa-cog"></i>

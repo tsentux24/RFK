@@ -11,10 +11,12 @@
             </div>
 
             <div class="flex items-center gap-4">
+                @if(Auth::user()->role !== 'superadmin')
                 <div class="hidden md:flex items-center relative">
                     <i class="fas fa-search absolute left-3 text-gray-300"></i>
                     <input type="text" placeholder="Cari..." class="rounded-full pl-10 pr-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48 border border-gray-300">
                 </div>
+                @endif
 
                 <div class="flex items-center gap-2">
                     <!-- Notification Button with Modal -->

@@ -124,11 +124,22 @@ class RfkController extends Controller
         }
     }
 
-    public function getDashboardStats()
+    public function getDashboardStats(Request $request)
     {
-        $totalProgram = InputRfk::count();
-        $totalPagu = InputRfk::sum('pagu');
-        $totalRealisasi = InputRfk::sum('realisasi_keuangan');
+        $query = InputRfk::query();
+
+        if ($request->filled('tahun')) {
+            $query->where('tahun_anggaran', $request->tahun);
+        }
+        if ($request->filled('opd_id')) {
+            $query->where('opd_id', $request->opd_id);
+        }
+
+        $totalProgram = (clone $query)->count();
+        $totalPagu = (clone $query)->sum('pagu');
+        $totalRealisasi = (clone $query)->sum('realisasi_keuangan');
+        $totalSisaPagu = (clone $query)->sum('sisa_pagu');
+        $avgFisik = $totalProgram > 0 ? (clone $query)->avg('realisasi_fisik') : 0;
         
         $totalOpd = Opd::count();
         $opdInputIds = InputRfk::distinct('opd_id')->pluck('opd_id')->toArray();
@@ -140,14 +151,14 @@ class RfkController extends Controller
 
         // Data for Diagram (Group by Status or by Time)
         $rfkStatusCount = [
-            'APPROVE' => InputRfk::where('status', 'APPROVE')->count(),
-            'PENDING' => InputRfk::where('status', 'PENDING')->count(),
-            'REJECT' => InputRfk::where('status', 'REJECT')->count(),
+            'APPROVE' => (clone $query)->where('status', 'APPROVE')->count(),
+            'PENDING' => (clone $query)->where('status', 'PENDING')->count(),
+            'REJECT' => (clone $query)->where('status', 'REJECT')->count(),
         ];
 
         // Data for Modern Chart (Realisasi per OPD)
-        $opdStats = InputRfk::with('opd')
-            ->selectRaw('opd_id, SUM(pagu) as total_pagu, SUM(realisasi_keuangan) as total_realisasi')
+        $opdStats = (clone $query)->with('opd')
+            ->selectRaw('opd_id, SUM(pagu) as total_pagu, SUM(realisasi_keuangan) as total_realisasi, SUM(sisa_pagu) as total_sisa')
             ->groupBy('opd_id')
             ->having('total_pagu', '>', 0)
             ->get()
@@ -156,6 +167,7 @@ class RfkController extends Controller
                     'opd' => $item->opd ? substr($item->opd->nama_opd, 0, 15) . '...' : 'Lainnya',
                     'pagu' => (float) $item->total_pagu,
                     'realisasi' => (float) $item->total_realisasi,
+                    'sisa' => (float) $item->total_sisa,
                 ];
             });
 
@@ -165,10 +177,223 @@ class RfkController extends Controller
                 'total_program' => $totalProgram,
                 'total_pagu' => $totalPagu,
                 'total_realisasi' => $totalRealisasi,
+                'total_sisa_pagu' => $totalSisaPagu,
+                'avg_fisik' => round($avgFisik, 2),
                 'opd_belum_input' => $opdBelumInput,
                 'opd_belum_list' => $opdBelumList,
                 'diagram_status' => $rfkStatusCount,
                 'diagram_opd' => $opdStats
+            ]
+        ]);
+    }
+
+    public function getSuperadminData(Request $request)
+    {
+        $query = InputRfk::query()->with('opd');
+
+        if ($request->filled('tahun')) {
+            $query->where('tahun_anggaran', $request->tahun);
+        }
+        if ($request->filled('opd_id')) {
+            $query->where('opd_id', $request->opd_id);
+        }
+
+        $allPrograms = $query->get();
+
+        $totalProgram = $allPrograms->count();
+        $totalPagu = $allPrograms->sum('pagu');
+        $totalRealisasi = $allPrograms->sum('realisasi_keuangan');
+        $totalSisaPagu = $allPrograms->sum('sisa_pagu');
+        $avgFisik = $totalProgram > 0 ? $allPrograms->avg('realisasi_fisik') : 0;
+
+        $today = now()->format('Y-m-d');
+        $thisMonth = now()->format('Y-m');
+        $thisYear = now()->format('Y');
+
+        $realisasiHarian = $allPrograms->filter(function($p) use ($today) {
+            return \Carbon\Carbon::parse($p->tanggal_input)->format('Y-m-d') === $today;
+        })->sum('realisasi_keuangan');
+
+        $realisasiBulanan = $allPrograms->filter(function($p) use ($thisMonth) {
+            return \Carbon\Carbon::parse($p->tanggal_input)->format('Y-m') === $thisMonth;
+        })->sum('realisasi_keuangan');
+
+        $realisasiTahunan = $allPrograms->filter(function($p) use ($thisYear) {
+            return \Carbon\Carbon::parse($p->tanggal_input)->format('Y') === $thisYear;
+        })->sum('realisasi_keuangan');
+
+        // Group by OPD
+        $grouped = $allPrograms->groupBy('opd_id');
+        $jumlahOpdTercatat = $grouped->count();
+
+        $opdsData = [];
+        foreach ($grouped as $opdId => $programs) {
+            $opdModel = $programs->first()->opd;
+            
+            $opdPagu = $programs->sum('pagu');
+            $opdRealisasi = $programs->sum('realisasi_keuangan');
+            $opdSisa = $programs->sum('sisa_pagu');
+            $opdPersen = $opdPagu > 0 ? round(($opdRealisasi / $opdPagu) * 100, 2) : 0;
+            $opdFisikAvg = $programs->count() > 0 ? round($programs->avg('realisasi_fisik'), 2) : 0;
+
+            $programList = $programs->map(function($p) {
+                return [
+                    'id' => $p->id,
+                    'kode' => $p->kode_program,
+                    'nama' => $p->nama_program,
+                    'pagu' => (float) $p->pagu,
+                    'realisasi' => (float) $p->realisasi_keuangan,
+                    'sisa' => (float) $p->sisa_pagu,
+                    'fisik' => (float) $p->realisasi_fisik,
+                    'status' => $p->status,
+                    'sub_kategori_program' => $p->sub_kategori_program,
+                    'sumber_dana' => $p->sumber_dana,
+                    'kategori_anggaran' => $p->kategori_anggaran,
+                    'sub_kategori_anggaran' => $p->sub_kategori_anggaran,
+                    'sumber_dana_detail' => $p->sumber_dana_detail,
+                    'tahun_anggaran' => $p->tahun_anggaran
+                ];
+            })->values()->toArray();
+
+            $sdGroup = $programs->groupBy('sumber_dana');
+            $sdMatrix = [];
+            foreach ($sdGroup as $sdName => $sdProgs) {
+                $mPagu = $sdProgs->sum('pagu');
+                $mRealisasi = $sdProgs->sum('realisasi_keuangan');
+                $mSisa = $sdProgs->sum('sisa_pagu');
+                $sdMatrix[] = [
+                    'sumber_dana' => $sdName ?: 'Lainnya',
+                    'pagu' => (float) $mPagu,
+                    'realisasi' => (float) $mRealisasi,
+                    'sisa' => (float) $mSisa,
+                    'persentase' => $mPagu > 0 ? round(($mRealisasi / $mPagu) * 100, 2) : 0,
+                ];
+            }
+
+            $opdsData[] = [
+                'id' => $opdId,
+                'nama_opd' => $opdModel ? $opdModel->nama_opd : 'Lainnya',
+                'pagu' => (float) $opdPagu,
+                'realisasi' => (float) $opdRealisasi,
+                'sisa' => (float) $opdSisa,
+                'persentase' => (float) $opdPersen,
+                'rata_rata_fisik' => (float) $opdFisikAvg,
+                'programs' => $programList,
+                'sumber_dana_matrix' => $sdMatrix
+            ];
+        }
+
+        // Sort by nama_opd
+        usort($opdsData, function($a, $b) {
+            return strcmp($a['nama_opd'], $b['nama_opd']);
+        });
+
+        $lastUpdated = $allPrograms->max('updated_at');
+        $lastUpdatedAtFormatted = $lastUpdated ? \Carbon\Carbon::parse($lastUpdated)->isoFormat('D MMMM YYYY, HH:mm') . ' WIB' : 'Belum ada data';
+
+        $rfkStatusCount = [
+            'APPROVE' => $allPrograms->where('status', 'APPROVE')->count(),
+            'PENDING' => $allPrograms->where('status', 'PENDING')->count(),
+            'REJECT' => $allPrograms->where('status', 'REJECT')->count(),
+        ];
+
+        // Group by Sumber Dana
+        $sumberDanaGroup = $allPrograms->groupBy('sumber_dana');
+        $sumberDanaData = [];
+        foreach ($sumberDanaGroup as $sumber => $progs) {
+            $sdPagu = $progs->sum('pagu');
+            $sdRealisasi = $progs->sum('realisasi_keuangan');
+            $sdSisa = $progs->sum('sisa_pagu');
+            $sdPersen = $sdPagu > 0 ? round(($sdRealisasi / $sdPagu) * 100, 2) : 0;
+            
+            $sumberDanaData[] = [
+                'sumber_dana' => $sumber ?: 'Lainnya',
+                'pagu' => (float) $sdPagu,
+                'realisasi' => (float) $sdRealisasi,
+                'sisa' => (float) $sdSisa,
+                'persentase' => (float) $sdPersen,
+                'jumlah_program' => $progs->count()
+            ];
+        }
+
+        // Sort Sumber Dana by Pagu (Highest first)
+        usort($sumberDanaData, function($a, $b) {
+            return $b['pagu'] <=> $a['pagu'];
+        });
+
+        // Analytics: Top 5 OPD dengan REJECT terbanyak
+        $topRejectOpds = \DB::table('rfk_realisasi_histories')
+            ->join('rfk_realisasis', 'rfk_realisasi_histories.rfk_realisasi_id', '=', 'rfk_realisasis.id')
+            ->join('table_input_rfk', 'rfk_realisasis.input_rfk_id', '=', 'table_input_rfk.id')
+            ->join('opds', 'table_input_rfk.opd_id', '=', 'opds.id')
+            ->where('rfk_realisasi_histories.status_baru', 'REJECT')
+            ->select('opds.nama_opd', \DB::raw('count(rfk_realisasi_histories.id) as total_reject'))
+            ->groupBy('opds.nama_opd')
+            ->orderByDesc('total_reject')
+            ->limit(5)
+            ->get();
+
+        // 1. Top 10 Paket Terbesar (Pagu Terbesar)
+        $top10Paket = $allPrograms->sortByDesc('pagu')->take(10)->map(function($p) {
+            $p->opd_name = $p->opd ? $p->opd->nama_opd : 'Lainnya';
+            return $p;
+        })->values();
+
+        // 2. Program Serapan Tertinggi & Terendah
+        $programsWithPersen = $allPrograms->filter(function($p) { return $p->pagu > 0; })->map(function($p) {
+            $p->persentase = round(($p->realisasi_keuangan / $p->pagu) * 100, 2);
+            $p->opd_name = $p->opd ? $p->opd->nama_opd : 'Lainnya';
+            return $p;
+        });
+        $serapanTertinggi = $programsWithPersen->sortByDesc('persentase')->take(5)->values();
+        $serapanTerendah = $programsWithPersen->sortBy('persentase')->take(5)->values();
+
+        // 3. Traffic Light OPD
+        $trafficLight = [
+            'hijau' => [],
+            'kuning' => [],
+            'merah' => []
+        ];
+        
+        $rankingOpd = collect($opdsData)->sortByDesc('persentase')->values();
+        
+        foreach ($rankingOpd as $opd) {
+            if ($opd['persentase'] >= 90) {
+                $trafficLight['hijau'][] = $opd;
+            } elseif ($opd['persentase'] >= 70) {
+                $trafficLight['kuning'][] = $opd;
+            } else {
+                $trafficLight['merah'][] = $opd;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'last_updated_at' => $lastUpdatedAtFormatted,
+                'total_program' => $totalProgram,
+                'total_pagu' => $totalPagu,
+                'total_realisasi' => $totalRealisasi,
+                'total_sisa_pagu' => $totalSisaPagu,
+                'avg_fisik' => round($avgFisik, 2),
+                'realisasi_harian' => $realisasiHarian,
+                'realisasi_bulanan' => $realisasiBulanan,
+                'realisasi_tahunan' => $realisasiTahunan,
+                'jumlah_opd_tercatat' => $jumlahOpdTercatat,
+                'diagram_status' => $rfkStatusCount,
+                'diagram_sumber_dana' => $sumberDanaData,
+                'top_reject_opds' => $topRejectOpds,
+                'top_10_paket' => $top10Paket,
+                'serapan_tertinggi' => $serapanTertinggi,
+                'serapan_terendah' => $serapanTerendah,
+                'traffic_light' => [
+                    'hijau' => count($trafficLight['hijau']),
+                    'kuning' => count($trafficLight['kuning']),
+                    'merah' => count($trafficLight['merah']),
+                    'detail' => $trafficLight
+                ],
+                'ranking_opd' => $rankingOpd,
+                'opds' => $opdsData
             ]
         ]);
     }
