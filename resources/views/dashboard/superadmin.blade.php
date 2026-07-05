@@ -39,7 +39,7 @@
 </style>
 
 <div class="main-content min-h-screen pb-12 pt-6 px-4 md:px-8 max-w-screen-2xl mx-auto">
-    
+
     <!-- Header Row -->
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-6">
         <div>
@@ -49,7 +49,7 @@
                 <i class="fas fa-clock"></i> <span id="last-updated-text">Memuat data terakhir...</span>
             </div>
         </div>
-        
+
         <div class="flex flex-wrap sm:flex-nowrap gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
             <select id="filterTahun" class="px-4 py-2 bg-slate-50 border-none rounded-xl text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 min-w-[120px]" onchange="loadSuperadminData()">
                 <option value="">Tahun</option>
@@ -76,7 +76,7 @@
         <div class="super-card p-6 flex flex-col justify-between relative overflow-hidden group cursor-default border-t-4 border-t-blue-500">
             <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50/50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
             <div class="flex items-center justify-between mb-4">
-                <p class="text-xs font-bold text-blue-500 uppercase tracking-wider">Realisasi RFK (Harian)</p>
+                <p class="text-xs font-bold text-blue-500 uppercase tracking-wider">Realisasi SI-RAFIKA (Harian)</p>
                 <div class="stat-icon-wrapper bg-blue-50 text-blue-500 shadow-sm border border-blue-100 group-hover:-translate-y-1 transition-transform">
                     <i class="fas fa-calendar-day"></i>
                 </div>
@@ -84,12 +84,12 @@
             <h3 class="text-2xl font-black text-slate-800 mb-2" id="realisasi-harian">Rp 0</h3>
             <span class="text-left text-xs font-semibold text-slate-400">Total serapan hari ini</span>
         </div>
-        
+
         <!-- Bulanan -->
         <div class="super-card p-6 flex flex-col justify-between relative overflow-hidden group cursor-default border-t-4 border-t-indigo-500">
             <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50/50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
             <div class="flex items-center justify-between mb-4">
-                <p class="text-xs font-bold text-indigo-500 uppercase tracking-wider">Realisasi RFK (Bulanan)</p>
+                <p class="text-xs font-bold text-indigo-500 uppercase tracking-wider">Realisasi SI-RAFIKA (Bulanan)</p>
                 <div class="stat-icon-wrapper bg-indigo-50 text-indigo-500 shadow-sm border border-indigo-100 group-hover:-translate-y-1 transition-transform">
                     <i class="fas fa-calendar-alt"></i>
                 </div>
@@ -102,7 +102,7 @@
         <div class="super-card p-6 flex flex-col justify-between relative overflow-hidden group cursor-default border-t-4 border-t-purple-500">
             <div class="absolute top-0 right-0 w-24 h-24 bg-purple-50/50 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
             <div class="flex items-center justify-between mb-4">
-                <p class="text-xs font-bold text-purple-500 uppercase tracking-wider">Realisasi RFK (Tahunan)</p>
+                <p class="text-xs font-bold text-purple-500 uppercase tracking-wider">Realisasi SI-RAFIKA (Tahunan)</p>
                 <div class="stat-icon-wrapper bg-purple-50 text-purple-500 shadow-sm border border-purple-100 group-hover:-translate-y-1 transition-transform">
                     <i class="fas fa-calendar-check"></i>
                 </div>
@@ -140,7 +140,7 @@
                 Lihat Rekap Seluruh OPD <i class="fas fa-arrow-right"></i>
             </span>
         </div>
-        
+
         <!-- Realisasi -->
         <div class="super-card p-6 flex flex-col justify-between group cursor-pointer" onclick="openGlobalSummaryModal()">
             <div class="flex items-center justify-between mb-4">
@@ -154,7 +154,7 @@
                 Lihat Rekap Seluruh OPD <i class="fas fa-arrow-right"></i>
             </span>
         </div>
-        
+
         <!-- Sisa -->
         <div class="super-card p-6 flex flex-col justify-between group cursor-pointer" onclick="openGlobalSummaryModal()">
             <div class="flex items-center justify-between mb-4">
@@ -168,7 +168,7 @@
                 Lihat Rekap Seluruh OPD <i class="fas fa-arrow-right"></i>
             </span>
         </div>
-        
+
         <!-- Fisik -->
         <div class="super-card p-6 flex flex-col justify-between group cursor-pointer" onclick="openGlobalSummaryModal()">
             <div class="flex items-center justify-between mb-4">
@@ -188,16 +188,16 @@
 
     <!-- Analytics Charts Row -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-        
+
         <!-- Status Validasi RFK (Pie Chart) -->
         <div class="super-card p-6 xl:col-span-1 flex flex-col justify-center relative">
-            <h3 class="text-lg font-bold text-slate-800 mb-1">Status Validasi RFK</h3>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">Status Validasi SI-RAFIKA</h3>
             <p class="text-xs text-slate-500 mb-6 font-medium">Berdasarkan rincian data program OPD</p>
-            
+
             <div class="relative h-48 w-full mb-6">
                 <canvas id="status-chart"></canvas>
             </div>
-            
+
             <div class="flex flex-col gap-3 mb-6">
                 <div class="flex justify-between items-center p-2.5 rounded-lg bg-emerald-50 border border-emerald-100">
                     <div class="flex items-center gap-2">
@@ -242,12 +242,12 @@
                 <canvas id="bar-chart-opd"></canvas>
             </div>
         </div>
-        
+
     </div>
 
     <!-- Advanced Analytics Row -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-        
+
         <!-- Sumber Dana Chart (Col-span-2) -->
         <div class="super-card p-6 xl:col-span-2 relative overflow-hidden flex flex-col">
             <div class="absolute top-0 left-0 w-2 h-full bg-blue-500"></div>
@@ -270,12 +270,12 @@
             <div>
                 <h3 class="text-lg font-bold text-slate-800"><i class="fas fa-radar text-rose-500 mr-2"></i>Radar Kepatuhan</h3>
                 <p class="text-xs text-slate-500 mt-1">Top 5 OPD dengan frekuensi penolakan (REJECT) terbanyak berdasarkan riwayat verifikasi.</p>
-                
+
                 <div class="mt-5 space-y-3" id="reject-list-container">
                     <div class="text-center py-6 text-slate-400 text-sm"><i class="fas fa-circle-notch fa-spin"></i> Memuat...</div>
                 </div>
             </div>
-            
+
             <div class="mt-6 p-5 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 rounded-2xl flex items-center justify-between shadow-2xl border border-indigo-500/30 text-white relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-10 -mt-10 blur-2xl"></div>
                 <div class="relative z-10">
@@ -288,7 +288,7 @@
             </div>
         </div>
     </div> <!-- Close Advanced Analytics Row -->
-        
+
     <!-- Row: Top 10 Paket & Traffic Light -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
         <!-- Top 10 Paket (Col-span-2) -->
@@ -342,7 +342,7 @@
 
     <!-- Row: Ranking OPD & Program Ekstrem -->
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
-        
+
         <!-- Ranking OPD -->
         <div class="super-card p-0 flex flex-col overflow-hidden">
             <div class="p-6 border-b border-slate-100 bg-gradient-to-r from-slate-800 to-slate-900">
@@ -364,7 +364,7 @@
                     <p class="text-sm text-slate-500 mt-1">5 Program Serapan Tertinggi & Terendah.</p>
                 </div>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[400px] overflow-y-auto custom-scrollbar pr-2">
                 <!-- Kiri: Tertinggi -->
                 <div>
@@ -408,7 +408,7 @@
 <div id="program-modal" style="display: none; position: fixed; inset: 0; z-index: 9999; justify-content: center; align-items: center; padding: 1rem;">
     <!-- Backdrop -->
     <div id="program-modal-backdrop" onclick="closeModal('program-modal')" style="position: absolute; inset: 0; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease;"></div>
-    
+
     <!-- Content -->
     <div id="program-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[85vh] flex flex-col relative" style="opacity: 0; transform: scale(0.95); transition: all 0.3s ease;">
         <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-start bg-slate-50 rounded-t-2xl">
@@ -446,7 +446,7 @@
 <div id="global-summary-modal" style="display: none; position: fixed; inset: 0; z-index: 9999; justify-content: center; align-items: center; padding: 1rem;">
     <!-- Backdrop -->
     <div id="global-summary-modal-backdrop" onclick="closeModal('global-summary-modal')" style="position: absolute; inset: 0; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease;"></div>
-    
+
     <!-- Content -->
     <div id="global-summary-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[85vh] flex flex-col relative" style="opacity: 0; transform: scale(0.95); transition: all 0.3s ease;">
         <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-start bg-indigo-50 rounded-t-2xl">
@@ -481,19 +481,19 @@
 <div id="status-breakdown-modal" style="display: none; position: fixed; inset: 0; z-index: 9999; justify-content: center; align-items: center; padding: 1rem;">
     <!-- Backdrop -->
     <div id="status-breakdown-modal-backdrop" onclick="closeModal('status-breakdown-modal')" style="position: absolute; inset: 0; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease;"></div>
-    
+
     <!-- Content -->
     <div id="status-breakdown-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[90vh] flex flex-col relative" style="opacity: 0; transform: scale(0.95); transition: all 0.3s ease;">
         <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-start bg-slate-800 rounded-t-2xl">
             <div>
-                <h3 class="text-xl font-bold text-white leading-tight">Database Status RFK</h3>
+                <h3 class="text-xl font-bold text-white leading-tight">Database Status SI-RAFIKA</h3>
                 <p class="text-sm text-slate-300 mt-1 font-medium"><i class="fas fa-search-dollar mr-1"></i> Analisis Detil Program Berdasarkan Status Validasi</p>
             </div>
             <button onclick="closeModal('status-breakdown-modal')" class="h-10 w-10 bg-slate-700 border border-slate-600 text-slate-300 hover:text-white hover:bg-rose-500 hover:border-rose-500 rounded-full flex items-center justify-center transition-all shadow-sm">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        
+
         <!-- Filter Tabs -->
         <div class="px-8 py-4 bg-slate-50 border-b border-slate-200 flex gap-4">
             <button onclick="filterStatusModal('ALL')" id="tab-status-ALL" class="px-5 py-2 bg-slate-800 text-white rounded-lg text-sm font-bold shadow-sm transition-colors">Semua Status</button>
@@ -528,7 +528,7 @@
 <div id="matrix-modal" style="display: none; position: fixed; inset: 0; z-index: 9999; justify-content: center; align-items: center; padding: 1rem;">
     <!-- Backdrop -->
     <div id="matrix-modal-backdrop" onclick="closeModal('matrix-modal')" style="position: absolute; inset: 0; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.3s ease;"></div>
-    
+
     <!-- Content -->
     <div id="matrix-modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[90vh] flex flex-col relative" style="opacity: 0; transform: scale(0.95); transition: all 0.3s ease;">
         <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-start bg-slate-900 rounded-t-2xl">
@@ -587,14 +587,14 @@
             const modal = document.getElementById(modalId);
             const backdrop = document.getElementById(modalId + '-backdrop');
             const content = document.getElementById(modalId + '-content');
-            
+
             modal.style.display = 'flex';
             void modal.offsetWidth; // Force browser reflow
-            
+
             backdrop.style.opacity = '1';
             content.style.opacity = '1';
             content.style.transform = 'scale(1)';
-            
+
             document.body.style.overflow = 'hidden';
         } catch (error) {
             console.error("Error opening modal: ", error);
@@ -606,11 +606,11 @@
             const modal = document.getElementById(modalId);
             const backdrop = document.getElementById(modalId + '-backdrop');
             const content = document.getElementById(modalId + '-content');
-            
+
             backdrop.style.opacity = '0';
             content.style.opacity = '0';
             content.style.transform = 'scale(0.95)';
-            
+
             setTimeout(() => {
                 modal.style.display = 'none';
                 document.body.style.overflow = '';
@@ -627,7 +627,7 @@
         const btn = document.getElementById('btn-refresh');
 
         btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
-        
+
         try {
             const res = await fetch(`/dashboard/superadmin/data?tahun=${tahun}&opd_id=${opdId}`);
             const result = await res.json();
@@ -636,7 +636,7 @@
                 const data = result.data;
                 superadminData = data.opds || [];
                 sumberDanaData = data.diagram_sumber_dana || [];
-                
+
                 // Flatten programs
                 allProgramsFlat = [];
                 superadminData.forEach(opd => {
@@ -655,14 +655,14 @@
                 document.getElementById('global-realisasi').innerText = 'Rp ' + formatK(data.total_realisasi);
                 document.getElementById('global-sisa').innerText = 'Rp ' + formatK(data.total_sisa_pagu);
                 document.getElementById('global-fisik').innerText = (data.avg_fisik || 0) + '%';
-                
+
                 // Top Row Realisasi & OPD
                 document.getElementById('realisasi-harian').innerText = 'Rp ' + formatK(data.realisasi_harian || 0);
                 document.getElementById('realisasi-bulanan').innerText = 'Rp ' + formatK(data.realisasi_bulanan || 0);
                 document.getElementById('realisasi-tahunan').innerText = 'Rp ' + formatK(data.realisasi_tahunan || 0);
                 document.getElementById('jumlah-opd-tercatat').innerText = (data.jumlah_opd_tercatat || 0) + ' Instansi';
                 document.getElementById('opd-count-badge').innerText = superadminData.length + ' OPD';
-                
+
                 // Efektivitas Score
                 const efektivitas = data.total_pagu > 0 ? ((data.total_realisasi / data.total_pagu) * 100).toFixed(1) : 0;
                 document.getElementById('efektivitas-score').innerText = efektivitas + '%';
@@ -683,10 +683,10 @@
 
                 // Render Ranking
                 renderRankingOpd(data.ranking_opd || []);
-                
+
                 // Render Top 10 Paket
                 renderTop10Paket(data.top_10_paket || []);
-                
+
                 // Render Serapan Ekstrem
                 renderProgramEkstrem(data.serapan_tertinggi || [], data.serapan_terendah || []);
 
@@ -706,7 +706,7 @@
 
     window.openProgramModalByOpdId = function(opdId) {
         try {
-            const opd = superadminData.find(o => o.id == opdId) || allProgramsFlat.find(p => p.opd_id == opdId)?.opd; 
+            const opd = superadminData.find(o => o.id == opdId) || allProgramsFlat.find(p => p.opd_id == opdId)?.opd;
             // In case it's not found directly (should be in superadminData though).
             // Actually, superadminData has the full list since it's restored after filter.
             if (!opd) {
@@ -717,7 +717,7 @@
 
             document.getElementById('modal-opd-name').innerText = actualOpd.nama_opd || 'Detail OPD';
             const tbody = document.getElementById('modal-program-body');
-            
+
             if (!opd.programs || opd.programs.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-500 font-medium">Belum ada data RFK untuk OPD ini.</td></tr>';
             } else {
@@ -760,7 +760,7 @@
     window.openGlobalSummaryModal = function() {
         try {
             const tbody = document.getElementById('global-summary-body');
-            
+
             if (superadminData.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-slate-500 font-medium">Tidak ada data OPD yang tersedia.</td></tr>';
             } else {
@@ -855,10 +855,10 @@
 
     window.filterOpdGridByTraffic = function(color) {
         if (!superadminData || superadminData.length === 0) return;
-        
+
         const grid = document.getElementById('opd-grid');
         grid.innerHTML = '<div class="col-span-full text-center py-12"><i class="fas fa-circle-notch fa-spin text-4xl text-indigo-400 mb-4"></i><p>Memfilter data...</p></div>';
-        
+
         setTimeout(() => {
             let filteredData = [];
             if (color === 'hijau') {
@@ -868,7 +868,7 @@
             } else if (color === 'merah') {
                 filteredData = superadminData.filter(opd => opd.persentase < 70);
             }
-            
+
             // Backup the full data and temporarily replace it to reuse renderOpdGrid logic
             const originalData = superadminData;
             superadminData = filteredData;
@@ -877,7 +877,7 @@
 
             // Update badge
             document.getElementById('opd-count-badge').innerText = `Filter ${color.toUpperCase()}: ${filteredData.length} OPD`;
-            
+
             // Scroll to grid
             document.getElementById('opd-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 300);
@@ -957,7 +957,7 @@
             const bgColor = index === 0 ? 'bg-rose-50 border-rose-200' : 'bg-white border-slate-100';
             const textColor = index === 0 ? 'text-rose-600' : 'text-slate-700';
             const iconColor = index === 0 ? 'text-rose-500' : 'text-slate-400';
-            
+
             html += `
                 <div class="flex items-center justify-between p-3 rounded-xl border ${bgColor} shadow-sm transition-colors hover:shadow-md">
                     <div class="flex items-center gap-3 overflow-hidden">
@@ -981,9 +981,9 @@
     function renderSumberDanaChart() {
         try {
             if(sumberDanaChart) sumberDanaChart.destroy();
-            
+
             const ctx = document.getElementById('sumber-dana-chart').getContext('2d');
-            
+
             let labels = sumberDanaData.map(sd => sd.sumber_dana.toUpperCase());
             let realisasi = sumberDanaData.map(sd => sd.realisasi);
             let sisa = sumberDanaData.map(sd => (sd.sisa < 0 ? 0 : sd.sisa));
@@ -1089,7 +1089,7 @@
         try {
             let sortedOpds = [...superadminData].sort((a, b) => b.pagu - a.pagu);
             let topOpds = sortedOpds.slice(0, 15);
-            
+
             let labels = topOpds.map(opd => (opd.nama_opd && opd.nama_opd.length > 15) ? opd.nama_opd.substring(0, 15) + '...' : (opd.nama_opd || 'OPD'));
             let dataRealisasi = topOpds.map(opd => opd.realisasi || 0);
             let dataSisa = topOpds.map(opd => (opd.sisa < 0 ? 0 : (opd.sisa || 0)));
@@ -1186,7 +1186,7 @@
             rankingData.forEach((opd, index) => {
                 let rankBadge = '';
                 let bgClass = 'bg-white border-slate-100 hover:border-indigo-300';
-                
+
                 if (index === 0) rankBadge = '<i class="fas fa-medal text-2xl text-yellow-400 drop-shadow-md"></i>';
                 else if (index === 1) rankBadge = '<i class="fas fa-medal text-2xl text-slate-300 drop-shadow-md"></i>';
                 else if (index === 2) rankBadge = '<i class="fas fa-medal text-2xl text-amber-600 drop-shadow-md"></i>';
@@ -1233,7 +1233,7 @@
             let html = '';
             paketData.forEach((p, index) => {
                 let badge = index === 0 ? 'bg-amber-100 text-amber-700 border-amber-200 shadow-amber-200 shadow-sm' : 'bg-slate-100 text-slate-500 border-slate-200';
-                
+
                 html += `
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white border border-slate-100 rounded-xl hover:shadow-md transition-shadow gap-4 group">
                         <div class="flex items-start gap-3 sm:gap-4 flex-grow min-w-0 w-full sm:w-auto">
@@ -1268,7 +1268,7 @@
         try {
             const containerTinggi = document.getElementById('program-tertinggi-list');
             const containerRendah = document.getElementById('program-terendah-list');
-            
+
             const renderItem = (item, colorClass) => `
                 <div class="p-4 bg-white border border-slate-100 rounded-xl hover:shadow-md transition-shadow group flex flex-col gap-2 relative overflow-hidden">
                     <div class="absolute right-0 top-0 w-1 h-full ${colorClass.replace('text-', 'bg-')} opacity-20"></div>
@@ -1312,7 +1312,7 @@
             superadminData.forEach((opd, index) => {
                 const chartId = `doughnut-${index}`;
                 const sisa = opd.sisa < 0 ? 0 : (opd.sisa || 0);
-                
+
                 const cardHtml = `
                     <div class="super-card p-5 lg:p-6 flex flex-col justify-between group h-full">
                         <div class="flex justify-between items-start mb-5 border-b border-slate-100 pb-4 min-w-0">
@@ -1321,7 +1321,7 @@
                                 ${opd.programs ? opd.programs.length : 0} Prog
                             </div>
                         </div>
-                        
+
                         <div class="flex flex-col sm:flex-row items-center gap-4 mb-6 flex-grow">
                             <div class="w-20 h-20 relative flex-shrink-0 mx-auto sm:mx-0">
                                 <canvas id="${chartId}"></canvas>

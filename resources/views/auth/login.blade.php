@@ -402,14 +402,14 @@
     <div class="main-content">
         <!-- Bagian kiri - Hero text -->
         <section class="hero-section">
-            <h1 class="hero-title">RFK (Realisasi Fisik Dan Keuangan)</h1>
+            <h1 class="hero-title">SI-RAFIKA (Sisem Informasi Realisasi Fisik Dan Keuangan)</h1>
             <p class="hero-subtitle">Digitalisasi Monitoring Realisasi Fisik Dan Keuangan Sebagai Upaya Peningkatan Kualitas Pelaporan Pembangunan .</p>
         </section>
 
         <!-- Bagian kanan - Form login -->
         <section class="login-section">
             <div class="login-card">
-                <h2 class="login-title">Login ke RFK</h2>
+                <h2 class="login-title">Login ke SI-RAFIKA</h2>
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     @error('email')
@@ -436,7 +436,7 @@
     </div>
 
     <footer>
-        &copy; 2026 Pemerintah Provinsi Maluku Utara. All rights reserved.Versi 1.0
+        &copy; 2026 Pemerintah Provinsi Maluku Utara.Biro Administrasi Pembangunan All rights reserved.Versi 1.0
     </footer>
 
     <script>

@@ -1,4 +1,4 @@
-@extends('dashboard.layout.app',['title'=>'Laporan Rekapitulasi RFK'])
+@extends('dashboard.layout.app',['title'=>'Laporan Rekapitulasi SI-RAFIKA'])
 @section('content')
 
 <div class="p-6 laporan-print-container">
@@ -8,12 +8,12 @@
             .sidebar, header, .mb-6:not(.print-header), .filter-section, button { display: none !important; }
             .main-content { margin-left: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
             body, html { background-color: white !important; font-family: 'Times New Roman', Times, serif !important; margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; zoom: 90%; }
-            
+
             /* Print Container and General Styling */
             @page { size: landscape; margin: 5mm; }
             .laporan-print-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; overflow: visible !important; }
             .bg-white { box-shadow: none !important; border: none !important; }
-            
+
             /* Header Print Styling */
             .print-header { display: flex !important; flex-direction: row; align-items: center; justify-content: center; border-bottom: 3px solid black; padding-bottom: 15px; margin-bottom: 20px; }
             .print-header img { width: 80px; height: 80px; margin-right: 20px; }
@@ -27,10 +27,10 @@
             tr { page-break-inside: avoid; page-break-after: auto; }
             th, td { border: 1px solid black !important; padding: 4px !important; color: black !important; overflow: hidden; }
             th { background-color: #f3f4f6 !important; font-weight: bold !important; text-align: center !important; }
-            
+
             /* Badges should be plain text for print */
             span.bg-green-100, span.bg-yellow-100 { background: none !important; color: black !important; border: none !important; padding: 0 !important; font-weight: bold !important; }
-            
+
             /* Expandable rows must print */
             .print-expand { display: table-row !important; }
             .print-expand table { border: 1px solid #666 !important; margin-top: 5px !important; }
@@ -38,7 +38,7 @@
 
             /* Footer Print Styling */
             .print-footer { display: block !important; margin-top: 30px; font-size: 10pt; text-align: right; border-top: 1px dashed #ccc; padding-top: 10px; font-style: italic; }
-            
+
             /* Ensures colors print if allowed by browser */
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
@@ -54,7 +54,7 @@
         <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo Maluku Utara">
         <div class="text-center text-black">
             <h1>PEMERINTAH PROVINSI MALUKU UTARA</h1>
-            <h2>LAPORAN REKAPITULASI REALISASI FISIK DAN KEUANGAN (RFK)</h2>
+            <h2>LAPORAN REKAPITULASI REALISASI FISIK DAN KEUANGAN (SI-RAFIKA)</h2>
             <p>Dicetak pada: {{ \Carbon\Carbon::now()->translatedFormat('d F Y, H:i') }}</p>
         </div>
     </div>
@@ -62,7 +62,7 @@
     <!-- Header Page -->
     <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Laporan Rekapitulasi RFK</h2>
+            <h2 class="text-2xl font-bold text-gray-800">Laporan Rekapitulasi SI-RAFIKA</h2>
             <p class="text-sm text-gray-500">Akumulasi Berjalan (Running Total) Realisasi Keuangan dan Fisik Program</p>
         </div>
         <div class="mt-4 md:mt-0 flex gap-2 flex-wrap justify-end">
@@ -152,7 +152,7 @@
 
     <!-- Print Footer (Hidden on Screen) -->
     <div class="print-footer">
-        Data Di cetak Dengan Sistem RFK Provinsi Maluku Utara
+        Data Di cetak Dengan Sistem SI-RAFIKA Biro Adminisistrasi Pembangunan Setda Provinsi Maluku Utara
     </div>
 
     <!-- WhatsApp Modal -->
@@ -220,7 +220,7 @@
                     const realKeuangan = parseFloat(item.realisasi_keuangan) || 0;
                     const sisaPagu = parseFloat(item.sisa_pagu) || 0;
                     const realFisik = parseFloat(item.realisasi_fisik) || 0;
-                    
+
                     let statusBadge = '';
                     if(item.status === 'APPROVE') statusBadge = '<span class="bg-green-100 text-green-800 px-2 py-1 rounded font-medium text-xs">APPROVE</span>';
                     else statusBadge = '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-medium text-xs">PENDING</span>';
@@ -276,9 +276,9 @@
                             const fis = parseFloat(real.nilai_realisasi_fisik) || 0;
                             const dateStr = new Date(real.created_at).toLocaleString('id-ID');
                             const stat = real.status;
-                            let statBadge = stat === 'APPROVE' ? '<span class="text-green-600 font-bold">APPROVE</span>' : 
+                            let statBadge = stat === 'APPROVE' ? '<span class="text-green-600 font-bold">APPROVE</span>' :
                                             (stat === 'REJECT' ? '<span class="text-red-600 font-bold">REJECT</span>' : '<span class="text-yellow-600 font-bold">PENDING</span>');
-                            
+
                             detailHtml += `
                                 <tr class="hover:bg-gray-50">
                                     <td class="p-2 border">${dateStr}</td>
@@ -326,7 +326,7 @@
         const sSearch = document.getElementById('filterStatus').value;
 
         const rows = document.querySelectorAll('#laporanTableBody tr.data-row');
-        
+
         rows.forEach(row => {
             const program = row.querySelector('.program-text').innerText.toLowerCase() + " " + row.querySelector('.font-mono').innerText.toLowerCase();
             const opd = row.querySelector('.opd-text').innerText.toLowerCase();
@@ -354,7 +354,7 @@
                 const p = parseFloat(row.children[3].getAttribute('data-val')) || 0;
                 const r = parseFloat(row.children[4].getAttribute('data-val')) || 0;
                 const s = parseFloat(row.children[5].getAttribute('data-val')) || 0;
-                
+
                 totalPagu += p;
                 totalReal += r;
                 totalSisa += s;
@@ -377,7 +377,7 @@
 
     // WA PDF Logic
     const waModal = document.getElementById('wa-modal');
-    
+
     function openWaModal() {
         waModal.classList.remove('hidden');
         document.getElementById('waNumber').focus();
@@ -421,9 +421,9 @@
 
             if (result.success) {
                 const pdfUrl = result.url;
-                const textMessage = encodeURIComponent(`Berikut adalah Laporan Rekapitulasi RFK:\n\n${pdfUrl}`);
+                const textMessage = encodeURIComponent(`Berikut adalah Laporan Rekapitulasi SI-RAFIKA:\n\n${pdfUrl}`);
                 const waUrl = `https://wa.me/${number}?text=${textMessage}`;
-                
+
                 // Close modal & open WA
                 closeWaModal();
                 window.open(waUrl, '_blank');

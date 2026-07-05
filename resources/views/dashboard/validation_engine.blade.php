@@ -1,9 +1,9 @@
-@extends('dashboard.layout.app',['title'=>'RFK Validation Engine'])
+@extends('dashboard.layout.app',['title'=>'SI-RAFIKA Validation Engine'])
 @section('content')
 <div class="p-6">
     <div class="mb-6">
         <h2 class="text-3xl font-extrabold text-gray-900 flex items-center gap-3">
-            <i class="fas fa-microchip text-indigo-600"></i> RFK Validation Engine
+            <i class="fas fa-microchip text-indigo-600"></i> SI-RAFIKA Validation Engine
         </h2>
         <p class="text-gray-600 mt-2">Mesin cerdas berbasis aturan (Rule-based Engine) untuk mengaudit dan mendeteksi anomali data serta indikasi manipulasi (Copy-Paste).</p>
     </div>
@@ -35,7 +35,7 @@
 
     <!-- Results Container -->
     <div id="results-container" class="hidden space-y-8">
-        
+
         <!-- Summary Alert -->
         <div id="summary-alert" class="rounded-xl p-5 border-l-4 flex items-center gap-4 shadow-sm">
             <div class="text-3xl" id="summary-icon"></div>
@@ -97,7 +97,7 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
         btn.classList.add('opacity-75', 'cursor-not-allowed');
-        
+
         results.classList.add('hidden');
         loader.classList.remove('hidden');
         status.innerText = 'Engine sedang bekerja...';
@@ -105,7 +105,7 @@
         try {
             // Fake delay for UX (Audit feels thorough)
             await new Promise(r => setTimeout(r, 1500));
-            
+
             const response = await fetch('{{ route("validation.run") }}');
             const data = await response.json();
 
@@ -121,7 +121,7 @@
             // UI State: Done
             loader.classList.add('hidden');
             results.classList.remove('hidden');
-            
+
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-redo text-xl"></i> Pindai Ulang';
             btn.classList.remove('opacity-75', 'cursor-not-allowed');
@@ -137,7 +137,7 @@
         const alertDesc = document.getElementById('summary-desc');
 
         alertBox.className = 'rounded-xl p-5 border-l-4 flex items-center gap-4 shadow-sm';
-        
+
         if (data.total_anomalies > 0) {
             alertBox.classList.add('bg-red-50', 'border-red-500', 'text-red-800');
             alertIcon.innerHTML = '<i class="fas fa-engine-warning"></i>'; // FontAwesome fallback
@@ -155,15 +155,15 @@
         const mismatchContainer = document.getElementById('mismatch-cards');
         const mismatchEmpty = document.getElementById('mismatch-empty');
         mismatchContainer.innerHTML = '';
-        
+
         if (data.mismatches.length > 0) {
             mismatchContainer.classList.remove('hidden');
             mismatchEmpty.classList.add('hidden');
-            
+
             data.mismatches.forEach(m => {
                 let badgeClass = m.type === 'EXTREME_DEVIATION' ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800';
                 let iconClass = m.type === 'EXTREME_DEVIATION' ? 'fa-balance-scale-right text-orange-500' : 'fa-arrow-up text-red-500';
-                
+
                 mismatchContainer.innerHTML += `
                     <div class="bg-white rounded-xl border border-red-100 p-5 shadow-sm hover:shadow-md transition">
                         <div class="flex justify-between items-start mb-3">

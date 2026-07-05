@@ -254,14 +254,14 @@
                     const response = await fetch('/dashboard/rfk/pending');
                     if (!response.ok) return;
                     const result = await response.json();
-                    
+
                     if (result.success && result.data) {
                         const notificationsList = document.querySelector('#notification-modal .p-4.space-y-3');
                         if (!notificationsList) return;
-                        
+
                         let readNotifs = JSON.parse(localStorage.getItem('read_notifs') || '[]');
                         let unreadData = result.data.filter(item => !readNotifs.includes(item.id));
-                        
+
                         let html = '';
                         unreadData.forEach(item => {
                             const programName = item.nama_program || 'Program Baru';
@@ -272,7 +272,7 @@
                             const nilaiDiajukan = pendingRealisasi ? pendingRealisasi.nilai_realisasi_keuangan : 0;
                             const fisikDiajukan = pendingRealisasi ? pendingRealisasi.nilai_realisasi_fisik : 0;
                             const timeString = new Date(item.created_at).toLocaleString('id-ID');
-                            
+
                             html += `
                                 <div class="flex flex-col gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100 shadow-sm mb-3">
                                     <div class="flex items-start gap-3">
@@ -303,13 +303,13 @@
                                 </div>
                             `;
                         });
-                        
+
                         if (unreadData.length === 0) {
                             html = '<div class="text-center py-4 text-gray-500 text-sm">Tidak ada notifikasi baru</div>';
                         }
-                        
+
                         notificationsList.innerHTML = html;
-                        
+
                         // Update badge
                         const badge = notificationButton.querySelector('span');
                         if (unreadData.length > 0) {
@@ -329,7 +329,7 @@
                 const item = JSON.parse(decodeURIComponent(encodedItem));
                 const modal = document.getElementById('notif-detail-modal');
                 const body = document.getElementById('notif-detail-body');
-                
+
                 const programName = item.nama_program || 'Program Baru';
                 const staffName = item.user ? item.user.name : 'Staff';
                 const opdName = item.opd ? item.opd.nama_opd : 'OPD Tidak Diketahui';
@@ -337,7 +337,7 @@
                 const pendingRealisasi = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0] : null;
                 const nilaiDiajukan = pendingRealisasi ? pendingRealisasi.nilai_realisasi_keuangan : 0;
                 const fisikDiajukan = pendingRealisasi ? pendingRealisasi.nilai_realisasi_fisik : 0;
-                
+
                 body.innerHTML = `
                     <div class="mb-4">
                         <p class="text-sm text-gray-500 font-medium">Program / Instansi OPD</p>
@@ -360,7 +360,7 @@
                         <p class="text-xs text-blue-500 mt-1"><i class="far fa-clock mr-1"></i> ${new Date(item.created_at).toLocaleString('id-ID')}</p>
                     </div>
                 `;
-                
+
                 modal.classList.remove('hidden');
                 setTimeout(() => document.getElementById('notif-detail-content').classList.remove('scale-95'), 10);
             };
@@ -385,7 +385,7 @@
                             let readNotifs = JSON.parse(localStorage.getItem('read_notifs') || '[]');
                             readNotifs = [...new Set([...readNotifs, ...currentIds])];
                             localStorage.setItem('read_notifs', JSON.stringify(readNotifs));
-                            
+
                             // Reload and close
                             loadNotifications();
                             notificationModal.classList.remove('show');
@@ -399,7 +399,7 @@
 
             // Initial load
             loadNotifications();
-            
+
             // Poll every 30 seconds
             setInterval(loadNotifications, 30000);
         });

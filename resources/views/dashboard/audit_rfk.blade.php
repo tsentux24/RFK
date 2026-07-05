@@ -1,4 +1,4 @@
-@extends('dashboard.layout.app',['title'=>'Audit Global RFK'])
+@extends('dashboard.layout.app',['title'=>'Audit Global SI-RAFIKA'])
 @section('content')
 <div class="p-6 audit-print-container">
     <style>
@@ -17,8 +17,8 @@
     <!-- Header Page -->
     <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Audit Global RFK</h2>
-            <p class="text-sm text-gray-500">Rekam jejak seluruh aktivitas dan perubahan status program RFK dari semua OPD</p>
+            <h2 class="text-2xl font-bold text-gray-800">Audit Global SI-RAFIKA</h2>
+            <p class="text-sm text-gray-500">Rekam jejak seluruh aktivitas dan perubahan status program SI-RAFIKA dari semua OPD</p>
         </div>
         <div class="mt-4 md:mt-0 flex gap-2">
             <button onclick="loadAuditData()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2">
@@ -104,19 +104,19 @@
                     const dateObj = new Date(item.created_at);
                     const dateFormatted = dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
                     const timeFormatted = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute:'2-digit' });
-                    
+
                     const inputRfk = item.realisasi && item.realisasi.input_rfk ? item.realisasi.input_rfk : null;
                     const programName = inputRfk ? inputRfk.nama_program : '-';
                     const programCode = inputRfk ? inputRfk.kode_program : '-';
                     const opdName = inputRfk && inputRfk.opd ? inputRfk.opd.nama_opd : '-';
-                    
+
                     const userRole = item.user ? item.user.role : '';
                     const userName = item.user ? item.user.name : '-';
                     let roleBadge = '';
                     if(userRole === 'staff') roleBadge = '<span class="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 ml-1">Staff</span>';
                     else if(userRole === 'kepala_opd') roleBadge = '<span class="text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-100 ml-1">Kepala OPD</span>';
                     else if(userRole === 'administrator' || userRole === 'superadmin') roleBadge = '<span class="text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100 ml-1">Admin</span>';
-                    
+
                     let statusBadge = '';
                     if (item.status_baru === 'APPROVE') statusBadge = '<span class="bg-green-100 text-green-800 px-2.5 py-1 rounded-md font-medium text-xs shadow-sm"><i class="fas fa-check-circle mr-1"></i>APPROVE</span>';
                     else if (item.status_baru === 'REJECT') statusBadge = '<span class="bg-red-100 text-red-800 px-2.5 py-1 rounded-md font-medium text-xs shadow-sm"><i class="fas fa-times-circle mr-1"></i>REJECT</span>';
@@ -195,7 +195,7 @@
             const program = row.querySelector('.program-text').innerText.toLowerCase();
             const user = row.querySelector('.user-text').innerText.toLowerCase();
             const statusHtml = row.querySelector('.status-cell').innerHTML;
-            
+
             let statusMatch = true;
             if (statusFilter) {
                 statusMatch = statusHtml.includes(statusFilter);
