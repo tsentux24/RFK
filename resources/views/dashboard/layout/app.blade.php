@@ -306,6 +306,12 @@
                         <span>Pengaturan</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('panduan') }}" class="nav-item flex items-center gap-3 px-4 py-3 text-white hover:text-white">
+                        <i class="fas fa-book"></i>
+                        <span>Panduan SI-RAFIKA</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="absolute bottom-0 w-full p-4 border-t border-gray-700">

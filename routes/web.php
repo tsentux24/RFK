@@ -14,6 +14,7 @@ Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name(
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])
         ->name('dashboard');
+    Route::get('/panduan', [DashboardController::class, 'panduan'])->name('panduan');
 
         Route::get('/dataopd', [OpdController::class, 'index']);
         Route::post('/opd', [OpdController::class, 'store'])->name('opd.store');

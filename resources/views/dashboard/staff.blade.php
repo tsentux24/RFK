@@ -435,6 +435,14 @@
         <p>Laporan Saya</p>
       </div>
     </div>
+    <div class="col-6 col-md-4">
+      <a href="{{ route('panduan') }}" style="text-decoration: none; color: inherit;">
+        <div class="card-custom menu-card">
+          <div class="menu-icon" style="background: linear-gradient(135deg, #1F8ECD 0%, #4cc9f0 100%);"><i class="fas fa-book"></i></div>
+          <p>Panduan</p>
+        </div>
+      </a>
+    </div>
   </div>
 </div>
 

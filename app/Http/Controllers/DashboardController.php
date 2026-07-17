@@ -22,4 +22,19 @@ class DashboardController extends Controller
             default => redirect('/'),
         };
     }
+
+    public function panduan()
+    {
+        $role = Auth::user()->role;
+        if ($role === 'staff') {
+            return view('dashboard.panduan_staff');
+        }
+        if ($role === 'kepala_opd') {
+            return view('dashboard.panduan_kepala_opd');
+        }
+        if ($role === 'superadmin') {
+            return view('dashboard.panduan_superadmin');
+        }
+        return view('dashboard.panduan');
+    }
 }
