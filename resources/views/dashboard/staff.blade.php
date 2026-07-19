@@ -11,6 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     /* ============ STYLE SAMA SEPERTI SEBELUMNYA ============ */
     :root {
@@ -349,12 +351,23 @@
     }
 
     .status-badge-reject {
-      background: #dc3545;
-      color: #fff;
-      padding: 4px 10px;
+      background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(192, 57, 43, 0.2) 100%);
+      color: var(--danger);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      padding: 5px 12px;
       border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-badge-selesai {
+      background: linear-gradient(135deg, rgba(41, 128, 185, 0.1) 0%, rgba(52, 152, 219, 0.2) 100%);
+      color: #2980b9;
+      border: 1px solid rgba(41, 128, 185, 0.3);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
     }
 
     /* Base Button Styling */
@@ -536,32 +549,11 @@
           <form id="rfkForm">
             @csrf
 
-            <!-- Section 1: Data Program -->
+            <!-- Section 1: Sumber Dana & Anggaran -->
             <div class="form-section">
-              <div class="form-section-title"><i class="fas fa-tag me-2"></i>Data Program</div>
+              <div class="form-section-title"><i class="fas fa-coins me-2"></i>Informasi Pagu Anggaran</div>
               <div class="row g-3">
                 <div class="col-md-4">
-                  <label class="form-label fw-semibold">Kode Program <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="kodeProgram" placeholder="Contoh: PRG-001" required>
-                </div>
-                <div class="col-md-8">
-                  <label class="form-label fw-semibold">Nama Program <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control" id="namaProgram"
-                    placeholder="Contoh: Peningkatan Infrastruktur Jalan" required>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label fw-semibold">Sub Kategori Program</label>
-                  <input type="text" class="form-control" id="subKategoriProgram"
-                    placeholder="Contoh: Pembangunan Fisik / Non Fisik">
-                </div>
-              </div>
-            </div>
-
-            <!-- Section 2: Sumber Dana -->
-            <div class="form-section">
-              <div class="form-section-title"><i class="fas fa-coins me-2"></i>Sumber Dana</div>
-              <div class="row g-3">
-                <div class="col-md-6">
                   <label class="form-label fw-semibold">Sumber Dana <span class="text-danger">*</span></label>
                   <select class="form-select" id="sumberDana" required>
                     <option value="">Pilih Sumber Dana</option>
@@ -569,31 +561,6 @@
                     <option value="APBN">APBN</option>
                   </select>
                 </div>
-                <div class="col-md-6" id="kategoriAnggaranContainer" style="display:none;">
-                  <label class="form-label fw-semibold">Kategori Anggaran</label>
-                  <select class="form-select" id="kategoriAnggaran">
-                    <option value="">Pilih Kategori</option>
-                  </select>
-                </div>
-                <div class="col-md-6" id="subKategoriAnggaranContainer" style="display:none;">
-                  <label class="form-label fw-semibold">Sub Kategori Anggaran</label>
-                  <select class="form-select" id="subKategoriAnggaran">
-                    <option value="">Pilih Sub Kategori</option>
-                  </select>
-                </div>
-                <div class="col-md-6" id="sumberDanaDetailContainer" style="display:none;">
-                  <label class="form-label fw-semibold">Sumber Dana Detail</label>
-                  <select class="form-select" id="sumberDanaDetail">
-                    <option value="">Pilih Sumber Dana</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Section 3: Anggaran -->
-            <div class="form-section">
-              <div class="form-section-title"><i class="fas fa-chart-line me-2"></i>Detail Anggaran</div>
-              <div class="row g-3">
                 <div class="col-md-4">
                   <label class="form-label fw-semibold">Tahun Anggaran <span class="text-danger">*</span></label>
                   <input type="number" class="form-control" id="tahunAnggaran" value="{{ date('Y') }}" required>
@@ -601,22 +568,6 @@
                 <div class="col-md-4">
                   <label class="form-label fw-semibold">PAGU (Rp) <span class="text-danger">*</span></label>
                   <input type="text" class="form-control rupiah-input" id="pagu" placeholder="Total Pagu" required>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label fw-semibold">Realisasi Keuangan (Rp) <span
-                      class="text-danger">*</span></label>
-                  <input type="text" class="form-control rupiah-input" id="realKeuanganRupiah" placeholder="Realisasi"
-                    required>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Realisasi Fisik (%) <i
-                      class="fas fa-magic fa-xs text-muted"></i></label>
-                  <input type="text" class="form-control bg-light" id="realFisikOtomatis" readonly
-                    placeholder="Terisi otomatis">
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label fw-semibold">Sisa PAGU (Rp)</label>
-                  <input type="text" class="form-control bg-light" id="sisaPagu" readonly placeholder="Terisi otomatis">
                 </div>
               </div>
             </div>
@@ -626,7 +577,7 @@
               <div class="form-section-title"><i class="fas fa-sticky-note me-2"></i>Keterangan</div>
               <div class="row">
                 <div class="col-12">
-                  <textarea class="form-control" id="keterangan" rows="3" placeholder="Catatan tambahan..."></textarea>
+                  <textarea class="form-control" id="keterangan" rows="3" placeholder="Catatan tambahan...">SKPD</textarea>
                 </div>
               </div>
             </div>
@@ -652,10 +603,46 @@
         <div class="modal-body pt-3">
           <form id="formEditRealisasi">
             <input type="hidden" id="er_realisasi_id">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Program</label>
-              <input type="text" class="form-control bg-light" id="er_nama_program" readonly>
+            <input type="hidden" id="er_sumber_dana">
+
+            <div class="row g-2 mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Kode Program <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="er_kode_program" required>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label fw-semibold">Nama Program <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="er_nama_program" required>
+              </div>
             </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Sub Kategori Program</label>
+              <input type="text" class="form-control" id="er_sub_kategori_program">
+            </div>
+
+            <div class="row g-2 mb-3" id="er_apbd_container" style="display:none;">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Kategori Anggaran</label>
+                <select class="form-select" id="er_kategori_anggaran">
+                  <option value="">Pilih Kategori</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Sub Kategori Anggaran</label>
+                <select class="form-select" id="er_sub_kategori_anggaran">
+                  <option value="">Pilih Sub Kategori</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3" id="er_apbn_container" style="display:none;">
+              <label class="form-label fw-semibold">Sumber Dana Detail</label>
+              <select class="form-select" id="er_sumber_dana_detail">
+                <option value="">Pilih Sumber Dana</option>
+              </select>
+            </div>
+
             <div class="mb-3">
               <label class="form-label fw-semibold">Sisa PAGU (Rp)</label>
               <input type="text" class="form-control bg-light" id="er_sisa_pagu_display" readonly>
@@ -666,6 +653,19 @@
                   class="text-danger">*</span></label>
               <input type="text" class="form-control rupiah-input" id="er_nilai" required>
               <small class="text-danger" id="er_warning" style="display:none;">Nilai melebihi sisa pagu!</small>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-primary">Sisa PAGU Setelah Realisasi (Rp)</label>
+              <input type="text" class="form-control bg-light text-primary fw-bold" id="er_sisa_pagu_baru_display"
+                readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Kegiatan <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="er_kegiatan" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Sub Kegiatan <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="er_sub_kegiatan" required>
             </div>
             <div class="mb-3">
               <label class="form-label fw-semibold">Keterangan Tambahan</label>
@@ -694,10 +694,46 @@
         <div class="modal-body pt-3">
           <form id="formTambahRealisasi">
             <input type="hidden" id="tr_rfk_id">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Program</label>
-              <input type="text" class="form-control bg-light" id="tr_nama_program" readonly>
+            <input type="hidden" id="tr_sumber_dana">
+
+            <div class="row g-2 mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Kode Program <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="tr_kode_program" required>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label fw-semibold">Nama Program <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="tr_nama_program" required>
+              </div>
             </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Sub Kategori Program</label>
+              <input type="text" class="form-control" id="tr_sub_kategori_program">
+            </div>
+
+            <div class="row g-2 mb-3" id="tr_apbd_container" style="display:none;">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Kategori Anggaran</label>
+                <select class="form-select" id="tr_kategori_anggaran">
+                  <option value="">Pilih Kategori</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Sub Kategori Anggaran</label>
+                <select class="form-select" id="tr_sub_kategori_anggaran">
+                  <option value="">Pilih Sub Kategori</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3" id="tr_apbn_container" style="display:none;">
+              <label class="form-label fw-semibold">Sumber Dana Detail</label>
+              <select class="form-select" id="tr_sumber_dana_detail">
+                <option value="">Pilih Sumber Dana</option>
+              </select>
+            </div>
+
             <div class="mb-3">
               <label class="form-label fw-semibold">Sisa PAGU (Rp)</label>
               <input type="text" class="form-control bg-light" id="tr_sisa_pagu_display" readonly>
@@ -708,6 +744,19 @@
                   class="text-danger">*</span></label>
               <input type="text" class="form-control rupiah-input" id="tr_nilai" required>
               <small class="text-danger" id="tr_warning" style="display:none;">Nilai melebihi sisa pagu!</small>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-primary">Sisa PAGU Setelah Realisasi (Rp)</label>
+              <input type="text" class="form-control bg-light text-primary fw-bold" id="tr_sisa_pagu_baru_display"
+                readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Kegiatan <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="tr_kegiatan" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Sub Kegiatan <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="tr_sub_kegiatan" required>
             </div>
             <div class="mb-3">
               <label class="form-label fw-semibold">Keterangan Tambahan</label>
@@ -735,16 +784,43 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // ============ LOGIKA FORM DINAMIS SUMBER DANA ============
-    const sumberDanaSelect = document.getElementById('sumberDana');
-    const kategoriAnggaranContainer = document.getElementById('kategoriAnggaranContainer');
-    const kategoriAnggaranSelect = document.getElementById('kategoriAnggaran');
-    const subKategoriAnggaranContainer = document.getElementById('subKategoriAnggaranContainer');
-    const subKategoriAnggaranSelect = document.getElementById('subKategoriAnggaran');
-    const sumberDanaDetailContainer = document.getElementById('sumberDanaDetailContainer');
-    const sumberDanaDetailSelect = document.getElementById('sumberDanaDetail');
 
-    // Data untuk APBD
+    function formatRupiahManual(angka) {
+      if (angka === null || angka === undefined) return '0';
+      let parsed = parseFloat(angka);
+      if (isNaN(parsed)) return '0';
+      let str = Math.round(parsed).toString();
+      let isNegative = false;
+      if (str.startsWith('-')) {
+        isNegative = true;
+        str = str.substring(1);
+      }
+      let sisa = str.length % 3;
+      let rupiah = str.substr(0, sisa);
+      let ribuan = str.substr(sisa).match(/\d{3}/g);
+      if (ribuan) {
+        let separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+      }
+      return isNegative ? '-' + rupiah : rupiah;
+    }
+
+    function closeModalSafe(modalId) {
+      const el = document.getElementById(modalId);
+      if (!el) return;
+      let modal = bootstrap.Modal.getInstance(el);
+      if (!modal) {
+        modal = new bootstrap.Modal(el);
+      }
+      modal.hide();
+      // Remove backdrop just in case
+      document.querySelectorAll('.modal-backdrop').forEach(bd => bd.remove());
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
+    // ============ DATA CONSTANTS UNTUK DROPDOWNS ============
     const apbdKategori = [
       { value: 'BELANJA_OPERASI', label: 'Belanja Operasi' },
       { value: 'BELANJA_MODAL', label: 'Belanja Modal' }
@@ -763,60 +839,12 @@
       { value: 'BELANJA_MODAL_BANGUNAN_GEDUNG', label: 'Belanja Modal Bangunan Gedung' }
     ];
 
-    // Data untuk APBN
     const apbnSumberDana = [
       { value: 'DAU', label: 'DAU (Dana Alokasi Umum)' },
       { value: 'DAK', label: 'DAK (Dana Alokasi Khusus)' },
       { value: 'DBH', label: 'DBH (Dana Bagi Hasil)' },
       { value: 'DEKOM', label: 'DEKOM (Dana Dekonsentrasi)' }
     ];
-
-    // Event listener untuk Sumber Dana
-    sumberDanaSelect.addEventListener('change', function () {
-      const value = this.value;
-
-      // Reset semua
-      kategoriAnggaranContainer.style.display = 'none';
-      subKategoriAnggaranContainer.style.display = 'none';
-      sumberDanaDetailContainer.style.display = 'none';
-      kategoriAnggaranSelect.value = '';
-      subKategoriAnggaranSelect.innerHTML = '<option value="">Pilih Sub Kategori</option>';
-      sumberDanaDetailSelect.innerHTML = '<option value="">Pilih Sumber Dana</option>';
-
-      if (value === 'APBD') {
-        // Tampilkan kategori anggaran
-        kategoriAnggaranContainer.style.display = 'block';
-        kategoriAnggaranSelect.innerHTML = '<option value="">Pilih Kategori</option>';
-        apbdKategori.forEach(k => {
-          kategoriAnggaranSelect.innerHTML += `<option value="${k.value}">${k.label}</option>`;
-        });
-      } else if (value === 'APBN') {
-        // Tampilkan sumber dana detail
-        sumberDanaDetailContainer.style.display = 'block';
-        apbnSumberDana.forEach(s => {
-          sumberDanaDetailSelect.innerHTML += `<option value="${s.value}">${s.label}</option>`;
-        });
-      }
-    });
-
-    // Event listener untuk Kategori Anggaran (APBD)
-    kategoriAnggaranSelect.addEventListener('change', function () {
-      const value = this.value;
-      subKategoriAnggaranContainer.style.display = 'none';
-      subKategoriAnggaranSelect.innerHTML = '<option value="">Pilih Sub Kategori</option>';
-
-      if (value === 'BELANJA_OPERASI') {
-        subKategoriAnggaranContainer.style.display = 'block';
-        apbdSubOperasi.forEach(s => {
-          subKategoriAnggaranSelect.innerHTML += `<option value="${s.value}">${s.label}</option>`;
-        });
-      } else if (value === 'BELANJA_MODAL') {
-        subKategoriAnggaranContainer.style.display = 'block';
-        apbdSubModal.forEach(s => {
-          subKategoriAnggaranSelect.innerHTML += `<option value="${s.value}">${s.label}</option>`;
-        });
-      }
-    });
 
     // ============ HITUNG OTOMATIS ============
     function parseRupiahStr(str) {
@@ -847,36 +875,11 @@
       });
     });
 
-    const paguInput = document.getElementById('pagu');
-    const realKeuInput = document.getElementById('realKeuanganRupiah');
-    const realFisikField = document.getElementById('realFisikOtomatis');
-    const sisaPaguField = document.getElementById('sisaPagu');
-
-    function hitungOtomatis() {
-      const pagu = parseRupiahStr(paguInput.value);
-      const realKeu = parseRupiahStr(realKeuInput.value);
-
-      // Hitung Sisa Pagu
-      const sisa = pagu - realKeu;
-      sisaPaguField.value = sisa >= 0 ? formatRupiah(sisa) : '0';
-
-      // Hitung Realisasi Fisik
-      let fisik = 0;
-      if (pagu > 0 && realKeu > 0) {
-        fisik = (realKeu / pagu) * 100;
-        fisik = Math.min(100, fisik);
-        realFisikField.value = fisik.toFixed(2) + '%';
-      } else {
-        realFisikField.value = '0%';
-      }
-    }
-
     function formatRupiah(angka) {
-      return new Intl.NumberFormat('id-ID').format(angka);
+      return formatRupiahManual(angka);
     }
 
-    paguInput.addEventListener('input', hitungOtomatis);
-    realKeuInput.addEventListener('input', hitungOtomatis);
+
 
     // ============ SUBMIT FORM ============
     const formRFK = document.getElementById('rfkForm');
@@ -885,32 +888,20 @@
 
       // Kumpulkan data
       const formData = {
-        kode_program: document.getElementById('kodeProgram').value,
-        nama_program: document.getElementById('namaProgram').value,
-        sub_kategori_program: document.getElementById('subKategoriProgram').value,
         sumber_dana: document.getElementById('sumberDana').value,
-        kategori_anggaran: document.getElementById('kategoriAnggaran').value,
-        sub_kategori_anggaran: document.getElementById('subKategoriAnggaran').value,
-        sumber_dana_detail: document.getElementById('sumberDanaDetail').value,
         tahun_anggaran: document.getElementById('tahunAnggaran').value,
         pagu: parseRupiahStr(document.getElementById('pagu').value),
-        realisasi_keuangan: parseRupiahStr(document.getElementById('realKeuanganRupiah').value),
         keterangan: document.getElementById('keterangan').value
       };
 
       // Validasi
-      if (!formData.kode_program || !formData.nama_program || !formData.sumber_dana) {
-        showToast('Isi Kode Program, Nama Program, dan Sumber Dana!', 'error');
+      if (!formData.sumber_dana) {
+        showToast('Pilih Sumber Dana!', 'error');
         return;
       }
 
       if (!formData.pagu || formData.pagu <= 0) {
         showToast('PAGU harus diisi dan lebih dari 0!', 'error');
-        return;
-      }
-
-      if (formData.realisasi_keuangan > formData.pagu) {
-        showToast('Realisasi Keuangan tidak boleh melebihi PAGU!', 'error');
         return;
       }
 
@@ -927,11 +918,8 @@
         const result = await response.json();
 
         if (result.success) {
-          const modal = bootstrap.Modal.getInstance(document.getElementById('inputRFKModal'));
-          modal.hide();
+          closeModalSafe('inputRFKModal');
           formRFK.reset();
-          sisaPaguField.value = '';
-          realFisikField.value = '';
           showToast(result.message, 'success');
           loadDashboardData();
         } else {
@@ -1007,30 +995,53 @@
             const statusBadge = getStatusBadge(item.status);
 
             let actionBtn = '';
+            let deleteBtn = '';
+
+            const rRealisasiId = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].id : null;
+            const rRealisasiStatus = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].status : null;
+            const hasApproved = item.realisasis && item.realisasis.some(r => r.status === 'APPROVE');
+
             if (item.status === 'PENDING') {
               actionBtn = `<span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> Menunggu Approval</span>`;
+
+              if (rRealisasiId && rRealisasiStatus !== 'APPROVE') {
+                deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusRealisasi(${rRealisasiId})" title="Hapus Pengajuan Realisasi ini"><i class="fas fa-trash"></i></button>`;
+              }
+              if (!hasApproved && !rRealisasiId) {
+                deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusProgram(${item.id})" title="Hapus Program Keseluruhan"><i class="fas fa-trash"></i></button>`;
+              }
             } else if (item.status === 'REJECT') {
-              const rRealisasiId = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].id : null;
               const rNilai = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].nilai_realisasi_keuangan : '';
               const rKet = (item.realisasis && item.realisasis.length > 0) ? (item.realisasis[0].keterangan || '') : '';
+              const rKegiatan = (item.realisasis && item.realisasis.length > 0) ? (item.realisasis[0].kegiatan || '') : '';
+              const rSubKegiatan = (item.realisasis && item.realisasis.length > 0) ? (item.realisasis[0].sub_kegiatan || '') : '';
 
-              actionBtn = `<button class="btn btn-sm btn-outline-danger" onclick="bukaModalEditRealisasi(${rRealisasiId}, '${item.nama_program}', ${item.sisa_pagu}, ${rNilai}, '${rKet}')"><i class="fas fa-edit"></i> Perbaiki</button>`;
+              actionBtn = `<button class="btn btn-sm btn-outline-danger" onclick="bukaModalEditRealisasi(${rRealisasiId}, '${item.sumber_dana}', '${item.kode_program}', '${item.nama_program}', '${item.sub_kategori_program || ''}', ${item.sisa_pagu}, ${rNilai}, '${rKet}', '${rKegiatan}', '${rSubKegiatan}', '${item.kategori_anggaran || ''}', '${item.sub_kategori_anggaran || ''}', '${item.sumber_dana_detail || ''}')"><i class="fas fa-edit"></i> Perbaiki</button>`;
+
+              if (rRealisasiId && rRealisasiStatus !== 'APPROVE') {
+                deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusRealisasi(${rRealisasiId})" title="Hapus Pengajuan Realisasi ini"><i class="fas fa-trash"></i></button>`;
+              }
             } else if (item.sisa_pagu <= 0) {
               actionBtn = `<span class="badge bg-success"><i class="fas fa-check-double"></i> Pagu Habis</span>`;
             } else {
-              actionBtn = `<button class="btn btn-sm btn-outline-primary" onclick="bukaModalRealisasi(${item.id}, '${item.nama_program}', ${item.sisa_pagu})"><i class="fas fa-plus"></i> Tambah Realisasi</button>`;
+              actionBtn = `<button class="btn btn-sm btn-outline-primary" onclick="bukaModalRealisasi(${item.id}, '${item.sumber_dana}', '${item.kode_program}', '${item.nama_program}', '${item.sub_kategori_program || ''}', ${item.sisa_pagu}, '${item.kategori_anggaran || ''}', '${item.sub_kategori_anggaran || ''}', '${item.sumber_dana_detail || ''}')"><i class="fas fa-plus"></i> Tambah Realisasi</button>`;
+              if (!hasApproved) {
+                deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusProgram(${item.id})" title="Hapus Program Keseluruhan"><i class="fas fa-trash"></i></button>`;
+              }
             }
 
             tableRows += `
           <tr>
             <td class="small">${item.kode_program}</td>
-            <td class="small fw-semibold">${item.nama_program.substring(0, 40)}</td>
+            <td class="small fw-semibold">
+                ${item.nama_program.substring(0, 40)}
+            </td>
             <td class="small">${item.sumber_dana}</td>
             <td class="small">${item.realisasi_fisik}%</td>
             <td class="small">Rp ${formatRupiah(item.realisasi_keuangan)}</td>
             <td class="small">Rp ${formatRupiah(item.sisa_pagu)}</td>
             <td class="small">${statusBadge}</td>
-            <td class="small">${actionBtn}</td>
+            <td class="small text-nowrap">${actionBtn} ${deleteBtn}</td>
           </tr>
         `;
           });
@@ -1076,40 +1087,187 @@
       }
     });
 
+    // ============ FUNGSI HAPUS PROGRAM & REALISASI ============
+    async function hapusProgram(id) {
+      Swal.fire({
+        title: 'Hapus Master Program?',
+        text: 'Apakah Anda yakin ingin menghapus keseluruhan Master Program RFK ini? Tindakan ini tidak dapat dibatalkan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await fetch('/dashboard/rfk/' + id, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+              }
+            });
+            const res = await response.json();
+            if (res.success) {
+              Swal.fire('Berhasil!', res.message, 'success').then(() => window.location.reload());
+            } else {
+              Swal.fire('Gagal!', res.message, 'error');
+            }
+          } catch (error) {
+            Swal.fire('Error!', 'Terjadi kesalahan pada server.', 'error');
+          }
+        }
+      });
+    }
+
+    async function hapusRealisasi(id) {
+      Swal.fire({
+        title: 'Hapus Pengajuan Realisasi?',
+        text: 'Apakah Anda yakin ingin menghapus data pengajuan Laporan Realisasi ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await fetch('/dashboard/rfk/realisasi/' + id, {
+              method: 'DELETE',
+              headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+              }
+            });
+            const res = await response.json();
+            if (res.success) {
+              Swal.fire('Berhasil!', res.message, 'success').then(() => window.location.reload());
+            } else {
+              Swal.fire('Gagal!', res.message, 'error');
+            }
+          } catch (error) {
+            Swal.fire('Error!', 'Terjadi kesalahan pada server.', 'error');
+          }
+        }
+      });
+    }
+
     function getStatusBadge(status) {
-      const badges = {
+      const statusMap = {
         'PENDING': '<span class="status-badge-pending"><i class="fas fa-clock me-1"></i>PENDING</span>',
         'APPROVE': '<span class="status-badge-approve"><i class="fas fa-check me-1"></i>APPROVE</span>',
-        'REJECT': '<span class="status-badge-reject"><i class="fas fa-times me-1"></i>REJECT</span>'
+        'REJECT': '<span class="status-badge-reject"><i class="fas fa-times me-1"></i>REJECT</span>',
+        'SELESAI': '<span class="status-badge-selesai"><i class="fas fa-check-double me-1"></i>SELESAI</span>'
       };
-      return badges[status] || badges['PENDING'];
+      return statusMap[status] || statusMap['PENDING'];
     }
+
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
 
     function showToast(msg, type = 'success') {
-      const toastEl = document.getElementById('liveToast');
-      const toastMsg = document.getElementById('toastMessage');
-      toastMsg.innerText = msg;
-      toastEl.style.display = 'flex';
-      setTimeout(() => { toastEl.style.display = 'none'; }, 3000);
+      Toast.fire({
+        icon: type,
+        title: msg
+      });
     }
 
-    window.closeToast = function () {
-      document.getElementById('liveToast').style.display = 'none';
-    };
-
     // ============ TAMBAH REALISASI (BERTAHAP) ============
-    window.bukaModalRealisasi = function (id, nama, sisaPagu) {
+
+    function populateDropdowns(sumberDana, prefix, selectedKat = '', selectedSub = '', selectedDetail = '') {
+      const apbdKategori = [
+        { value: 'BELANJA_OPERASI', label: 'Belanja Operasi' },
+        { value: 'BELANJA_MODAL', label: 'Belanja Modal' }
+      ];
+      const apbdSubOperasi = [
+        { value: 'BELANJA_PEGAWAI', label: 'Belanja Pegawai' },
+        { value: 'BELANJA_BARANG_JASA', label: 'Belanja Barang Dan Jasa' }
+      ];
+      const apbdSubModal = [
+        { value: 'BELANJA_MODAL', label: 'Belanja Modal' },
+        { value: 'BELANJA_MODAL_PERALATAN_MESIN', label: 'Belanja Modal Peralatan Dan Mesin' },
+        { value: 'BELANJA_MODAL_JALAN_IRIGASI', label: 'Belanja Modal Jalan, Irigasi' },
+        { value: 'BELANJA_MODAL_BANGUNAN_GEDUNG', label: 'Belanja Modal Bangunan Gedung' }
+      ];
+      const apbnSumberDana = [
+        { value: 'DAU', label: 'Dana Alokasi Umum (DAU)' },
+        { value: 'DAK_FISIK', label: 'DAK Fisik' },
+        { value: 'DAK_NON_FISIK', label: 'DAK Non Fisik' },
+        { value: 'DBH', label: 'Dana Bagi Hasil (DBH)' },
+        { value: 'DEKONSENTRASI', label: 'Dekonsentrasi' },
+        { value: 'TUGAS_PEMBANTUAN', label: 'Tugas Pembantuan' }
+      ];
+
+      const apbdContainer = document.getElementById(prefix + 'apbd_container');
+      const apbnContainer = document.getElementById(prefix + 'apbn_container');
+      const selKat = document.getElementById(prefix + 'kategori_anggaran');
+      const selSub = document.getElementById(prefix + 'sub_kategori_anggaran');
+      const selDetail = document.getElementById(prefix + 'sumber_dana_detail');
+
+      apbdContainer.style.display = 'none';
+      apbnContainer.style.display = 'none';
+
+      if (sumberDana === 'APBD') {
+        apbdContainer.style.display = 'flex';
+        selKat.innerHTML = '<option value="">Pilih Kategori</option>';
+        apbdKategori.forEach(k => {
+          selKat.innerHTML += `<option value="${k.value}" ${k.value === selectedKat ? 'selected' : ''}>${k.label}</option>`;
+        });
+
+        const renderSub = (val, selected) => {
+          selSub.innerHTML = '<option value="">Pilih Sub Kategori</option>';
+          if (val === 'BELANJA_OPERASI') {
+            apbdSubOperasi.forEach(s => selSub.innerHTML += `<option value="${s.value}" ${s.value === selected ? 'selected' : ''}>${s.label}</option>`);
+          } else if (val === 'BELANJA_MODAL') {
+            apbdSubModal.forEach(s => selSub.innerHTML += `<option value="${s.value}" ${s.value === selected ? 'selected' : ''}>${s.label}</option>`);
+          }
+        };
+
+        renderSub(selectedKat, selectedSub);
+
+        selKat.onchange = function () {
+          renderSub(this.value, '');
+        };
+
+      } else if (sumberDana === 'APBN') {
+        apbnContainer.style.display = 'block';
+        selDetail.innerHTML = '<option value="">Pilih Sumber Dana Detail</option>';
+        apbnSumberDana.forEach(s => {
+          selDetail.innerHTML += `<option value="${s.value}" ${s.value === selectedDetail ? 'selected' : ''}>${s.label}</option>`;
+        });
+      }
+    }
+
+    window.bukaModalRealisasi = function (id, sumberDana, kodeProgram, namaProgram, subKategoriProgram, sisaPagu, katAnggaran, subKatAnggaran, sumberDanaDetail) {
       // Tutup modal laporan jika ada
       const laporanModal = bootstrap.Modal.getInstance(document.getElementById('laporanModalInstance'));
       if (laporanModal) laporanModal.hide();
 
       document.getElementById('tr_rfk_id').value = id;
-      document.getElementById('tr_nama_program').value = nama;
+      document.getElementById('tr_sumber_dana').value = sumberDana || '';
+      document.getElementById('tr_kode_program').value = (kodeProgram === '-' || !kodeProgram) ? '' : kodeProgram;
+      document.getElementById('tr_nama_program').value = (namaProgram === 'Belum Ada Realisasi' || !namaProgram) ? '' : namaProgram;
+      document.getElementById('tr_sub_kategori_program').value = subKategoriProgram || '';
       document.getElementById('tr_sisa_pagu_display').value = 'Rp ' + formatRupiah(sisaPagu);
       document.getElementById('tr_sisa_pagu').value = sisaPagu;
       document.getElementById('tr_nilai').value = '';
+      document.getElementById('tr_sisa_pagu_baru_display').value = 'Rp ' + formatRupiah(sisaPagu);
+      document.getElementById('tr_sisa_pagu_baru_display').classList.remove('text-danger');
       document.getElementById('tr_keterangan').value = '';
       document.getElementById('tr_warning').style.display = 'none';
+
+      populateDropdowns(sumberDana, 'tr_', katAnggaran, subKatAnggaran, sumberDanaDetail);
 
       const modal = new bootstrap.Modal(document.getElementById('tambahRealisasiModal'));
       modal.show();
@@ -1118,6 +1276,18 @@
     document.getElementById('tr_nilai').addEventListener('input', function () {
       const sisaPagu = parseFloat(document.getElementById('tr_sisa_pagu').value) || 0;
       const nilai = parseRupiahStr(this.value);
+
+      const sisaBaru = sisaPagu - nilai;
+      const sisaBaruDisplay = document.getElementById('tr_sisa_pagu_baru_display');
+
+      if (sisaBaru < 0) {
+        sisaBaruDisplay.value = 'Rp 0 (Melebihi Pagu!)';
+        sisaBaruDisplay.classList.add('text-danger');
+      } else {
+        sisaBaruDisplay.value = 'Rp ' + formatRupiah(sisaBaru);
+        sisaBaruDisplay.classList.remove('text-danger');
+      }
+
       if (nilai > sisaPagu) {
         document.getElementById('tr_warning').style.display = 'block';
       } else {
@@ -1139,7 +1309,15 @@
       }
 
       const formData = {
+        kode_program: document.getElementById('tr_kode_program').value,
+        nama_program: document.getElementById('tr_nama_program').value,
+        sub_kategori_program: document.getElementById('tr_sub_kategori_program').value,
+        kategori_anggaran: document.getElementById('tr_kategori_anggaran').value,
+        sub_kategori_anggaran: document.getElementById('tr_sub_kategori_anggaran').value,
+        sumber_dana_detail: document.getElementById('tr_sumber_dana_detail').value,
         nilai_realisasi_keuangan: nilai,
+        kegiatan: document.getElementById('tr_kegiatan').value,
+        sub_kegiatan: document.getElementById('tr_sub_kegiatan').value,
         keterangan: document.getElementById('tr_keterangan').value
       };
 
@@ -1148,7 +1326,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
           },
           body: JSON.stringify(formData)
         });
@@ -1156,8 +1335,7 @@
         const result = await response.json();
 
         if (result.success) {
-          const modal = bootstrap.Modal.getInstance(document.getElementById('tambahRealisasiModal'));
-          modal.hide();
+          closeModalSafe('tambahRealisasiModal');
           formTambahRealisasi.reset();
           showToast(result.message, 'success');
           loadDashboardData();
@@ -1170,7 +1348,7 @@
     });
 
     // ============ EDIT REALISASI (DITOLAK) ============
-    window.bukaModalEditRealisasi = function (realisasiId, nama, sisaPagu, nilaiLama, ketLama) {
+    window.bukaModalEditRealisasi = function (realisasiId, sumberDana, kodeProgram, namaProgram, subKategoriProgram, sisaPagu, nilaiLama, ketLama, kegLama, subKegLama, katAnggaran, subKatAnggaran, sumberDanaDetail) {
       if (!realisasiId) {
         showToast('Data realisasi tidak ditemukan.', 'error');
         return;
@@ -1179,12 +1357,29 @@
       if (laporanModal) laporanModal.hide();
 
       document.getElementById('er_realisasi_id').value = realisasiId;
-      document.getElementById('er_nama_program').value = nama;
+      document.getElementById('er_sumber_dana').value = sumberDana || '';
+      document.getElementById('er_kode_program').value = kodeProgram || '';
+      document.getElementById('er_nama_program').value = namaProgram || '';
+      document.getElementById('er_sub_kategori_program').value = subKategoriProgram || '';
       document.getElementById('er_sisa_pagu_display').value = 'Rp ' + formatRupiah(sisaPagu);
       document.getElementById('er_sisa_pagu').value = sisaPagu;
       document.getElementById('er_nilai').value = nilaiLama ? formatRupiah(nilaiLama) : '';
+
+      const initialSisaBaru = sisaPagu - (parseFloat(nilaiLama) || 0);
+      const erSisaBaruDisplay = document.getElementById('er_sisa_pagu_baru_display');
+      erSisaBaruDisplay.value = 'Rp ' + formatRupiah(initialSisaBaru >= 0 ? initialSisaBaru : 0);
+      erSisaBaruDisplay.classList.remove('text-danger');
+      if (initialSisaBaru < 0) {
+        erSisaBaruDisplay.value = 'Rp 0 (Melebihi Pagu!)';
+        erSisaBaruDisplay.classList.add('text-danger');
+      }
+
+      document.getElementById('er_kegiatan').value = kegLama || '';
+      document.getElementById('er_sub_kegiatan').value = subKegLama || '';
       document.getElementById('er_keterangan').value = ketLama || '';
       document.getElementById('er_warning').style.display = 'none';
+
+      populateDropdowns(sumberDana, 'er_', katAnggaran, subKatAnggaran, sumberDanaDetail);
 
       const modal = new bootstrap.Modal(document.getElementById('editRealisasiModal'));
       modal.show();
@@ -1193,6 +1388,18 @@
     document.getElementById('er_nilai').addEventListener('input', function () {
       const sisaPagu = parseFloat(document.getElementById('er_sisa_pagu').value) || 0;
       const nilai = parseRupiahStr(this.value);
+
+      const sisaBaru = sisaPagu - nilai;
+      const sisaBaruDisplay = document.getElementById('er_sisa_pagu_baru_display');
+
+      if (sisaBaru < 0) {
+        sisaBaruDisplay.value = 'Rp 0 (Melebihi Pagu!)';
+        sisaBaruDisplay.classList.add('text-danger');
+      } else {
+        sisaBaruDisplay.value = 'Rp ' + formatRupiah(sisaBaru);
+        sisaBaruDisplay.classList.remove('text-danger');
+      }
+
       if (nilai > sisaPagu) {
         document.getElementById('er_warning').style.display = 'block';
       } else {
@@ -1214,7 +1421,15 @@
       }
 
       const formData = {
+        kode_program: document.getElementById('er_kode_program').value,
+        nama_program: document.getElementById('er_nama_program').value,
+        sub_kategori_program: document.getElementById('er_sub_kategori_program').value,
+        kategori_anggaran: document.getElementById('er_kategori_anggaran').value,
+        sub_kategori_anggaran: document.getElementById('er_sub_kategori_anggaran').value,
+        sumber_dana_detail: document.getElementById('er_sumber_dana_detail').value,
         nilai_realisasi_keuangan: nilai,
+        kegiatan: document.getElementById('er_kegiatan').value,
+        sub_kegiatan: document.getElementById('er_sub_kegiatan').value,
         keterangan: document.getElementById('er_keterangan').value
       };
 
@@ -1223,7 +1438,8 @@
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
           },
           body: JSON.stringify(formData)
         });
@@ -1231,8 +1447,7 @@
         const result = await response.json();
 
         if (result.success) {
-          const modal = bootstrap.Modal.getInstance(document.getElementById('editRealisasiModal'));
-          modal.hide();
+          closeModalSafe('editRealisasiModal');
           formEditRealisasi.reset();
           showToast(result.message, 'success');
           loadDashboardData();

@@ -72,6 +72,14 @@
             <button onclick="window.print()" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2">
                 <i class="fas fa-print"></i> Cetak Laporan
             </button>
+            <button onclick="exportCsv()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2 font-medium">
+                <i class="fas fa-file-csv text-lg"></i> Export CSV
+            </button>
+            @if(Auth::user()->role === 'superadmin' || Auth::user()->role === 'administrator')
+            <button onclick="exportPdfDownload()" id="btn-export-pdf" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2 font-medium">
+                <i class="fas fa-file-pdf text-lg"></i> Export PDF
+            </button>
+            @endif
             <button onclick="openWaModal()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2 font-medium">
                 <i class="fab fa-whatsapp text-lg"></i> Kirim via WhatsApp (PDF)
             </button>
@@ -79,7 +87,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4 filter-section">
+    <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-6 grid grid-cols-1 md:grid-cols-5 gap-4 filter-section">
         <div>
             <label class="block text-xs font-medium text-gray-700 mb-1">Kode / Nama Program</label>
             <input type="text" id="filterProgram" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Cari program..." onkeyup="filterLaporan()">
@@ -104,9 +112,20 @@
             <input type="text" id="filterTahun" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Contoh: 2024" onkeyup="filterLaporan()">
         </div>
         <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Triwulan</label>
+            <select id="filterTriwulan" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="loadLaporanData()">
+                <option value="">Semua Triwulan (Tahunan)</option>
+                <option value="1">Triwulan 1 (Jan - Mar)</option>
+                <option value="2">Triwulan 2 (Apr - Jun)</option>
+                <option value="3">Triwulan 3 (Jul - Sep)</option>
+                <option value="4">Triwulan 4 (Okt - Des)</option>
+            </select>
+        </div>
+        <div>
             <label class="block text-xs font-medium text-gray-700 mb-1">Status Master Program</label>
             <select id="filterStatus" class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" onchange="filterLaporan()">
                 <option value="">Semua Status</option>
+                <option value="SELESAI">SELESAI (100%)</option>
                 <option value="APPROVE">APPROVE</option>
                 <option value="PENDING">PENDING</option>
             </select>
@@ -193,6 +212,27 @@
 </div>
 
 <script>
+
+    function formatRupiahManual(angka) {
+        if (angka === null || angka === undefined) return '0';
+        let parsed = parseFloat(angka);
+        if (isNaN(parsed)) return '0';
+        let str = Math.round(parsed).toString();
+        let isNegative = false;
+        if (str.startsWith('-')) {
+            isNegative = true;
+            str = str.substring(1);
+        }
+        let sisa = str.length % 3;
+        let rupiah = str.substr(0, sisa);
+        let ribuan = str.substr(sisa).match(/\d{3}/g);
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        return isNegative ? '-' + rupiah : rupiah;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         loadLaporanData();
     });
@@ -208,7 +248,10 @@
                 </tr>
             `;
 
-            const response = await fetch('{{ route("laporan.data") }}');
+            const triwulanVal = document.getElementById('filterTriwulan').value;
+            const fetchUrl = '{{ route("laporan.data") }}' + (triwulanVal ? '?triwulan=' + triwulanVal : '');
+
+            const response = await fetch(fetchUrl);
             if(!response.ok) throw new Error("Gagal load data");
             const result = await response.json();
 
@@ -222,8 +265,13 @@
                     const realFisik = parseFloat(item.realisasi_fisik) || 0;
 
                     let statusBadge = '';
-                    if(item.status === 'APPROVE') statusBadge = '<span class="bg-green-100 text-green-800 px-2 py-1 rounded font-medium text-xs">APPROVE</span>';
-                    else statusBadge = '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-medium text-xs">PENDING</span>';
+                    if (item.status === 'SELESAI') {
+                        statusBadge = '<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded font-medium text-xs"><i class="fas fa-check-double mr-1"></i>SELESAI</span>';
+                    } else if(item.status === 'APPROVE') {
+                        statusBadge = '<span class="bg-green-100 text-green-800 px-2 py-1 rounded font-medium text-xs">APPROVE</span>';
+                    } else {
+                        statusBadge = '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-medium text-xs">PENDING</span>';
+                    }
 
                     let masterRowId = 'master-' + item.id;
 
@@ -235,16 +283,18 @@
                             <td class="px-5 py-4 text-sm text-gray-800 opd-text">${opdName}</td>
                             <td class="px-5 py-4 max-w-xs">
                                 <div class="text-gray-900 font-bold truncate program-text" title="${item.nama_program}">${item.nama_program}</div>
-                                <div class="text-indigo-600 text-xs font-mono mt-1">${item.kode_program}</div>
+                                <div class="text-indigo-600 text-xs font-mono mt-1 mb-1">${item.kode_program}</div>
+                                <div class="text-gray-500 text-[10px] leading-tight"><span class="font-bold">Kegiatan:</span> ${item.kegiatan || '-'}</div>
+                                <div class="text-gray-500 text-[10px] leading-tight"><span class="font-bold">Sub Kegiatan:</span> ${item.sub_kegiatan || '-'}</div>
                             </td>
                             <td class="px-5 py-4 font-semibold text-gray-800" data-val="${pagu}">
-                                Rp ${new Intl.NumberFormat('id-ID').format(pagu)}
+                                Rp ${formatRupiahManual(pagu)}
                             </td>
                             <td class="px-5 py-4 font-semibold text-right text-green-600" data-val="${realKeuangan}">
-                                Rp ${new Intl.NumberFormat('id-ID').format(realKeuangan)}
+                                Rp ${formatRupiahManual(realKeuangan)}
                             </td>
                             <td class="px-5 py-4 font-semibold text-right text-red-500" data-val="${sisaPagu}">
-                                Rp ${new Intl.NumberFormat('id-ID').format(sisaPagu)}
+                                Rp ${formatRupiahManual(sisaPagu)}
                             </td>
                             <td class="px-5 py-4 text-center font-bold text-gray-700">
                                 ${realFisik}%
@@ -263,7 +313,8 @@
                                 <thead class="bg-gray-100 text-gray-600">
                                     <tr>
                                         <th class="p-2 border">Waktu Pengajuan</th>
-                                        <th class="p-2 border">Keterangan Pengajuan</th>
+                                        <th class="p-2 border">Kegiatan / Sub Kegiatan</th>
+                                        <th class="p-2 border">Keterangan</th>
                                         <th class="p-2 border text-right">Nilai Diajukan (Rp)</th>
                                         <th class="p-2 border text-center">Fisik (%)</th>
                                         <th class="p-2 border text-center">Status</th>
@@ -282,8 +333,12 @@
                             detailHtml += `
                                 <tr class="hover:bg-gray-50">
                                     <td class="p-2 border">${dateStr}</td>
+                                    <td class="p-2 border">
+                                        ${real.kegiatan ? `<strong>Keg:</strong> ${real.kegiatan}<br>` : ''}
+                                        ${real.sub_kegiatan ? `<strong>Sub:</strong> ${real.sub_kegiatan}` : '-'}
+                                    </td>
                                     <td class="p-2 border">${real.keterangan || '-'}</td>
-                                    <td class="p-2 border text-right text-green-700 font-medium">Rp ${new Intl.NumberFormat('id-ID').format(val)}</td>
+                                    <td class="p-2 border text-right text-green-700 font-medium">Rp ${formatRupiahManual(val)}</td>
                                     <td class="p-2 border text-center font-medium">${fis}%</td>
                                     <td class="p-2 border text-center">${statBadge}</td>
                                 </tr>
@@ -361,9 +416,9 @@
             }
         });
 
-        document.getElementById('grandTotalPagu').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalPagu);
-        document.getElementById('grandTotalRealisasi').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalReal);
-        document.getElementById('grandTotalSisa').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalSisa);
+        document.getElementById('grandTotalPagu').innerText = 'Rp ' + formatRupiahManual(totalPagu);
+        document.getElementById('grandTotalRealisasi').innerText = 'Rp ' + formatRupiahManual(totalReal);
+        document.getElementById('grandTotalSisa').innerText = 'Rp ' + formatRupiahManual(totalSisa);
     }
 
     function toggleDetail(rowId) {
@@ -390,7 +445,7 @@
     async function generateAndSendWa() {
         const number = document.getElementById('waNumber').value.trim();
         if (!number) {
-            alert('Silakan masukkan nomor WhatsApp tujuan!');
+            Swal.fire('Perhatian', 'Silakan masukkan nomor WhatsApp tujuan!', 'warning');
             return;
         }
 
@@ -403,6 +458,7 @@
         const oSearch = document.getElementById('filterOPD') ? document.getElementById('filterOPD').value : '';
         const tSearch = document.getElementById('filterTahun').value;
         const sSearch = document.getElementById('filterStatus').value;
+        const twSearch = document.getElementById('filterTriwulan').value;
 
         try {
             const formData = new FormData();
@@ -411,6 +467,7 @@
             if(oSearch) formData.append('opd', oSearch);
             if(tSearch) formData.append('tahun', tSearch);
             if(sSearch) formData.append('status', sSearch);
+            if(twSearch) formData.append('triwulan', twSearch);
 
             const response = await fetch('{{ route("laporan.pdf") }}', {
                 method: 'POST',
@@ -428,16 +485,82 @@
                 closeWaModal();
                 window.open(waUrl, '_blank');
             } else {
-                alert('Gagal membuat PDF: ' + result.message);
+                Swal.fire('Gagal!', 'Gagal membuat PDF: ' + result.message, 'error');
             }
 
         } catch (e) {
             console.error(e);
-            alert('Terjadi kesalahan saat memproses laporan.');
+            Swal.fire('Error!', 'Terjadi kesalahan saat memproses laporan.', 'error');
         } finally {
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-paper-plane"></i> Buat & Kirim';
         }
+    }
+
+    async function exportPdfDownload() {
+        const btn = document.getElementById('btn-export-pdf');
+        if(!btn) return;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin text-lg"></i> Proses...';
+
+        const pSearch = document.getElementById('filterProgram').value;
+        const oSearch = document.getElementById('filterOPD') ? document.getElementById('filterOPD').value : '';
+        const tSearch = document.getElementById('filterTahun').value;
+        const sSearch = document.getElementById('filterStatus').value;
+        const twSearch = document.getElementById('filterTriwulan').value;
+
+        try {
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            if(pSearch) formData.append('program', pSearch);
+            if(oSearch) formData.append('opd', oSearch);
+            if(tSearch) formData.append('tahun', tSearch);
+            if(sSearch) formData.append('status', sSearch);
+            if(twSearch) formData.append('triwulan', twSearch);
+
+            const response = await fetch('{{ route("laporan.pdf") }}', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Open the PDF in a new tab to view or trigger download
+                const link = document.createElement('a');
+                link.href = result.url;
+                link.target = '_blank'; // Open in new tab
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                Swal.fire('Gagal!', 'Gagal membuat PDF: ' + (result.message || 'Error internal'), 'error');
+            }
+
+        } catch (e) {
+            console.error(e);
+            Swal.fire('Error!', 'Terjadi kesalahan saat mengekspor laporan.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-file-pdf text-lg"></i> Export PDF';
+        }
+    }
+
+    function exportCsv() {
+        const pSearch = document.getElementById('filterProgram').value;
+        const oSearch = document.getElementById('filterOPD') ? document.getElementById('filterOPD').value : '';
+        const tSearch = document.getElementById('filterTahun').value;
+        const sSearch = document.getElementById('filterStatus').value;
+        const twSearch = document.getElementById('filterTriwulan').value;
+        
+        let url = '{{ route("laporan.csv") }}?';
+        if(pSearch) url += '&program=' + encodeURIComponent(pSearch);
+        if(oSearch) url += '&opd=' + encodeURIComponent(oSearch);
+        if(tSearch) url += '&tahun=' + encodeURIComponent(tSearch);
+        if(sSearch) url += '&status=' + encodeURIComponent(sSearch);
+        if(twSearch) url += '&triwulan=' + encodeURIComponent(twSearch);
+        
+        window.location.href = url;
     }
 </script>
 @endsection

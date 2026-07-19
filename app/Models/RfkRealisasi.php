@@ -4,18 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RfkRealisasi extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'rfk_realisasis';
 
     protected $fillable = [
         'input_rfk_id',
+        'kode_program',
+        'nama_program',
+        'sub_kategori_program',
+        'kategori_anggaran',
+        'sub_kategori_anggaran',
+        'sumber_dana_detail',
         'nilai_realisasi_keuangan',
         'nilai_realisasi_fisik',
         'status',
+        'kegiatan',
+        'sub_kegiatan',
         'keterangan',
         'user_id',
         'approved_by',

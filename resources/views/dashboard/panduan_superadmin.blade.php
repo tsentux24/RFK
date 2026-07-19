@@ -84,6 +84,7 @@
         opacity: 0;
         transform: translateY(8px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -296,7 +297,9 @@
           <!-- Menu Quick Cards -->
           <h4 class="font-bold text-gray-700 mb-4">Menu yang Tersedia untuk Anda:</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="bg-violet-50 border border-violet-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow" onclick="switchTab('menu')">
+            <div
+              class="bg-violet-50 border border-violet-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow"
+              onclick="switchTab('menu')">
               <div class="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-tachometer-alt text-violet-600"></i>
               </div>
@@ -305,7 +308,9 @@
                 <p class="text-xs text-gray-500 mt-0.5">Analitik global seluruh OPD</p>
               </div>
             </div>
-            <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow" onclick="switchTab('menu')">
+            <div
+              class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow"
+              onclick="switchTab('menu')">
               <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-building text-blue-600"></i>
               </div>
@@ -314,7 +319,9 @@
                 <p class="text-xs text-gray-500 mt-0.5">Tambah, edit, hapus instansi</p>
               </div>
             </div>
-            <div class="bg-teal-50 border border-teal-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow" onclick="switchTab('menu')">
+            <div
+              class="bg-teal-50 border border-teal-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow"
+              onclick="switchTab('menu')">
               <div class="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-users text-teal-600"></i>
               </div>
@@ -323,7 +330,9 @@
                 <p class="text-xs text-gray-500 mt-0.5">CRUD akun & pengaturan role</p>
               </div>
             </div>
-            <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow" onclick="switchTab('analitik')">
+            <div
+              class="bg-amber-50 border border-amber-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow"
+              onclick="switchTab('analitik')">
               <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-file-pdf text-amber-600"></i>
               </div>
@@ -332,7 +341,9 @@
                 <p class="text-xs text-gray-500 mt-0.5">Cetak laporan lintas OPD</p>
               </div>
             </div>
-            <div class="bg-rose-50 border border-rose-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow" onclick="switchTab('analitik')">
+            <div
+              class="bg-rose-50 border border-rose-100 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow"
+              onclick="switchTab('analitik')">
               <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-shield-alt text-rose-600"></i>
               </div>
@@ -341,7 +352,9 @@
                 <p class="text-xs text-gray-500 mt-0.5">Deteksi anomali & duplikasi data</p>
               </div>
             </div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow" onclick="switchTab('analitik')">
+            <div
+              class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3 cursor-pointer hover:shadow-md transition-shadow"
+              onclick="switchTab('analitik')">
               <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-history text-slate-600"></i>
               </div>
@@ -378,28 +391,37 @@
           <h5 class="font-bold text-gray-800 mb-4">Hierarki Pengguna Sistem</h5>
           <div class="space-y-3 mb-6">
             <div class="flex items-center gap-4 bg-violet-50 border border-violet-100 rounded-xl p-4">
-              <div class="w-10 h-10 bg-violet-600 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"><i class="fas fa-crown"></i></div>
+              <div
+                class="w-10 h-10 bg-violet-600 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                <i class="fas fa-crown"></i></div>
               <div>
                 <p class="font-bold text-violet-700">Super Administrator</p>
-                <p class="text-xs text-gray-500">Akses penuh: monitoring global, manajemen data, laporan lintas OPD, validation engine</p>
+                <p class="text-xs text-gray-500">Akses penuh: monitoring global, manajemen data, laporan lintas OPD,
+                  validation engine</p>
               </div>
             </div>
             <div class="flex items-center gap-4 bg-blue-50 border border-blue-100 rounded-xl p-4">
-              <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"><i class="fas fa-user-shield"></i></div>
+              <div
+                class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                <i class="fas fa-user-shield"></i></div>
               <div>
                 <p class="font-bold text-blue-700">Administrator</p>
                 <p class="text-xs text-gray-500">Kelola master data OPD dan akun pengguna</p>
               </div>
             </div>
             <div class="flex items-center gap-4 bg-green-50 border border-green-100 rounded-xl p-4">
-              <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"><i class="fas fa-user-tie"></i></div>
+              <div
+                class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                <i class="fas fa-user-tie"></i></div>
               <div>
                 <p class="font-bold text-green-700">Kepala OPD</p>
                 <p class="text-xs text-gray-500">Approve / Reject realisasi dari staff di OPD-nya</p>
               </div>
             </div>
             <div class="flex items-center gap-4 bg-gray-50 border border-gray-200 rounded-xl p-4">
-              <div class="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"><i class="fas fa-user"></i></div>
+              <div
+                class="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                <i class="fas fa-user"></i></div>
               <div>
                 <p class="font-bold text-gray-700">Staff OPD</p>
                 <p class="text-xs text-gray-500">Input program RFK dan mengajukan realisasi keuangan</p>
@@ -412,8 +434,8 @@
               <i class="fas fa-lightbulb text-yellow-500 text-xl flex-shrink-0 mt-0.5"></i>
               <p class="text-sm text-yellow-700">
                 Sebagai Super Administrator, sistem secara otomatis menghasilkan <strong>Traffic Light</strong>:
-                🔴 Merah (< 70%), 🟡 Kuning (70–89%), 🟢 Hijau (≥ 90%) berdasarkan persentase serapan anggaran setiap OPD.
-              </p>
+                🔴 Merah (< 70%), 🟡 Kuning (70–89%), 🟢 Hijau (≥ 90%) berdasarkan persentase serapan anggaran setiap
+                  OPD. </p>
             </div>
           </div>
         </div>
@@ -430,7 +452,9 @@
             <!-- Step 1 -->
             <div class="flex gap-4">
               <div class="flex flex-col items-center">
-                <div class="w-11 h-11 bg-violet-700 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">1</div>
+                <div
+                  class="w-11 h-11 bg-violet-700 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">
+                  1</div>
                 <div class="step-connector"></div>
               </div>
               <div class="pb-8 pt-1">
@@ -450,7 +474,9 @@
             <!-- Step 2 -->
             <div class="flex gap-4">
               <div class="flex flex-col items-center">
-                <div class="w-11 h-11 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">2</div>
+                <div
+                  class="w-11 h-11 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">
+                  2</div>
                 <div class="step-connector"></div>
               </div>
               <div class="pb-8 pt-1">
@@ -461,7 +487,8 @@
                   Realisasi Harian/Bulanan/Tahunan, Status Validasi, Traffic Light, serta Ranking OPD.
                 </p>
                 <div class="flex flex-wrap gap-2">
-                  <span class="feature-badge bg-green-100 text-green-700"><i class="fas fa-circle text-green-500 text-[8px]"></i> Traffic Light</span>
+                  <span class="feature-badge bg-green-100 text-green-700"><i
+                      class="fas fa-circle text-green-500 text-[8px]"></i> Traffic Light</span>
                   <span class="feature-badge bg-amber-100 text-amber-700">Ranking OPD</span>
                   <span class="feature-badge bg-indigo-100 text-indigo-700">Chart Sumber Dana</span>
                 </div>
@@ -471,7 +498,9 @@
             <!-- Step 3 -->
             <div class="flex gap-4">
               <div class="flex flex-col items-center">
-                <div class="w-11 h-11 bg-teal-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">3</div>
+                <div
+                  class="w-11 h-11 bg-teal-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">
+                  3</div>
                 <div class="step-connector"></div>
               </div>
               <div class="pb-8 pt-1">
@@ -491,7 +520,9 @@
             <!-- Step 4 -->
             <div class="flex gap-4">
               <div class="flex flex-col items-center">
-                <div class="w-11 h-11 bg-rose-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">4</div>
+                <div
+                  class="w-11 h-11 bg-rose-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">
+                  4</div>
                 <div class="step-connector"></div>
               </div>
               <div class="pb-8 pt-1">
@@ -512,7 +543,9 @@
             <!-- Step 5 -->
             <div class="flex gap-4">
               <div class="flex flex-col items-center">
-                <div class="w-11 h-11 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">5</div>
+                <div
+                  class="w-11 h-11 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">
+                  5</div>
               </div>
               <div class="pb-2 pt-1">
                 <h4 class="font-bold text-amber-700 text-base mb-1">Ekspor Laporan PDF</h4>
@@ -541,19 +574,24 @@
               <h4 class="text-lg font-bold text-purple-700 mb-1 flex items-center gap-2">
                 <i class="fas fa-tachometer-alt w-6 text-center"></i> Dashboard — Executive Insight
               </h4>
-              <p class="text-xs text-gray-400 mb-4">Rute: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">/</code> (Halaman Utama)</p>
+              <p class="text-xs text-gray-400 mb-4">Rute: <code
+                  class="bg-gray-100 px-2 py-0.5 rounded font-mono">/</code> (Halaman Utama)</p>
 
               <div class="space-y-5">
                 <!-- Filter -->
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i class="fas fa-filter text-purple-500"></i> Panel Filter & Refresh</h5>
-                  <p class="text-sm text-gray-600 mb-3">Di pojok kanan atas halaman terdapat dua filter utama dan tombol refresh:</p>
+                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i
+                      class="fas fa-filter text-purple-500"></i> Panel Filter & Refresh</h5>
+                  <p class="text-sm text-gray-600 mb-3">Di pojok kanan atas halaman terdapat dua filter utama dan tombol
+                    refresh:</p>
                   <ul class="text-sm text-gray-600 space-y-2">
                     <li class="flex gap-2"><i class="fas fa-calendar-alt text-gray-400 mt-0.5 flex-shrink-0"></i>
-                      <span><strong>Filter Tahun</strong> — Pilih 2024, 2025, atau 2026 untuk membatasi data sesuai tahun anggaran.</span>
+                      <span><strong>Filter Tahun</strong> — Pilih 2024, 2025, atau 2026 untuk membatasi data sesuai
+                        tahun anggaran.</span>
                     </li>
                     <li class="flex gap-2"><i class="fas fa-building text-gray-400 mt-0.5 flex-shrink-0"></i>
-                      <span><strong>Filter OPD</strong> — Pilih "Seluruh Organisasi" atau satu OPD spesifik. Data seluruh chart akan menyesuaikan otomatis.</span>
+                      <span><strong>Filter OPD</strong> — Pilih "Seluruh Organisasi" atau satu OPD spesifik. Data
+                        seluruh chart akan menyesuaikan otomatis.</span>
                     </li>
                     <li class="flex gap-2"><i class="fas fa-sync-alt text-gray-400 mt-0.5 flex-shrink-0"></i>
                       <span><strong>Tombol Refresh</strong> — Muat ulang data terbaru dari server.</span>
@@ -563,8 +601,10 @@
 
                 <!-- Kartu Atas -->
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i class="fas fa-th-large text-blue-500"></i> Kartu Realisasi SI-RAFIKA (Baris Atas)</h5>
-                  <p class="text-sm text-gray-600 mb-3">Empat kartu di baris paling atas menampilkan ringkasan waktu:</p>
+                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i
+                      class="fas fa-th-large text-blue-500"></i> Kartu Realisasi SI-RAFIKA (Baris Atas)</h5>
+                  <p class="text-sm text-gray-600 mb-3">Empat kartu di baris paling atas menampilkan ringkasan waktu:
+                  </p>
                   <div class="grid grid-cols-2 gap-3">
                     <div class="bg-blue-50 rounded-lg p-3 text-center">
                       <i class="fas fa-calendar-day text-blue-500 mb-1"></i>
@@ -591,91 +631,138 @@
 
                 <!-- Kartu Statistik Utama -->
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i class="fas fa-chart-pie text-indigo-500"></i> Kartu Statistik Utama (Baris Kedua)</h5>
-                  <p class="text-sm text-gray-600 mb-2">Empat kartu ini menampilkan agregat keuangan keseluruhan. <strong>Klik salah satu kartu</strong> untuk membuka modal <em>"Rekapitulasi Anggaran Seluruh OPD"</em> dalam bentuk tabel.</p>
+                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i
+                      class="fas fa-chart-pie text-indigo-500"></i> Kartu Statistik Utama (Baris Kedua)</h5>
+                  <p class="text-sm text-gray-600 mb-2">Empat kartu ini menampilkan agregat keuangan keseluruhan.
+                    <strong>Klik salah satu kartu</strong> untuk membuka modal <em>"Rekapitulasi Anggaran Seluruh
+                      OPD"</em> dalam bentuk tabel.</p>
                   <div class="grid grid-cols-2 gap-3">
-                    <div class="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg p-2 border"><i class="fas fa-wallet text-blue-500"></i> <span><strong>Total Pagu</strong> — Jumlah anggaran semua OPD</span></div>
-                    <div class="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg p-2 border"><i class="fas fa-chart-line text-emerald-500"></i> <span><strong>Realisasi Keuangan</strong> — Total yang sudah terserap</span></div>
-                    <div class="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg p-2 border"><i class="fas fa-hand-holding-usd text-rose-500"></i> <span><strong>Sisa Anggaran</strong> — Pagu dikurangi realisasi</span></div>
-                    <div class="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg p-2 border"><i class="fas fa-hammer text-indigo-500"></i> <span><strong>Rata-rata Fisik</strong> — % progres pembangunan</span></div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg p-2 border"><i
+                        class="fas fa-wallet text-blue-500"></i> <span><strong>Total Pagu</strong> — Jumlah anggaran
+                        semua OPD</span></div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg p-2 border"><i
+                        class="fas fa-chart-line text-emerald-500"></i> <span><strong>Realisasi Keuangan</strong> —
+                        Total yang sudah terserap</span></div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg p-2 border"><i
+                        class="fas fa-hand-holding-usd text-rose-500"></i> <span><strong>Sisa Anggaran</strong> — Pagu
+                        dikurangi realisasi</span></div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg p-2 border"><i
+                        class="fas fa-hammer text-indigo-500"></i> <span><strong>Rata-rata Fisik</strong> — % progres
+                        pembangunan</span></div>
                   </div>
                 </div>
 
                 <!-- Chart Baris -->
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i class="fas fa-chart-bar text-teal-500"></i> Grafik & Visualisasi Analitik</h5>
+                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i
+                      class="fas fa-chart-bar text-teal-500"></i> Grafik & Visualisasi Analitik</h5>
                   <div class="space-y-3">
                     <div class="bg-white border rounded-lg p-3">
-                      <p class="font-semibold text-sm text-gray-700 mb-1"><i class="fas fa-chart-pie text-gray-400 mr-1"></i> Status Validasi SI-RAFIKA (Pie Chart)</p>
-                      <p class="text-xs text-gray-500">Menampilkan distribusi program berdasarkan status: <span class="text-emerald-600 font-bold">APPROVE</span>, <span class="text-amber-600 font-bold">PENDING</span>, <span class="text-rose-600 font-bold">REJECT</span>. Klik tombol <strong>"Lihat Detail Status RFK"</strong> untuk membuka tabel lengkap yang bisa difilter per status.</p>
+                      <p class="font-semibold text-sm text-gray-700 mb-1"><i
+                          class="fas fa-chart-pie text-gray-400 mr-1"></i> Status Validasi SI-RAFIKA (Pie Chart)</p>
+                      <p class="text-xs text-gray-500">Menampilkan distribusi program berdasarkan status: <span
+                          class="text-blue-600 font-bold">SELESAI (Tuntas)</span>, <span
+                          class="text-emerald-600 font-bold">APPROVE</span>, <span
+                          class="text-amber-600 font-bold">PENDING</span>, <span
+                          class="text-rose-600 font-bold">REJECT</span>. Klik tombol <strong>"Lihat Detail Status
+                          RFK"</strong> untuk membuka tabel lengkap yang bisa difilter per status.</p>
                     </div>
                     <div class="bg-white border rounded-lg p-3">
-                      <p class="font-semibold text-sm text-gray-700 mb-1"><i class="fas fa-chart-bar text-gray-400 mr-1"></i> Progress Fisik vs Keuangan per OPD (Bar Chart)</p>
-                      <p class="text-xs text-gray-500">Grafik kombinasi Bar (realisasi keuangan) dan Line (rata-rata fisik) untuk membandingkan pencairan uang dengan progres lapangan per OPD. Klik <strong>"Data Seluruh OPD"</strong> untuk tabel rekap.</p>
+                      <p class="font-semibold text-sm text-gray-700 mb-1"><i
+                          class="fas fa-chart-bar text-gray-400 mr-1"></i> Progress Fisik vs Keuangan per OPD (Bar
+                        Chart)</p>
+                      <p class="text-xs text-gray-500">Grafik kombinasi Bar (realisasi keuangan) dan Line (rata-rata
+                        fisik) untuk membandingkan pencairan uang dengan progres lapangan per OPD. Klik <strong>"Data
+                          Seluruh OPD"</strong> untuk tabel rekap.</p>
                     </div>
                     <div class="bg-white border rounded-lg p-3">
-                      <p class="font-semibold text-sm text-gray-700 mb-1"><i class="fas fa-coins text-gray-400 mr-1"></i> Alokasi & Penyerapan per Sumber Dana</p>
-                      <p class="text-xs text-gray-500">Perbandingan pagu dan realisasi berdasarkan sumber dana (APBD, APBN, dll). Klik <strong>"Buka Matrix per OPD"</strong> untuk melihat breakdown sumber dana di tiap OPD.</p>
+                      <p class="font-semibold text-sm text-gray-700 mb-1"><i
+                          class="fas fa-coins text-gray-400 mr-1"></i> Alokasi & Penyerapan per Sumber Dana</p>
+                      <p class="text-xs text-gray-500">Perbandingan pagu dan realisasi berdasarkan sumber dana (APBD,
+                        APBN, dll). Klik <strong>"Buka Matrix per OPD"</strong> untuk melihat breakdown sumber dana di
+                        tiap OPD.</p>
                     </div>
                     <div class="bg-white border rounded-lg p-3">
-                      <p class="font-semibold text-sm text-gray-700 mb-1"><i class="fas fa-times-circle text-gray-400 mr-1"></i> Radar Kepatuhan (Top 5 OPD REJECT)</p>
-                      <p class="text-xs text-gray-500">Daftar 5 OPD dengan frekuensi penolakan terbanyak dari histori verifikasi. Di bawahnya terdapat <strong>Skor Efektivitas Keuangan</strong> (%) sistem secara keseluruhan.</p>
+                      <p class="font-semibold text-sm text-gray-700 mb-1"><i
+                          class="fas fa-times-circle text-gray-400 mr-1"></i> Radar Kepatuhan (Top 5 OPD REJECT)</p>
+                      <p class="text-xs text-gray-500">Daftar 5 OPD dengan frekuensi penolakan terbanyak dari histori
+                        verifikasi. Di bawahnya terdapat <strong>Skor Efektivitas Keuangan</strong> (%) sistem secara
+                        keseluruhan.</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Traffic Light -->
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i class="fas fa-traffic-light text-gray-600"></i> Traffic Light Penyerapan</h5>
-                  <p class="text-sm text-gray-600 mb-3">Visualisasi lampu lalu lintas menunjukkan kondisi serapan anggaran OPD secara keseluruhan:</p>
+                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i
+                      class="fas fa-traffic-light text-gray-600"></i> Traffic Light Penyerapan</h5>
+                  <p class="text-sm text-gray-600 mb-3">Visualisasi lampu lalu lintas menunjukkan kondisi serapan
+                    anggaran OPD secara keseluruhan:</p>
                   <div class="flex flex-col gap-2">
                     <div class="flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-lg p-3">
                       <div class="w-6 h-6 rounded-full bg-emerald-500 flex-shrink-0"></div>
-                      <p class="text-sm text-gray-700"><strong class="text-emerald-700">Hijau — Optimal</strong>: Serapan ≥ 90%. OPD dalam kondisi sangat baik.</p>
+                      <p class="text-sm text-gray-700"><strong class="text-emerald-700">Hijau — Optimal</strong>:
+                        Serapan ≥ 90%. OPD dalam kondisi sangat baik.</p>
                     </div>
                     <div class="flex items-center gap-3 bg-amber-50 border border-amber-100 rounded-lg p-3">
                       <div class="w-6 h-6 rounded-full bg-amber-500 flex-shrink-0"></div>
-                      <p class="text-sm text-gray-700"><strong class="text-amber-700">Kuning — Waspada</strong>: Serapan 70–89%. Perlu dipantau lebih seksama.</p>
+                      <p class="text-sm text-gray-700"><strong class="text-amber-700">Kuning — Waspada</strong>: Serapan
+                        70–89%. Perlu dipantau lebih seksama.</p>
                     </div>
                     <div class="flex items-center gap-3 bg-rose-50 border border-rose-100 rounded-lg p-3">
                       <div class="w-6 h-6 rounded-full bg-rose-500 flex-shrink-0"></div>
-                      <p class="text-sm text-gray-700"><strong class="text-rose-700">Merah — Kritis</strong>: Serapan < 70%. Diperlukan tindakan intervensi segera.</p>
+                      <p class="text-sm text-gray-700"><strong class="text-rose-700">Merah — Kritis</strong>: Serapan <
+                          70%. Diperlukan tindakan intervensi segera.</p>
                     </div>
                   </div>
                   <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-3 mt-3">
-                    <p class="text-xs text-indigo-700"><i class="fas fa-info-circle mr-1"></i> <strong>Tip:</strong> Klik salah satu lampu untuk memfilter daftar OPD di bagian bawah halaman sesuai kategori traffic light yang dipilih.</p>
+                    <p class="text-xs text-indigo-700"><i class="fas fa-info-circle mr-1"></i> <strong>Tip:</strong>
+                      Klik salah satu lampu untuk memfilter daftar OPD di bagian bawah halaman sesuai kategori traffic
+                      light yang dipilih.</p>
                   </div>
                 </div>
 
                 <!-- Ranking & Sorotan Ekstrem -->
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i class="fas fa-trophy text-amber-500"></i> Leaderboard & Sorotan Ekstrem Program</h5>
+                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i
+                      class="fas fa-trophy text-amber-500"></i> Leaderboard & Sorotan Ekstrem Program</h5>
                   <div class="space-y-3">
                     <div class="bg-white border rounded-lg p-3">
                       <p class="font-semibold text-sm text-gray-700 mb-1">Leaderboard Klasemen OPD</p>
-                      <p class="text-xs text-gray-500">Peringkat seluruh OPD dari persentase serapan tertinggi hingga terendah. Cocok untuk evaluasi kinerja antar instansi.</p>
+                      <p class="text-xs text-gray-500">Peringkat seluruh OPD dari persentase serapan tertinggi hingga
+                        terendah. Cocok untuk evaluasi kinerja antar instansi.</p>
                     </div>
                     <div class="bg-white border rounded-lg p-3">
                       <p class="font-semibold text-sm text-gray-700 mb-1">Top 10 Paket Anggaran Terbesar</p>
-                      <p class="text-xs text-gray-500">Program-program dengan nilai pagu terbesar dari seluruh OPD. Membantu fokus pengawasan pada proyek bernilai tinggi.</p>
+                      <p class="text-xs text-gray-500">Program-program dengan nilai pagu terbesar dari seluruh OPD.
+                        Membantu fokus pengawasan pada proyek bernilai tinggi.</p>
                     </div>
                     <div class="bg-white border rounded-lg p-3">
                       <p class="font-semibold text-sm text-gray-700 mb-1">Sorotan Ekstrem Program</p>
-                      <p class="text-xs text-gray-500">Menampilkan <strong>5 Program Serapan Tertinggi</strong> dan <strong>5 Program Serapan Terendah</strong> berdasarkan persentase realisasi keuangan terhadap pagu.</p>
+                      <p class="text-xs text-gray-500">Menampilkan <strong>5 Program Serapan Tertinggi</strong> dan
+                        <strong>5 Program Serapan Terendah</strong> berdasarkan persentase realisasi keuangan terhadap
+                        pagu.</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- OPD Grid -->
                 <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
-                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i class="fas fa-th text-purple-500"></i> Grid Analisis Kinerja per Instansi (OPD)</h5>
-                  <p class="text-sm text-gray-600 mb-3">Bagian paling bawah halaman menampilkan kartu untuk setiap OPD. Setiap kartu berisi:</p>
+                  <h5 class="font-semibold text-gray-700 mb-3 flex items-center gap-2"><i
+                      class="fas fa-th text-purple-500"></i> Grid Analisis Kinerja per Instansi (OPD)</h5>
+                  <p class="text-sm text-gray-600 mb-3">Bagian paling bawah halaman menampilkan kartu untuk setiap OPD.
+                    Setiap kartu berisi:</p>
                   <ul class="text-sm text-gray-600 space-y-1.5">
-                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Nama OPD & progress bar persentase serapan</li>
-                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Total Pagu, Realisasi, dan Sisa Anggaran</li>
-                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Rata-rata Fisik (%) dan Jumlah Program</li>
-                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Tombol <strong>"Detail Program"</strong> untuk membuka modal seluruh program OPD tersebut</li>
-                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Mini Doughnut Chart serapan per OPD</li>
+                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Nama
+                      OPD & progress bar persentase serapan</li>
+                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Total
+                      Pagu, Realisasi, dan Sisa Anggaran</li>
+                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i>
+                      Rata-rata Fisik (%) dan Jumlah Program</li>
+                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Tombol
+                      <strong>"Detail Program"</strong> untuk membuka modal seluruh program OPD tersebut</li>
+                    <li class="flex gap-2"><i class="fas fa-dot-circle text-purple-400 mt-0.5 flex-shrink-0"></i> Mini
+                      Doughnut Chart serapan per OPD</li>
                   </ul>
                 </div>
               </div>
@@ -688,7 +775,8 @@
               <h4 class="text-lg font-bold text-purple-700 mb-1 flex items-center gap-2">
                 <i class="fas fa-building w-6 text-center"></i> Manajemen Data OPD
               </h4>
-              <p class="text-xs text-gray-400 mb-4">Rute: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dataopd</code></p>
+              <p class="text-xs text-gray-400 mb-4">Rute: <code
+                  class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dataopd</code></p>
               <p class="text-gray-600 text-sm leading-relaxed mb-4">
                 Halaman ini adalah tempat untuk mendaftarkan dan mengelola daftar seluruh Organisasi Perangkat Daerah
                 (OPD) yang ada di sistem. Data OPD merupakan fondasi sistem karena setiap pengguna Staff dan Kepala OPD
@@ -698,9 +786,12 @@
               <ol class="list-decimal pl-5 text-gray-600 text-sm space-y-2">
                 <li>Buka menu <strong>Manajemen OPD</strong> dari sidebar.</li>
                 <li>Tabel menampilkan seluruh OPD yang sudah terdaftar.</li>
-                <li>Klik <strong>"+ Tambah OPD"</strong> untuk mendaftarkan instansi baru, isi nama OPD lalu simpan.</li>
+                <li>Klik <strong>"+ Tambah OPD"</strong> untuk mendaftarkan instansi baru, isi nama OPD lalu simpan.
+                </li>
                 <li>Klik ikon <strong>edit</strong> (pensil) pada baris OPD untuk mengubah nama instansi.</li>
-                <li>Klik ikon <strong>hapus</strong> (tempat sampah) untuk menghapus OPD. <span class="text-rose-600 font-semibold">Perhatian: pastikan tidak ada pengguna atau data RFK yang masih terhubung sebelum menghapus.</span></li>
+                <li>Klik ikon <strong>hapus</strong> (tempat sampah) untuk menghapus OPD. <span
+                    class="text-rose-600 font-semibold">Perhatian: pastikan tidak ada pengguna atau data RFK yang masih
+                    terhubung sebelum menghapus.</span></li>
               </ol>
             </div>
 
@@ -711,7 +802,8 @@
               <h4 class="text-lg font-bold text-purple-700 mb-1 flex items-center gap-2">
                 <i class="fas fa-users w-6 text-center"></i> Manajemen Pengguna (Users)
               </h4>
-              <p class="text-xs text-gray-400 mb-4">Rute: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">/users</code></p>
+              <p class="text-xs text-gray-400 mb-4">Rute: <code
+                  class="bg-gray-100 px-2 py-0.5 rounded font-mono">/users</code></p>
               <p class="text-gray-600 text-sm leading-relaxed mb-4">
                 Kelola seluruh akun pengguna sistem — mulai dari mendaftarkan akun baru, mengatur peran (role),
                 mengaitkan dengan OPD, hingga menonaktifkan akun yang tidak lagi digunakan.
@@ -722,35 +814,41 @@
                   <i class="fas fa-search text-gray-400 mt-0.5 flex-shrink-0 text-sm"></i>
                   <div>
                     <p class="text-sm font-semibold text-gray-700">Filter & Pencarian</p>
-                    <p class="text-xs text-gray-500">Cari pengguna berdasarkan nama/email. Filter berdasarkan role (superadmin, administrator, kepala_opd, staff), status (aktif/nonaktif), atau OPD tertentu.</p>
+                    <p class="text-xs text-gray-500">Cari pengguna berdasarkan nama/email. Filter berdasarkan role
+                      (superadmin, administrator, kepala_opd, staff), status (aktif/nonaktif), atau OPD tertentu.</p>
                   </div>
                 </div>
                 <div class="bg-white border rounded-lg p-3 flex items-start gap-3">
                   <i class="fas fa-user-plus text-gray-400 mt-0.5 flex-shrink-0 text-sm"></i>
                   <div>
                     <p class="text-sm font-semibold text-gray-700">Tambah Pengguna Baru</p>
-                    <p class="text-xs text-gray-500">Isi nama, email, password, role, OPD (jika Staff/Kepala OPD), dan status aktif/nonaktif. Klik <strong>Simpan</strong>.</p>
+                    <p class="text-xs text-gray-500">Isi nama, email, password, role, OPD (jika Staff/Kepala OPD), dan
+                      status aktif/nonaktif. Klik <strong>Simpan</strong>.</p>
                   </div>
                 </div>
                 <div class="bg-white border rounded-lg p-3 flex items-start gap-3">
                   <i class="fas fa-user-edit text-gray-400 mt-0.5 flex-shrink-0 text-sm"></i>
                   <div>
                     <p class="text-sm font-semibold text-gray-700">Edit Pengguna</p>
-                    <p class="text-xs text-gray-500">Ubah nama, email, role, OPD, status, atau reset password. Jika kolom password dikosongkan, password lama tidak akan berubah.</p>
+                    <p class="text-xs text-gray-500">Ubah nama, email, role, OPD, status, atau reset password. Jika
+                      kolom password dikosongkan, password lama tidak akan berubah.</p>
                   </div>
                 </div>
                 <div class="bg-white border rounded-lg p-3 flex items-start gap-3">
                   <i class="fas fa-file-export text-gray-400 mt-0.5 flex-shrink-0 text-sm"></i>
                   <div>
                     <p class="text-sm font-semibold text-gray-700">Ekspor Data Pengguna</p>
-                    <p class="text-xs text-gray-500">Unduh daftar pengguna yang sudah difilter dalam format yang dapat diolah lebih lanjut.</p>
+                    <p class="text-xs text-gray-500">Unduh daftar pengguna yang sudah difilter dalam format yang dapat
+                      diolah lebih lanjut.</p>
                   </div>
                 </div>
               </div>
               <div class="bg-amber-50 border border-amber-100 p-4 rounded-xl">
                 <p class="text-sm text-amber-700 flex gap-2">
                   <i class="fas fa-exclamation-triangle mt-0.5 flex-shrink-0"></i>
-                  <span>Setiap pengguna dengan role <strong>Staff</strong> atau <strong>Kepala OPD</strong> wajib dikaitkan dengan satu OPD. Jika tidak, pengguna tersebut tidak akan bisa melihat data apapun setelah login.</span>
+                  <span>Setiap pengguna dengan role <strong>Staff</strong> atau <strong>Kepala OPD</strong> wajib
+                    dikaitkan dengan satu OPD. Jika tidak, pengguna tersebut tidak akan bisa melihat data apapun setelah
+                    login.</span>
                 </p>
               </div>
             </div>
@@ -762,7 +860,8 @@
               <h4 class="text-lg font-bold text-purple-700 mb-1 flex items-center gap-2">
                 <i class="fas fa-clipboard-list w-6 text-center"></i> Audit Trail RFK
               </h4>
-              <p class="text-xs text-gray-400 mb-4">Rute: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dashboard/rfk/audit</code></p>
+              <p class="text-xs text-gray-400 mb-4">Rute: <code
+                  class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dashboard/rfk/audit</code></p>
               <p class="text-gray-600 text-sm leading-relaxed mb-3">
                 Halaman Audit RFK menampilkan seluruh riwayat perubahan status dari semua pengajuan realisasi di seluruh
                 OPD. Setiap tindakan (submit, approve, reject, revisi) tercatat lengkap beserta nama pelaku, waktu, dan
@@ -770,7 +869,8 @@
               </p>
               <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
                 <p class="text-sm text-slate-700"><i class="fas fa-info-circle text-slate-500 mr-1"></i>
-                  Audit Trail bersifat <strong>read-only</strong> — hanya untuk keperluan pengawasan dan investigasi. Tidak ada aksi yang bisa dilakukan dari halaman ini.</p>
+                  Audit Trail bersifat <strong>read-only</strong> — hanya untuk keperluan pengawasan dan investigasi.
+                  Tidak ada aksi yang bisa dilakukan dari halaman ini.</p>
               </div>
             </div>
 
@@ -789,7 +889,8 @@
               <h4 class="text-lg font-bold text-purple-700 mb-1 flex items-center gap-2">
                 <i class="fas fa-file-pdf w-6 text-center"></i> Cetak Laporan PDF
               </h4>
-              <p class="text-xs text-gray-400 mb-4">Rute: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dashboard/laporan</code></p>
+              <p class="text-xs text-gray-400 mb-4">Rute: <code
+                  class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dashboard/laporan</code></p>
               <p class="text-gray-600 text-sm leading-relaxed mb-4">
                 Menu Laporan memungkinkan Anda menghasilkan dokumen PDF resmi rekapitulasi anggaran. Sebagai Super
                 Administrator, Anda bisa melihat dan mencetak laporan dari seluruh OPD tanpa batasan.
@@ -806,12 +907,14 @@
                   </ul>
                 </li>
                 <li>Klik tombol <strong>"Generate PDF"</strong>.</li>
-                <li>Tunggu proses selesai, lalu klik link unduhan yang muncul untuk membuka atau menyimpan file PDF.</li>
+                <li>Tunggu proses selesai, lalu klik link unduhan yang muncul untuk membuka atau menyimpan file PDF.
+                </li>
               </ol>
               <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl">
                 <p class="text-sm text-blue-700 flex gap-2">
                   <i class="fas fa-info-circle mt-0.5 flex-shrink-0"></i>
-                  <span>Laporan PDF dicetak dalam format <strong>A4 Landscape</strong> dan disimpan di server. File dapat diunduh berulang kali dari link yang sama selama sesi berlangsung.</span>
+                  <span>Laporan PDF dicetak dalam format <strong>A4 Landscape</strong> dan disimpan di server. File
+                    dapat diunduh berulang kali dari link yang sama selama sesi berlangsung.</span>
                 </p>
               </div>
             </div>
@@ -823,7 +926,8 @@
               <h4 class="text-lg font-bold text-rose-600 mb-1 flex items-center gap-2">
                 <i class="fas fa-shield-alt w-6 text-center"></i> Validation Engine
               </h4>
-              <p class="text-xs text-gray-400 mb-4">Rute: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dashboard/validation-engine</code></p>
+              <p class="text-xs text-gray-400 mb-4">Rute: <code
+                  class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dashboard/validation-engine</code></p>
               <p class="text-gray-600 text-sm leading-relaxed mb-4">
                 Validation Engine adalah alat audit otomatis yang memindai seluruh database untuk mendeteksi
                 ketidakwajaran dan anomali data realisasi. Fitur ini sangat berguna untuk memastikan integritas data
@@ -840,28 +944,37 @@
               <h6 class="font-semibold text-sm text-gray-700 mb-3">Jenis Anomali yang Dideteksi:</h6>
               <div class="space-y-3">
                 <div class="bg-rose-50 border border-rose-100 rounded-xl p-4">
-                  <p class="font-bold text-rose-700 text-sm mb-2"><i class="fas fa-exclamation-circle mr-1"></i> Pilar 1 — Data Mismatch</p>
+                  <p class="font-bold text-rose-700 text-sm mb-2"><i class="fas fa-exclamation-circle mr-1"></i> Pilar 1
+                    — Data Mismatch</p>
                   <div class="space-y-2">
                     <div class="bg-white border border-rose-100 rounded-lg p-3">
                       <p class="text-xs font-bold text-gray-700">🔴 OVER_PAGU</p>
-                      <p class="text-xs text-gray-600 mt-0.5">Realisasi keuangan melebihi nilai pagu yang ditetapkan. Kondisi ini tidak boleh terjadi dan menandakan input yang keliru.</p>
+                      <p class="text-xs text-gray-600 mt-0.5">Realisasi keuangan melebihi nilai pagu yang ditetapkan.
+                        Kondisi ini tidak boleh terjadi dan menandakan input yang keliru.</p>
                     </div>
                     <div class="bg-white border border-rose-100 rounded-lg p-3">
                       <p class="text-xs font-bold text-gray-700">🔴 OVER_FISIK</p>
-                      <p class="text-xs text-gray-600 mt-0.5">Realisasi fisik (%) melebihi 100%. Tidak mungkin progres fisik lebih dari selesai.</p>
+                      <p class="text-xs text-gray-600 mt-0.5">Realisasi fisik (%) melebihi 100%. Tidak mungkin progres
+                        fisik lebih dari selesai.</p>
                     </div>
                     <div class="bg-white border border-rose-100 rounded-lg p-3">
                       <p class="text-xs font-bold text-gray-700">🟠 EXTREME_DEVIATION</p>
-                      <p class="text-xs text-gray-600 mt-0.5">Selisih antara persentase realisasi keuangan dan realisasi fisik melebihi <strong>30%</strong>. Menunjukkan potensi ketidaksesuaian laporan keuangan dengan kondisi lapangan.</p>
+                      <p class="text-xs text-gray-600 mt-0.5">Selisih antara persentase realisasi keuangan dan realisasi
+                        fisik melebihi <strong>30%</strong>. Menunjukkan potensi ketidaksesuaian laporan keuangan dengan
+                        kondisi lapangan.</p>
                     </div>
                   </div>
                 </div>
 
                 <div class="bg-orange-50 border border-orange-100 rounded-xl p-4">
-                  <p class="font-bold text-orange-700 text-sm mb-2"><i class="fas fa-copy mr-1"></i> Pilar 2 — Suspicious Similarity (Copy-Paste Detection)</p>
+                  <p class="font-bold text-orange-700 text-sm mb-2"><i class="fas fa-copy mr-1"></i> Pilar 2 —
+                    Suspicious Similarity (Copy-Paste Detection)</p>
                   <div class="bg-white border border-orange-100 rounded-lg p-3">
                     <p class="text-xs font-bold text-gray-700">🟡 COPY_PASTE_INPUT</p>
-                    <p class="text-xs text-gray-600 mt-0.5">Terdeteksi bila dalam <strong>satu OPD, pada hari yang sama</strong>, terdapat 2 program atau lebih yang diinput dengan nilai realisasi keuangan dan fisik yang <strong>persis identik</strong>. Hal ini mengindikasikan kemungkinan kesalahan copy-paste dalam pencatatan.</p>
+                    <p class="text-xs text-gray-600 mt-0.5">Terdeteksi bila dalam <strong>satu OPD, pada hari yang
+                        sama</strong>, terdapat 2 program atau lebih yang diinput dengan nilai realisasi keuangan dan
+                      fisik yang <strong>persis identik</strong>. Hal ini mengindikasikan kemungkinan kesalahan
+                      copy-paste dalam pencatatan.</p>
                   </div>
                 </div>
               </div>
@@ -869,7 +982,8 @@
               <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mt-4">
                 <p class="text-sm text-yellow-700 flex gap-2">
                   <i class="fas fa-lightbulb mt-0.5 flex-shrink-0"></i>
-                  <span>Jika Validation Engine menemukan anomali, koordinasikan dengan Administrator atau Kepala OPD terkait untuk melakukan verifikasi dan koreksi data di lapangan.</span>
+                  <span>Jika Validation Engine menemukan anomali, koordinasikan dengan Administrator atau Kepala OPD
+                    terkait untuk melakukan verifikasi dan koreksi data di lapangan.</span>
                 </p>
               </div>
             </div>
@@ -881,11 +995,15 @@
               <h4 class="text-lg font-bold text-purple-700 mb-1 flex items-center gap-2">
                 <i class="fas fa-history w-6 text-center"></i> Riwayat (History) Perubahan Status
               </h4>
-              <p class="text-xs text-gray-400 mb-4">Rute: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dashboard/rfk/history</code></p>
+              <p class="text-xs text-gray-400 mb-4">Rute: <code
+                  class="bg-gray-100 px-2 py-0.5 rounded font-mono">/dashboard/rfk/history</code></p>
               <p class="text-gray-600 text-sm leading-relaxed">
-                Menyediakan log lengkap setiap perubahan status pengajuan realisasi dari seluruh OPD: siapa yang mengubah,
-                dari status apa ke status apa, kapan, dan keterangannya. Berguna untuk investigasi sengketa atau
-                pemeriksaan audit internal.
+                Menyediakan log lengkap setiap perubahan status pengajuan realisasi dari seluruh OPD: siapa yang
+                mengubah,
+                dari status apa ke status apa, kapan, dan keterangannya. Fitur ini telah dilengkapi dengan informasi
+                detail mengenai Kode Program, pemisah struktur Kegiatan dan Sub Kegiatan yang rapi, serta Keterangan
+                Master yang ditarik secara <em>real-time</em>. Sangat berguna untuk investigasi sengketa atau
+                pemeriksaan audit internal tingkat lanjut.
               </p>
             </div>
 
@@ -900,72 +1018,92 @@
           <div class="space-y-3 mt-4">
 
             <div class="border border-gray-200 rounded-xl overflow-hidden">
-              <button class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
+              <button
+                class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
                 <span>Bagaimana cara memfilter data dashboard hanya untuk satu OPD tertentu?</span>
                 <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
               </button>
               <div class="faq-content px-6 py-4 text-gray-600 text-sm border-t bg-white">
-                Gunakan dropdown <strong>"Seluruh Organisasi (OPD)"</strong> di pojok kanan atas dashboard. Pilih nama OPD yang diinginkan. Semua chart, kartu statistik, dan daftar program akan otomatis menyesuaikan berdasarkan pilihan Anda.
+                Gunakan dropdown <strong>"Seluruh Organisasi (OPD)"</strong> di pojok kanan atas dashboard. Pilih nama
+                OPD yang diinginkan. Semua chart, kartu statistik, dan daftar program akan otomatis menyesuaikan
+                berdasarkan pilihan Anda.
               </div>
             </div>
 
             <div class="border border-gray-200 rounded-xl overflow-hidden">
-              <button class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
+              <button
+                class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
                 <span>Apa arti "Skor Efektivitas Keuangan" di dashboard?</span>
                 <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
               </button>
               <div class="faq-content px-6 py-4 text-gray-600 text-sm border-t bg-white">
-                Skor Efektivitas Keuangan adalah <strong>persentase total realisasi keuangan dibagi total pagu</strong> dari semua OPD. Semakin tinggi nilainya, semakin baik serapan anggaran secara keseluruhan. Angka ini muncul di kartu "Radar Kepatuhan" dengan latar gelap.
+                Skor Efektivitas Keuangan adalah <strong>persentase total realisasi keuangan dibagi total pagu</strong>
+                dari semua OPD. Semakin tinggi nilainya, semakin baik serapan anggaran secara keseluruhan. Angka ini
+                muncul di kartu "Radar Kepatuhan" dengan latar gelap.
               </div>
             </div>
 
             <div class="border border-gray-200 rounded-xl overflow-hidden">
-              <button class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
+              <button
+                class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
                 <span>Dapatkah Super Administrator menghapus program RFK milik OPD lain?</span>
                 <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
               </button>
               <div class="faq-content px-6 py-4 text-gray-600 text-sm border-t bg-white">
-                Secara teknis, program RFK hanya bisa dihapus jika <strong>belum ada realisasi yang di-APPROVE</strong>. Jika sudah ada yang di-approve, data tidak bisa dihapus untuk menjaga integritas. Penghapusan dilakukan melalui antarmuka Staff OPD masing-masing.
+                Secara teknis, program RFK hanya bisa dihapus jika <strong>belum ada realisasi yang di-APPROVE</strong>.
+                Jika sudah ada yang di-approve, data tidak bisa dihapus untuk menjaga integritas. Penghapusan dilakukan
+                melalui antarmuka Staff OPD masing-masing.
               </div>
             </div>
 
             <div class="border border-gray-200 rounded-xl overflow-hidden">
-              <button class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
+              <button
+                class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
                 <span>Kapan sebaiknya menjalankan Validation Engine?</span>
                 <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
               </button>
               <div class="faq-content px-6 py-4 text-gray-600 text-sm border-t bg-white">
-                Disarankan dijalankan secara <strong>berkala</strong> — minimal sekali sebulan, atau sebelum proses pelaporan resmi ke pimpinan. Jalankan juga setiap kali ada kecurigaan terhadap keakuratan data dari suatu OPD.
+                Disarankan dijalankan secara <strong>berkala</strong> — minimal sekali sebulan, atau sebelum proses
+                pelaporan resmi ke pimpinan. Jalankan juga setiap kali ada kecurigaan terhadap keakuratan data dari
+                suatu OPD.
               </div>
             </div>
 
             <div class="border border-gray-200 rounded-xl overflow-hidden">
-              <button class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
+              <button
+                class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
                 <span>Bagaimana cara mengaktifkan kembali akun pengguna yang nonaktif?</span>
                 <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
               </button>
               <div class="faq-content px-6 py-4 text-gray-600 text-sm border-t bg-white">
-                Buka menu <strong>Manajemen Pengguna</strong>, cari nama pengguna yang ingin diaktifkan (gunakan filter status), klik ikon <strong>Edit</strong>, ubah status dari "Nonaktif" menjadi "Aktif", lalu klik <strong>Simpan</strong>.
+                Buka menu <strong>Manajemen Pengguna</strong>, cari nama pengguna yang ingin diaktifkan (gunakan filter
+                status), klik ikon <strong>Edit</strong>, ubah status dari "Nonaktif" menjadi "Aktif", lalu klik
+                <strong>Simpan</strong>.
               </div>
             </div>
 
             <div class="border border-gray-200 rounded-xl overflow-hidden">
-              <button class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
+              <button
+                class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
                 <span>Mengapa klik lampu Traffic Light tidak memfilter OPD?</span>
                 <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
               </button>
               <div class="faq-content px-6 py-4 text-gray-600 text-sm border-t bg-white">
-                Pastikan data sudah dimuat terlebih dahulu (tunggu spinner selesai). Setelah data termuat, klik salah satu lampu (hijau, kuning, atau merah) — grid OPD di bawah akan langsung difilter sesuai kategori yang dipilih. Klik lampu yang sama lagi untuk menampilkan semua OPD kembali.
+                Pastikan data sudah dimuat terlebih dahulu (tunggu spinner selesai). Setelah data termuat, klik salah
+                satu lampu (hijau, kuning, atau merah) — grid OPD di bawah akan langsung difilter sesuai kategori yang
+                dipilih. Klik lampu yang sama lagi untuk menampilkan semua OPD kembali.
               </div>
             </div>
 
             <div class="border border-gray-200 rounded-xl overflow-hidden">
-              <button class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
+              <button
+                class="faq-btn w-full text-left px-6 py-4 font-semibold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
                 <span>Lupa kata sandi (password) login?</span>
                 <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
               </button>
               <div class="faq-content px-6 py-4 text-gray-600 text-sm border-t bg-white">
-                Sebagai Super Administrator, Anda dapat mereset password akun lain melalui menu <strong>Manajemen Pengguna → Edit</strong>. Untuk reset password akun Anda sendiri, hubungi tim teknis pengelola server.
+                Sebagai Super Administrator, Anda dapat mereset password akun lain melalui menu <strong>Manajemen
+                  Pengguna → Edit</strong>. Untuk reset password akun Anda sendiri, hubungi tim teknis pengelola server.
               </div>
             </div>
 
@@ -980,16 +1118,20 @@
             konsultasi pengembangan lebih lanjut, silakan hubungi tim teknis kami:
           </p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-green-50 border border-green-100 rounded-2xl p-6 text-center hover:shadow-md transition-shadow">
-              <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-green-500 text-3xl mx-auto mb-4 shadow-sm">
+            <div
+              class="bg-green-50 border border-green-100 rounded-2xl p-6 text-center hover:shadow-md transition-shadow">
+              <div
+                class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-green-500 text-3xl mx-auto mb-4 shadow-sm">
                 <i class="fab fa-whatsapp"></i>
               </div>
               <h5 class="font-bold text-gray-800 mb-1">WhatsApp Support</h5>
-              <p class="text-green-600 font-semibold mb-2">+62 812-3456-7890</p>
+              <p class="text-green-600 font-semibold mb-2">+62 821-8986-0629</p>
               <p class="text-xs text-gray-500">Senin – Jumat (08:00 – 16:00 WIT)</p>
             </div>
-            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-6 text-center hover:shadow-md transition-shadow">
-              <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-blue-500 text-3xl mx-auto mb-4 shadow-sm">
+            <div
+              class="bg-blue-50 border border-blue-100 rounded-2xl p-6 text-center hover:shadow-md transition-shadow">
+              <div
+                class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-blue-500 text-3xl mx-auto mb-4 shadow-sm">
                 <i class="far fa-envelope"></i>
               </div>
               <h5 class="font-bold text-gray-800 mb-1">Email IT Support</h5>
@@ -999,8 +1141,10 @@
           </div>
 
           <div class="mt-8 bg-purple-50 border border-purple-100 rounded-2xl p-6">
-            <h5 class="font-bold text-purple-700 mb-3 flex items-center gap-2"><i class="fas fa-code"></i> Tim Pengembang</h5>
-            <p class="text-sm text-gray-600 mb-2">Untuk pengembangan fitur lanjutan atau permintaan kustomisasi sistem, hubungi:</p>
+            <h5 class="font-bold text-purple-700 mb-3 flex items-center gap-2"><i class="fas fa-code"></i> Tim
+              Pengembang</h5>
+            <p class="text-sm text-gray-600 mb-2">Untuk pengembangan fitur lanjutan atau permintaan kustomisasi sistem,
+              hubungi:</p>
             <div class="flex items-center gap-3 bg-white rounded-xl p-3 border border-purple-100">
               <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-laptop-code text-purple-600"></i>

@@ -331,45 +331,9 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-100 text-gray-600 mt-12 py-8 px-4">
+  <footer class="bg-gray-100 text-gray-600 mt-12 py-6 px-4">
     <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
-        <div>
-          <h3 class="font-semibold text-gray-800 mb-4">Portal Data</h3>
-          <ul class="space-y-2 text-sm">
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">Kumpulan Data</a></li>
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">Organisasi</a></li>
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">Grup</a></li>
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">API</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="font-semibold text-gray-800 mb-4">Bantuan</h3>
-          <ul class="space-y-2 text-sm">
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">Panduan</a></li>
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">FAQ</a></li>
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">Kontak</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="font-semibold text-gray-800 mb-4">Legal</h3>
-          <ul class="space-y-2 text-sm">
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">Kebijakan Privasi</a></li>
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">Syarat dan Ketentuan</a></li>
-            <li><a href="#" class="hover:text-indigo-600 transition-colors">Lisensi</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="font-semibold text-gray-800 mb-4">Terhubung</h3>
-          <div class="flex gap-4 text-lg">
-            <a href="#" class="text-gray-500 hover:text-indigo-600"><i class="fab fa-facebook"></i></a>
-            <a href="#" class="text-gray-500 hover:text-indigo-600"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="text-gray-500 hover:text-indigo-600"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="text-gray-500 hover:text-indigo-600"><i class="fab fa-youtube"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="pt-6 border-t border-gray-200 text-center">
+      <div class="text-center">
         <p class="text-sm">© 2025 Biro Administrasi Pembangunan. Semua Hak Dilindungi.</p>
       </div>
     </div>

@@ -4,21 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class InputRfk extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'table_input_rfk';
 
     protected $fillable = [
-        'kode_program',
-        'nama_program',
-        'sub_kategori_program',
         'sumber_dana',
-        'kategori_anggaran',
-        'sub_kategori_anggaran',
-        'sumber_dana_detail',
         'tahun_anggaran',
         'pagu',
         'realisasi_keuangan',

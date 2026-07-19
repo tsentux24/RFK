@@ -52,9 +52,16 @@ class UserController extends Controller
 
             Log::info('Jumlah user ditemukan: ' . $users->total());
 
+            \Carbon\Carbon::setLocale('id');
+            $items = collect($users->items())->map(function($user) {
+                $userArray = $user->toArray();
+                $userArray['last_login_human'] = $user->last_login ? \Carbon\Carbon::parse($user->last_login)->diffForHumans() : null;
+                return $userArray;
+            });
+
             return response()->json([
                 'success' => true,
-                'data' => $users->items(),
+                'data' => $items,
                 'pagination' => [
                     'total' => $users->total(),
                     'per_page' => $users->perPage(),

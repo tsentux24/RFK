@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,9 +55,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0) translateX(0);
             }
+
             50% {
                 transform: translateY(-20px) translateX(20px);
             }
@@ -186,7 +190,8 @@
             margin-bottom: 1.8rem;
             text-align: center;
         }
-         .error-title {
+
+        .error-title {
             width: 100%;
             margin-top: 0.5rem;
             padding: 0.75rem;
@@ -228,7 +233,7 @@
             box-shadow: 0 0 0 3px rgba(79, 183, 179, 0.3);
         }
 
-        .input-group input:focus + i {
+        .input-group input:focus+i {
             color: var(--dark-blue);
             animation: bounce 0.5s;
         }
@@ -253,8 +258,15 @@
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(-50%) scale(1); }
-            50% { transform: translateY(-50%) scale(1.2); }
+
+            0%,
+            100% {
+                transform: translateY(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateY(-50%) scale(1.2);
+            }
         }
 
         .login-btn {
@@ -373,9 +385,11 @@
                 height: 40px;
             }
         }
+
         /* Modern Card Style Error Messages */
     </style>
 </head>
+
 <body>
     <!-- Background particles -->
     <div class="particles" id="particles"></div>
@@ -386,24 +400,19 @@
     <!-- Header -->
     <header>
         <div class="logo">
-            <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo Pemerintah Provinsi Maluku Utara" class="logo-img">
+            <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png"
+                alt="Logo Pemerintah Provinsi Maluku Utara" class="logo-img">
             <span>Pemerintah Provinsi Maluku Utara</span>
         </div>
-        <nav>
-            <ul>
-                <li><a href="#">Kegiatan</a></li>
-                <li><a href="#">Galeri</a></li>
-                <li><a href="#">Panduan</a></li>
-            </ul>
-        </nav>
     </header>
 
     <!-- Konten utama -->
     <div class="main-content">
         <!-- Bagian kiri - Hero text -->
         <section class="hero-section">
-            <h1 class="hero-title">SI-RAFIKA (Sisem Informasi Realisasi Fisik Dan Keuangan)</h1>
-            <p class="hero-subtitle">Digitalisasi Monitoring Realisasi Fisik Dan Keuangan Sebagai Upaya Peningkatan Kualitas Pelaporan Pembangunan .</p>
+            <h1 class="hero-title">SI-RAFIKA (Sistem Informasi Realisasi Fisik Dan Keuangan)</h1>
+            <p class="hero-subtitle">Digitalisasi Monitoring Realisasi Fisik Dan Keuangan Sebagai Upaya Peningkatan
+                Kualitas Pelaporan Realisasi Fisik Dan Keuangan .</p>
         </section>
 
         <!-- Bagian kanan - Form login -->
@@ -413,13 +422,14 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     @error('email')
-                    <div class="error-title">{{ $message }}
-                    </div>
+                        <div class="error-title">{{ $message }}
+                        </div>
                     @enderror
                     <br>
                     <div class="input-group">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" placeholder="Email" name="email" required class="form-control @error('email') is-invailid @enderror" value="{{ old('email') }}">
+                        <input type="email" placeholder="Email" name="email" required
+                            class="form-control @error('email') is-invailid @enderror" value="{{ old('email') }}">
                     </div>
                     <div class="input-group">
                         <i class="fas fa-lock"></i>
@@ -441,7 +451,7 @@
 
     <script>
         // Script untuk membuat partikel animasi
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const particlesContainer = document.getElementById('particles');
             const particleCount = 30;
 
@@ -469,7 +479,7 @@
             const togglePassword = document.getElementById('togglePassword');
             const passwordInput = document.getElementById('password');
 
-            togglePassword.addEventListener('click', function() {
+            togglePassword.addEventListener('click', function () {
                 // Toggle the type attribute
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
@@ -487,4 +497,5 @@
         });
     </script>
 </body>
+
 </html>

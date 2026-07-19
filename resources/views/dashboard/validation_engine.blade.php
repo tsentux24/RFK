@@ -112,11 +112,11 @@
             if(data.success) {
                 renderResults(data.data);
             } else {
-                alert('Gagal menjalankan engine: ' + data.message);
+                Swal.fire('Gagal!', 'Gagal menjalankan engine: ' + data.message, 'error');
             }
         } catch(e) {
             console.error(e);
-            alert('Terjadi kesalahan jaringan.');
+            Swal.fire('Error!', 'Terjadi kesalahan jaringan.', 'error');
         } finally {
             // UI State: Done
             loader.classList.add('hidden');

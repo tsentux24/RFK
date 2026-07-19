@@ -199,6 +199,13 @@
             </div>
 
             <div class="flex flex-col gap-3 mb-6">
+                <div class="flex justify-between items-center p-2.5 rounded-lg bg-blue-50 border border-blue-100">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-blue-500 shadow-sm"></span>
+                        <span class="text-sm font-bold text-blue-700">Selesai (Tuntas)</span>
+                    </div>
+                    <span class="text-sm font-black text-blue-700 bg-blue-100 px-2 py-0.5 rounded" id="stat-selesai">0</span>
+                </div>
                 <div class="flex justify-between items-center p-2.5 rounded-lg bg-emerald-50 border border-emerald-100">
                     <div class="flex items-center gap-2">
                         <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm"></span>
@@ -288,6 +295,22 @@
             </div>
         </div>
     </div> <!-- Close Advanced Analytics Row -->
+
+    <!-- Row: TOP 10 OPD Pagu Terbesar -->
+    <div class="grid grid-cols-1 mb-8">
+        <div class="super-card p-6 relative overflow-hidden flex flex-col">
+            <div class="absolute top-0 left-0 w-2 h-full bg-cyan-500"></div>
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 pl-4">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800"><i class="fas fa-chart-bar text-cyan-500 mr-2"></i>TOP 10 OPD Dengan Pagu Terbesar</h3>
+                    <p class="text-sm text-slate-500 mt-1">Daftar 10 Instansi dengan alokasi anggaran (Pagu) tertinggi.</p>
+                </div>
+            </div>
+            <div class="chart-container flex-grow" style="min-height: 350px;">
+                <canvas id="top10-opd-pagu-chart"></canvas>
+            </div>
+        </div>
+    </div>
 
     <!-- Row: Top 10 Paket & Traffic Light -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
@@ -497,8 +520,9 @@
         <!-- Filter Tabs -->
         <div class="px-8 py-4 bg-slate-50 border-b border-slate-200 flex gap-4">
             <button onclick="filterStatusModal('ALL')" id="tab-status-ALL" class="px-5 py-2 bg-slate-800 text-white rounded-lg text-sm font-bold shadow-sm transition-colors">Semua Status</button>
-            <button onclick="filterStatusModal('PENDING')" id="tab-status-PENDING" class="px-5 py-2 bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 rounded-lg text-sm font-bold transition-colors">Pending</button>
+            <button onclick="filterStatusModal('SELESAI')" id="tab-status-SELESAI" class="px-5 py-2 bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 rounded-lg text-sm font-bold transition-colors">Selesai</button>
             <button onclick="filterStatusModal('APPROVE')" id="tab-status-APPROVE" class="px-5 py-2 bg-white text-emerald-600 border border-emerald-200 hover:bg-emerald-50 rounded-lg text-sm font-bold transition-colors">Approve</button>
+            <button onclick="filterStatusModal('PENDING')" id="tab-status-PENDING" class="px-5 py-2 bg-white text-amber-600 border border-amber-200 hover:bg-amber-50 rounded-lg text-sm font-bold transition-colors">Pending</button>
             <button onclick="filterStatusModal('REJECT')" id="tab-status-REJECT" class="px-5 py-2 bg-white text-rose-600 border border-rose-200 hover:bg-rose-50 rounded-lg text-sm font-bold transition-colors">Reject</button>
         </div>
 
@@ -552,6 +576,27 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+    function formatRupiahManual(angka) {
+        if (angka === null || angka === undefined) return '0';
+        let parsed = parseFloat(angka);
+        if (isNaN(parsed)) return '0';
+        let str = Math.round(parsed).toString();
+        let isNegative = false;
+        if (str.startsWith('-')) {
+            isNegative = true;
+            str = str.substring(1);
+        }
+        let sisa = str.length % 3;
+        let rupiah = str.substr(0, sisa);
+        let ribuan = str.substr(sisa).match(/\d{3}/g);
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        return isNegative ? '-' + rupiah : rupiah;
+    }
+
     let superadminData = [];
     let allProgramsFlat = [];
     let sumberDanaData = [];
@@ -559,13 +604,14 @@
     let mainBarChart = null;
     let statusChart = null;
     let sumberDanaChart = null;
+    let top10OpdPaguChart = null;
 
     document.addEventListener('DOMContentLoaded', function() {
         loadSuperadminData();
     });
 
     const formatRp = (angka) => {
-        return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(angka || 0);
+        return formatRupiahManual(angka || 0);
     };
 
     const formatK = (angka) => {
@@ -576,6 +622,7 @@
     };
 
     function getBadgeClass(status) {
+        if(status === 'SELESAI') return 'bg-blue-100 text-blue-700 border-blue-200';
         if(status === 'APPROVE') return 'bg-emerald-100 text-emerald-700 border-emerald-200';
         if(status === 'REJECT') return 'bg-rose-100 text-rose-700 border-rose-200';
         return 'bg-amber-100 text-amber-700 border-amber-200';
@@ -668,6 +715,7 @@
                 document.getElementById('efektivitas-score').innerText = efektivitas + '%';
 
                 if (data.diagram_status) {
+                    document.getElementById('stat-selesai').innerText = data.diagram_status.SELESAI || 0;
                     document.getElementById('stat-approve').innerText = data.diagram_status.APPROVE || 0;
                     document.getElementById('stat-pending').innerText = data.diagram_status.PENDING || 0;
                     document.getElementById('stat-reject').innerText = data.diagram_status.REJECT || 0;
@@ -679,6 +727,14 @@
                     document.getElementById('tl-hijau').innerText = data.traffic_light.hijau || 0;
                     document.getElementById('tl-kuning').innerText = data.traffic_light.kuning || 0;
                     document.getElementById('tl-merah').innerText = data.traffic_light.merah || 0;
+                }
+
+                if(data.diagram_sumber_dana) {
+                    renderSumberDanaChart();
+                }
+
+                if(data.top10_opd_pagu) {
+                    renderTop10OpdPaguChart(data.top10_opd_pagu);
                 }
 
                 // Render Ranking
@@ -796,13 +852,13 @@
 
     window.filterStatusModal = function(status) {
         try {
-            ['ALL', 'PENDING', 'APPROVE', 'REJECT'].forEach(s => {
+            ['ALL', 'SELESAI', 'PENDING', 'APPROVE', 'REJECT'].forEach(s => {
                 const btn = document.getElementById('tab-status-' + s);
                 if(btn) {
                     if(s === status) {
-                        btn.className = `px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors ${s==='ALL' ? 'bg-slate-800 text-white' : (s==='PENDING' ? 'bg-amber-500 text-white' : (s==='APPROVE' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'))}`;
+                        btn.className = `px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors ${s==='ALL' ? 'bg-slate-800 text-white' : (s==='SELESAI' ? 'bg-blue-500 text-white' : (s==='PENDING' ? 'bg-amber-500 text-white' : (s==='APPROVE' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white')))}`;
                     } else {
-                        btn.className = `px-5 py-2 bg-white border rounded-lg text-sm font-bold transition-colors ${s==='ALL' ? 'text-slate-600 border-slate-200 hover:bg-slate-50' : (s==='PENDING' ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : (s==='APPROVE' ? 'text-emerald-600 border-emerald-200 hover:bg-emerald-50' : 'text-rose-600 border-rose-200 hover:bg-rose-50'))}`;
+                        btn.className = `px-5 py-2 bg-white border rounded-lg text-sm font-bold transition-colors ${s==='ALL' ? 'text-slate-600 border-slate-200 hover:bg-slate-50' : (s==='SELESAI' ? 'text-blue-600 border-blue-200 hover:bg-blue-50' : (s==='PENDING' ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : (s==='APPROVE' ? 'text-emerald-600 border-emerald-200 hover:bg-emerald-50' : 'text-rose-600 border-rose-200 hover:bg-rose-50')))}`;
                     }
                 }
             });
@@ -827,6 +883,9 @@
                         </td>
                         <td class="px-6 py-5 whitespace-normal min-w-[180px]">
                             <p class="text-[11px] font-bold text-slate-700 leading-tight mb-1" title="${p.sub_kategori_program || '-'}">${p.sub_kategori_program || '-'}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight mb-0.5"><span class="font-bold">Kegiatan:</span> ${p.kegiatan || '-'}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight"><span class="font-bold">Sub Kegiatan:</span> ${p.sub_kegiatan || '-'}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight mt-1"><span class="font-bold">Ket:</span> ${p.keterangan || '-'}</p>
                         </td>
                         <td class="px-6 py-5 whitespace-normal min-w-[150px]">
                             <p class="text-[11px] font-bold text-slate-800 mb-0.5">${p.sumber_dana || '-'}</p>
@@ -1050,6 +1109,70 @@
         }
     }
 
+    function renderTop10OpdPaguChart(top10Data) {
+        try {
+            if(top10OpdPaguChart) top10OpdPaguChart.destroy();
+            const ctx = document.getElementById('top10-opd-pagu-chart');
+            if(!ctx) return;
+            
+            const labels = top10Data.map(item => item.opd);
+            const paguValues = top10Data.map(item => item.pagu);
+            
+            top10OpdPaguChart = new Chart(ctx.getContext('2d'), {
+                type: 'bar', // Horizontal bar chart for better label readability
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Pagu Anggaran',
+                        data: paguValues,
+                        backgroundColor: 'rgba(6, 182, 212, 0.8)',
+                        borderColor: 'rgb(8, 145, 178)',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Makes it horizontal
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 13, weight: 'bold' },
+                            bodyFont: { size: 14 },
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Pagu: Rp ' + formatRupiahManual(context.parsed.x);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#F1F5F9' },
+                            ticks: { 
+                                font: { size: 11 },
+                                callback: function(value) { return formatK(value); } 
+                            }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { 
+                                font: { weight: 'bold', size: 11 },
+                                autoSkip: false 
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (e) {
+            console.error("Error rendering Top 10 OPD Pagu Chart:", e);
+        }
+    }
+
     function renderStatusChart(statusData) {
         try {
             if(statusChart) statusChart.destroy();
@@ -1057,10 +1180,10 @@
             statusChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Approve', 'Pending', 'Reject'],
+                    labels: ['Selesai', 'Approve', 'Pending', 'Reject'],
                     datasets: [{
-                        data: [statusData.APPROVE || 0, statusData.PENDING || 0, statusData.REJECT || 0],
-                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                        data: [statusData.SELESAI || 0, statusData.APPROVE || 0, statusData.PENDING || 0, statusData.REJECT || 0],
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
                         borderWidth: 2,
                         borderColor: '#ffffff',
                         hoverOffset: 5

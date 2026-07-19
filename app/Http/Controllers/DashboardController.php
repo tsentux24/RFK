@@ -16,7 +16,7 @@ class DashboardController extends Controller
 
         return match ($role) {
             'superadmin' => view('dashboard.superadmin', compact('opds')),
-            'administrator' => view('dashboard.administrator'),
+            'administrator' => view('dashboard.administrator', compact('opds')),
             'staff' => view('dashboard.staff'),
             'kepala_opd' => view('dashboard.kepala_opd'),
             default => redirect('/'),

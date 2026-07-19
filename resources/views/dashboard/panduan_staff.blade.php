@@ -262,7 +262,7 @@
                 <h6 class="fw-bold text-info">Menunggu Approval Kepala OPD</h6>
                 <p class="small text-muted mb-0">Kepala OPD akan mereview. Jika disetujui, status menjadi <span
                     class="badge bg-success">APPROVE</span>. Jika ditolak, status menjadi <span
-                    class="badge bg-danger">REJECT</span> dan wajib Anda perbaiki.</p>
+                    class="badge bg-danger">REJECT</span> dan wajib Anda perbaiki. Apabila program telah mencapai target 100% secara keseluruhan (Fisik dan Keuangan), status otomatis menjadi <span class="badge bg-primary">SELESAI (Tuntas)</span>.</p>
               </div>
             </div>
 

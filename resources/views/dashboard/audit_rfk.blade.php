@@ -79,6 +79,27 @@
 </div>
 
 <script>
+
+    function formatRupiahManual(angka) {
+        if (angka === null || angka === undefined) return '0';
+        let parsed = parseFloat(angka);
+        if (isNaN(parsed)) return '0';
+        let str = Math.round(parsed).toString();
+        let isNegative = false;
+        if (str.startsWith('-')) {
+            isNegative = true;
+            str = str.substring(1);
+        }
+        let sisa = str.length % 3;
+        let rupiah = str.substr(0, sisa);
+        let ribuan = str.substr(sisa).match(/\d{3}/g);
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        return isNegative ? '-' + rupiah : rupiah;
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         loadAuditData();
     });
@@ -106,8 +127,10 @@
                     const timeFormatted = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute:'2-digit' });
 
                     const inputRfk = item.realisasi && item.realisasi.input_rfk ? item.realisasi.input_rfk : null;
-                    const programName = inputRfk ? inputRfk.nama_program : '-';
-                    const programCode = inputRfk ? inputRfk.kode_program : '-';
+                    const programName = (item.realisasi && item.realisasi.nama_program) ? item.realisasi.nama_program : (inputRfk && inputRfk.keterangan ? inputRfk.keterangan : '-');
+                    const programCode = (item.realisasi && item.realisasi.kode_program) ? item.realisasi.kode_program : '-';
+                    const programKegiatan = item.realisasi && item.realisasi.kegiatan ? item.realisasi.kegiatan : '';
+                    const programSubKegiatan = item.realisasi && item.realisasi.sub_kegiatan ? item.realisasi.sub_kegiatan : '';
                     const opdName = inputRfk && inputRfk.opd ? inputRfk.opd.nama_opd : '-';
 
                     const userRole = item.user ? item.user.role : '';
@@ -144,12 +167,14 @@
                             </td>
                             <td class="px-5 py-4 max-w-xs">
                                 <div class="text-gray-900 font-medium truncate program-text" title="${programName}">${programName}</div>
-                                <div class="text-indigo-600 text-xs font-mono mt-1">${programCode}</div>
+                                <div class="text-indigo-600 text-xs font-mono mt-1 mb-1">${programCode}</div>
+                                ${programKegiatan ? `<div class="text-xs text-gray-700 mt-1"><strong>Keg:</strong> ${programKegiatan}</div>` : ''}
+                                ${programSubKegiatan ? `<div class="text-xs text-gray-700"><strong>Sub:</strong> ${programSubKegiatan}</div>` : ''}
                             </td>
                             <td class="px-5 py-4">
                                 <div class="text-xs">
-                                    <span class="text-green-600 font-medium">Ajukan: Rp ${new Intl.NumberFormat('id-ID').format(nilaiDiajukan)} (${fisikDiajukan}%)</span><br>
-                                    <span class="text-red-500 font-medium">Sisa Pagu: Rp ${new Intl.NumberFormat('id-ID').format(sisaPagu)}</span>
+                                    <span class="text-green-600 font-medium">Ajukan: Rp ${formatRupiahManual(nilaiDiajukan)} (${fisikDiajukan}%)</span><br>
+                                    <span class="text-red-500 font-medium">Sisa Pagu: Rp ${formatRupiahManual(sisaPagu)}</span>
                                 </div>
                             </td>
                             <td class="px-5 py-4">

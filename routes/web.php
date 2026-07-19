@@ -39,13 +39,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/rfk/data', [RfkController::class, 'getData'])->name('rfk.data');
     Route::put('/dashboard/rfk/{id}', [RfkController::class, 'update'])->name('rfk.update');
     Route::delete('/dashboard/rfk/{id}', [RfkController::class, 'destroy'])->name('rfk.destroy');
+    Route::delete('/dashboard/rfk/realisasi/{id}', [RfkController::class, 'destroyRealisasi'])->name('rfk.destroyRealisasi');
 
     // RFK Laporan Routes
     Route::get('/dashboard/laporan', [RfkController::class, 'laporanPage'])->name('laporan.index');
     Route::get('/dashboard/laporan/data', [RfkController::class, 'getLaporanData'])->name('laporan.data');
     Route::post('/dashboard/laporan/generate-pdf', [RfkController::class, 'generateLaporanPdf'])->name('laporan.pdf');
+    Route::get('/dashboard/laporan/export-csv', [RfkController::class, 'exportCsv'])->name('laporan.csv');
     Route::get('/dashboard/stats', [RfkController::class, 'getDashboardStats'])->name('dashboard.stats');
     Route::get('/dashboard/superadmin/data', [RfkController::class, 'getSuperadminData'])->name('superadmin.data');
+    Route::get('/dashboard/search', [RfkController::class, 'globalSearch'])->name('dashboard.search');
 
     // RFK Realisasi & Approval Routes
     Route::get('/dashboard/rfk/audit', [RfkController::class, 'auditPage'])->name('rfk.audit');

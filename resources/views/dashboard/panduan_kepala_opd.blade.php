@@ -384,7 +384,8 @@
                     <h6 class="font-bold text-green-700 mb-1 flex items-center gap-2"><i
                         class="fas fa-check-circle"></i> Approve</h6>
                     <p class="text-xs text-gray-600">Data benar dan sesuai. Pagu Master akan ter-update otomatis. Status
-                      menjadi <strong class="text-green-700">APPROVE</strong>.</p>
+                      menjadi <strong class="text-green-700">APPROVE</strong>. Apabila sudah 100%, akan otomatis <strong
+                        class="text-blue-700">SELESAI</strong>.</p>
                   </div>
                   <div class="flex-1 bg-red-50 border border-red-200 rounded-xl p-4">
                     <h6 class="font-bold text-red-700 mb-1 flex items-center gap-2"><i class="fas fa-times-circle"></i>
@@ -538,7 +539,7 @@
                 <i class="fab fa-whatsapp"></i>
               </div>
               <h5 class="font-bold text-gray-800 mb-1">WhatsApp Support</h5>
-              <p class="text-green-600 font-semibold mb-2">+62 812-3456-7890</p>
+              <p class="text-green-600 font-semibold mb-2">+62 821-8986-0629</p>
               <p class="text-xs text-gray-500">Senin – Jumat (08:00 – 16:00 WIT)</p>
             </div>
             <div

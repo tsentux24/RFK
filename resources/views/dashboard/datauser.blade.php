@@ -143,8 +143,8 @@
                 <div class="mb-4" id="password-field">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
                     <input type="password" id="password" name="password"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                    <p class="text-xs text-gray-500 mt-1">Minimal 6 karakter (untuk password baru)</p>
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Masukkan password">
+                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah password (Minimal 6 karakter jika diisi)</p>
                 </div>
 
                 <div class="mb-4">
@@ -310,6 +310,7 @@ function renderTable(users) {
         const roleBadge = getRoleBadge(user.role);
         const statusBadge = getStatusBadge(user.status);
         const lastLogin = user.last_login ? formatDate(user.last_login) : '-';
+        const lastLoginHuman = user.last_login_human ? `<br><span class="text-xs text-indigo-500 font-medium">${user.last_login_human}</span>` : '';
         const opdName = (user.opd && user.opd.nama_opd) ? user.opd.nama_opd : '-';
 
         html += `
@@ -320,7 +321,15 @@ function renderTable(users) {
                 <td class="px-4 py-3">${roleBadge}</td>
                 <td class="px-4 py-3">${escapeHtml(opdName)}</td>
                 <td class="px-4 py-3">${statusBadge}</td>
-                <td class="px-4 py-3 text-sm text-gray-500">${lastLogin}</td>
+                <td class="px-4 py-3 text-sm text-gray-500">
+                    <div class="flex items-start gap-1.5">
+                        <i class="far fa-clock text-gray-400 mt-0.5"></i>
+                        <div class="leading-tight">
+                            <span>${lastLogin}</span>
+                            ${lastLoginHuman}
+                        </div>
+                    </div>
+                </td>
                 <td class="px-4 py-3">
                     <div class="flex gap-2">
                         <button onclick="editUser(${user.id})" class="text-indigo-600 hover:text-indigo-800 p-1.5 rounded-lg hover:bg-indigo-50 transition-colors" title="Edit">
@@ -485,10 +494,10 @@ function editUser(id) {
                 $('#user-id').val(user.id);
                 $('#nama').val(user.name);
                 $('#email').val(user.email);
+                $('#password').val('');
                 $('#role').val(user.role);
                 $('#opd_id').val(user.opd_id || '');
                 $('#status').val(user.status);
-                $('#password-field').hide();
                 $('#user-modal').removeClass('hidden');
             } else {
                 showNotification('Gagal memuat data user', 'error');

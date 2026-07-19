@@ -13,6 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -217,6 +219,17 @@
             </div>
         </div>
 
+
+        <!-- Top 10 Program -->
+        <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100 mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-chart-bar text-indigo-600"></i> Top 10 Program (Berdasarkan Pagu)
+            </h3>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="top10Chart"></canvas>
+            </div>
+        </div>
+
         <!-- Menunggu Approval RFK -->
         <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100 mb-8">
             <div class="flex justify-between items-center mb-5">
@@ -246,7 +259,7 @@
                     </thead>
                     <tbody id="approvalTableBody">
                         <tr>
-                            <td colspan="6" class="text-center py-4">Memuat data...</td>
+                            <td colspan="7" class="text-center py-4">Memuat data...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -291,6 +304,7 @@
                             <th class="px-4 py-3 rounded-tl-lg">Waktu</th>
                             <th class="px-4 py-3">Program</th>
                             <th class="px-4 py-3">Perubahan Status</th>
+                            <th class="px-4 py-3">Kegiatan / Sub Kegiatan</th>
                             <th class="px-4 py-3">Keterangan</th>
                             <th class="px-4 py-3 rounded-tr-lg">Oleh</th>
                         </tr>
@@ -320,6 +334,16 @@
                                 id="appr_kode" class="font-medium text-gray-900"></span></p>
                         <p class="text-sm mb-2"><span class="text-gray-500 w-32 inline-block">Nama Program:</span> <span
                                 id="appr_program" class="font-medium text-gray-900"></span></p>
+                        <p class="text-sm mb-2"><span class="text-gray-500 w-32 inline-block">Kegiatan:</span> <span
+                                id="appr_kegiatan" class="font-medium text-gray-900"></span></p>
+                        <p class="text-sm mb-2"><span class="text-gray-500 w-32 inline-block">Sub Kegiatan:</span> <span
+                                id="appr_sub_kegiatan" class="font-medium text-gray-900"></span></p>
+                        <p class="text-sm mb-2"><span class="text-gray-500 w-32 inline-block">Sumber Dana:</span> <span
+                                id="appr_sumber_dana" class="font-medium text-gray-900"></span></p>
+                        <p class="text-sm mb-2"><span class="text-gray-500 w-32 inline-block">Tahun Anggaran:</span> <span
+                                id="appr_tahun" class="font-medium text-gray-900"></span></p>
+                        <p class="text-sm mb-2"><span class="text-gray-500 w-32 inline-block">Keterangan Master:</span> <span
+                                id="appr_master_ket" class="font-medium text-gray-900"></span></p>
                         <p class="text-sm mb-2"><span class="text-gray-500 w-32 inline-block">Sisa Pagu:</span> <span
                                 id="appr_sisa_pagu" class="font-medium text-red-600"></span></p>
 
@@ -388,6 +412,12 @@
                                     class="font-medium"></span></div>
                             <div><span class="text-gray-500">Pagu:</span> <span id="det_pagu"
                                     class="font-medium"></span></div>
+                            <div class="col-span-2"><span class="text-gray-500">Kegiatan:</span> <span id="det_kegiatan"
+                                    class="font-medium"></span></div>
+                            <div class="col-span-2"><span class="text-gray-500">Sub Kegiatan:</span> <span id="det_sub_kegiatan"
+                                    class="font-medium"></span></div>
+                            <div class="col-span-2"><span class="text-gray-500">Keterangan Master:</span> <span id="det_master_ket"
+                                    class="font-medium text-gray-800"></span></div>
                             <div><span class="text-gray-500">Realisasi Keuangan:</span> <span id="det_keuangan"
                                     class="font-medium text-green-600"></span></div>
                             <div><span class="text-gray-500">Progress Fisik:</span> <span id="det_fisik"
@@ -408,6 +438,7 @@
                                     <th class="px-4 py-2">Tanggal</th>
                                     <th class="px-4 py-2">Fisik</th>
                                     <th class="px-4 py-2">Keuangan</th>
+                                    <th class="px-4 py-2">Kegiatan/Sub Kegiatan</th>
                                     <th class="px-4 py-2">Status</th>
                                     <th class="px-4 py-2">Keterangan</th>
                                 </tr>
@@ -428,45 +459,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-100 text-gray-600 mt-12 py-8 px-4">
+    <footer class="bg-gray-100 text-gray-600 mt-12 py-6 px-4">
         <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
-                <div>
-                    <h3 class="font-semibold text-gray-800 mb-4">Portal Data</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">Kumpulan Data</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">Organisasi</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">Grup</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">API</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-gray-800 mb-4">Bantuan</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">Panduan</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">FAQ</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">Kontak</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-gray-800 mb-4">Legal</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">Kebijakan Privasi</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">Syarat dan Ketentuan</a></li>
-                        <li><a href="#" class="hover:text-indigo-600 transition-colors">Lisensi</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-gray-800 mb-4">Terhubung</h3>
-                    <div class="flex gap-4 text-lg">
-                        <a href="#" class="text-gray-500 hover:text-indigo-600"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-gray-500 hover:text-indigo-600"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-gray-500 hover:text-indigo-600"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-gray-500 hover:text-indigo-600"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="pt-6 border-t border-gray-200 text-center">
+            <div class="text-center">
                 <p class="text-sm">© 2025 Biro Administrasi Pembangunan. Semua Hak Dilindungi.</p>
             </div>
         </div>
@@ -474,6 +469,27 @@
 
 
     <script>
+
+    function formatRupiahManual(angka) {
+        if (angka === null || angka === undefined) return '0';
+        let parsed = parseFloat(angka);
+        if (isNaN(parsed)) return '0';
+        let str = Math.round(parsed).toString();
+        let isNegative = false;
+        if (str.startsWith('-')) {
+            isNegative = true;
+            str = str.substring(1);
+        }
+        let sisa = str.length % 3;
+        let rupiah = str.substr(0, sisa);
+        let ribuan = str.substr(sisa).match(/\d{3}/g);
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        return isNegative ? '-' + rupiah : rupiah;
+    }
+
         // Mobile menu toggle
         document.getElementById('mobile-menu-button').addEventListener('click', function () {
             const menu = document.getElementById('mobile-menu');
@@ -498,8 +514,67 @@
             });
         }
 
+
+        let top10ChartObj = null;
+        function renderTop10Chart(data) {
+            const sortedData = [...data].sort((a, b) => b.pagu - a.pagu).slice(0, 10);
+            
+            const labels = sortedData.map(item => (item.nama_program || 'Program').substring(0, 35) + '...');
+            const paguData = sortedData.map(item => item.pagu || 0);
+            const realisasiData = sortedData.map(item => item.realisasi_keuangan || 0);
+
+            if(top10ChartObj) top10ChartObj.destroy();
+
+            const ctx = document.getElementById('top10Chart').getContext('2d');
+            top10ChartObj = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Pagu (Rp)',
+                            data: paguData,
+                            backgroundColor: '#E2E8F0',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Realisasi Keuangan (Rp)',
+                            data: realisasiData,
+                            backgroundColor: '#10B981',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': Rp ' + formatRupiahStr(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: function(value) {
+                                    if(value >= 1e9) return (value/1e9).toFixed(1) + ' M';
+                                    if(value >= 1e6) return (value/1e6).toFixed(1) + ' Jt';
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         function formatRupiahStr(angka) {
-            return new Intl.NumberFormat('id-ID').format(angka);
+            return formatRupiahManual(angka);
         }
 
         let pendingDataStore = [];
@@ -529,7 +604,12 @@
                             <td class="px-4 py-3 font-medium text-gray-900">${programName}</td>
                             <td class="px-4 py-3 text-green-600 font-medium">Rp ${formatRupiahStr(nilaiDiajukan)}</td>
                             <td class="px-4 py-3 text-blue-600">${fisikDiajukan}%</td>
-                            <td class="px-4 py-3">${ketDiajukan || '-'}</td>
+                            <td class="px-4 py-3">
+                                <div class="text-xs mb-1"><span class="font-semibold text-gray-500">Master:</span> ${item.keterangan || '-'}</div>
+                                <div class="text-xs mb-1"><span class="font-semibold text-gray-500">Pengajuan:</span> ${pendingRealisasi && pendingRealisasi.keterangan ? pendingRealisasi.keterangan : '-'}</div>
+                                <div class="text-xs mb-1"><span class="font-semibold text-gray-500">Sumber Dana:</span> ${item.sumber_dana || '-'} ${item.sumber_dana_detail ? '('+item.sumber_dana_detail+')' : ''}</div>
+                                <div class="text-xs"><span class="font-semibold text-gray-500">Tahun:</span> ${item.tahun_anggaran || '-'}</div>
+                            </td>
                             <td class="px-4 py-3">${staffName}</td>
                             <td class="px-4 py-3">
                                 <button onclick="openApprovalModal(${index})" class="text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded text-xs shadow-sm"><i class="fas fa-edit mr-1"></i> Form Ubah Status</button>
@@ -560,29 +640,40 @@
                     let rows = '';
                     result.data.forEach(item => {
                         const date = new Date(item.created_at).toLocaleString('id-ID');
-                        const program = item.realisasi && item.realisasi.input_rfk ? item.realisasi.input_rfk.nama_program : '-';
+                        const program = item.nama_program || '-';
+                        const kode = item.kode_program || '-';
                         const user = item.user ? item.user.name : '-';
 
                         let statusBadge = '';
-                        if (item.status_baru === 'APPROVE') statusBadge = '<span class="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">APPROVE</span>';
-                        else if (item.status_baru === 'REJECT') statusBadge = '<span class="bg-red-100 text-red-800 px-2 py-0.5 rounded text-xs">REJECT</span>';
-                        else statusBadge = '<span class="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">PENDING</span>';
+                        if (item.status_baru === 'APPROVE') statusBadge = '<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded text-[10px]">APPROVE</span>';
+                        else if (item.status_baru === 'REJECT') statusBadge = '<span class="bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded text-[10px]">REJECT</span>';
+                        else statusBadge = '<span class="bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded text-[10px]">PENDING</span>';
 
                         const prevStatus = item.status_sebelumnya ? item.status_sebelumnya : 'Baru';
 
                         rows += `
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="px-4 py-3 text-xs text-gray-500">${date}</td>
-                            <td class="px-4 py-3 text-xs font-medium">${program.substring(0, 40)}</td>
-                            <td class="px-4 py-3 text-xs">${prevStatus} &rarr; ${statusBadge}</td>
-                            <td class="px-4 py-3 text-xs">${item.keterangan || '-'}</td>
-                            <td class="px-4 py-3 text-xs">${user}</td>
+                        <tr class="border-b hover:bg-slate-50 transition-colors">
+                            <td class="px-4 py-3 text-xs text-slate-500 whitespace-nowrap">${date}</td>
+                            <td class="px-4 py-3 text-xs font-semibold text-slate-800">
+                                <div class="whitespace-normal leading-relaxed min-w-[200px]">${program}</div>
+                            </td>
+                            <td class="px-4 py-3 text-xs whitespace-nowrap">${prevStatus} &rarr; <br/> ${statusBadge}</td>
+                            <td class="px-4 py-3 text-xs min-w-[250px]">
+                                <div class="mb-1 font-mono text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded inline-block">Kode: ${kode}</div>
+                                <div class="font-semibold text-indigo-700 mb-1 leading-snug">${item.kegiatan || '-'}</div>
+                                <div class="text-[10px] text-slate-500 leading-snug">${item.sub_kegiatan || '-'}</div>
+                            </td>
+                            <td class="px-4 py-3 text-xs min-w-[150px]">
+                                <div class="text-slate-700 font-medium">${item.keterangan || '-'}</div>
+                                <div class="text-[10px] text-slate-500 mt-1 italic">Master: ${item.keterangan_realisasi || '-'}</div>
+                            </td>
+                            <td class="px-4 py-3 text-xs font-medium text-slate-600">${user}</td>
                         </tr>
                     `;
                     });
 
                     if (result.data.length === 0) {
-                        rows = '<tr><td colspan="5" class="text-center py-4">Tidak ada data riwayat</td></tr>';
+                        rows = '<tr><td colspan="6" class="text-center py-4">Tidak ada data riwayat</td></tr>';
                     }
 
                     document.getElementById('auditTableBody').innerHTML = rows;
@@ -599,8 +690,11 @@
 
                 if (result.success) {
                     allDataStore = result.data;
-                    // Only show APPROVED data in this section
-                    const approvedData = result.data.filter(item => item.status === 'APPROVE');
+                    // Render Top 10 Chart
+                    renderTop10Chart(result.data);
+
+                    // Only show APPROVED and SELESAI data in this section
+                    const approvedData = result.data.filter(item => item.status === 'APPROVE' || item.status === 'SELESAI');
 
                     let html = '';
                     approvedData.forEach((item, index) => {
@@ -608,13 +702,16 @@
                         let statusColor = 'bg-blue-600';
                         if (fisik >= 100) statusColor = 'bg-green-600';
                         else if (fisik < 30) statusColor = 'bg-red-600';
+                        
+                        let statusBadgeClass = 'bg-green-100 text-green-800 border-green-200';
+                        if (item.status === 'SELESAI') statusBadgeClass = 'bg-blue-100 text-blue-800 border-blue-200';
 
                         html += `
                     <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition">
                         <div class="flex justify-between items-start mb-2">
                             <h4 class="font-medium text-indigo-700">${item.nama_program}</h4>
                             <div class="flex items-center gap-2">
-                                <span class="bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded-full font-medium">APPROVED</span>
+                                <span class="${statusBadgeClass} border text-xs px-2.5 py-1 rounded-full font-medium">${item.status}</span>
                                 <button onclick="openDetailModal(${item.id})" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2 py-1 rounded border border-indigo-200"><i class="fas fa-list"></i> Rincian & Riwayat</button>
                             </div>
                         </div>
@@ -715,6 +812,14 @@
             document.getElementById('appr_id').value = item.id;
             document.getElementById('appr_kode').innerText = item.kode_program || '-';
             document.getElementById('appr_program').innerText = item.nama_program || '-';
+            document.getElementById('appr_kegiatan').innerText = item.kegiatan || '-';
+            document.getElementById('appr_sub_kegiatan').innerText = item.sub_kegiatan || '-';
+            document.getElementById('appr_sumber_dana').innerText = item.sumber_dana || '-';
+            if (item.sumber_dana_detail) {
+                document.getElementById('appr_sumber_dana').innerText += ' (' + item.sumber_dana_detail + ')';
+            }
+            document.getElementById('appr_tahun').innerText = item.tahun_anggaran || '-';
+            document.getElementById('appr_master_ket').innerText = item.keterangan || '-';
             document.getElementById('appr_sisa_pagu').innerText = 'Rp ' + formatRupiahStr(item.sisa_pagu);
 
             const pendingRealisasi = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0] : null;
@@ -746,16 +851,27 @@
             const keterangan = document.getElementById('appr_keterangan').value;
 
             if (!action) {
-                alert('Pilih status terlebih dahulu!');
+                Swal.fire('Perhatian', 'Pilih status terlebih dahulu!', 'warning');
                 return;
             }
 
             if (action === 'reject' && keterangan.trim() === '') {
-                alert('Keterangan / Alasan penolakan wajib diisi!');
+                Swal.fire('Perhatian', 'Keterangan / Alasan penolakan wajib diisi!', 'warning');
                 return;
             }
 
-            if (!confirm(`Apakah Anda yakin memproses perubahan status ini?`)) return;
+            const confirmResult = await Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Apakah Anda yakin memproses perubahan status ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Proses!',
+                cancelButtonText: 'Batal'
+            });
+
+            if (!confirmResult.isConfirmed) return;
 
             try {
                 const url = `/dashboard/rfk/${id}/change-status`;
@@ -771,16 +887,16 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert(result.message);
+                    Swal.fire('Berhasil!', result.message, 'success');
                     closeApprovalModal();
                     loadPendingApproval();
                     loadAllData();
                     loadHistoryRFK();
                 } else {
-                    alert('Gagal: ' + result.message);
+                    Swal.fire('Gagal!', result.message, 'error');
                 }
             } catch (error) {
-                alert('Terjadi kesalahan jaringan.');
+                Swal.fire('Error!', 'Terjadi kesalahan jaringan.', 'error');
             }
         }
 
@@ -792,7 +908,10 @@
             if (!item) return;
 
             document.getElementById('det_nama_program').innerText = item.nama_program;
-            document.getElementById('det_kode').innerText = item.kode_program;
+            document.getElementById('det_kode').innerText = item.kode || '-';
+            document.getElementById('det_kegiatan').innerText = item.kegiatan || '-';
+            document.getElementById('det_sub_kegiatan').innerText = item.sub_kegiatan || '-';
+            document.getElementById('det_master_ket').innerText = item.keterangan || '-';
             document.getElementById('det_pagu').innerText = 'Rp ' + formatRupiahStr(item.pagu);
             document.getElementById('det_keuangan').innerText = 'Rp ' + formatRupiahStr(item.realisasi_keuangan);
             document.getElementById('det_fisik').innerText = item.realisasi_fisik + '%';
@@ -804,22 +923,26 @@
                 item.realisasis.forEach(r => {
                     const date = new Date(r.created_at).toLocaleString('id-ID');
                     let st = '';
-                    if (r.status === 'APPROVE') st = '<span class="text-green-600 font-medium">APPROVE</span>';
-                    else if (r.status === 'REJECT') st = '<span class="text-red-600 font-medium">REJECT</span>';
-                    else st = '<span class="text-yellow-600 font-medium">PENDING</span>';
+                    if (r.status === 'APPROVE') st = '<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded text-[10px]">APPROVE</span>';
+                    else if (r.status === 'REJECT') st = '<span class="bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded text-[10px]">REJECT</span>';
+                    else st = '<span class="bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded text-[10px]">PENDING</span>';
 
                     rows += `
-                    <tr class="border-b bg-white hover:bg-gray-50">
-                        <td class="px-4 py-2">${date}</td>
-                        <td class="px-4 py-2">${r.nilai_realisasi_fisik}%</td>
-                        <td class="px-4 py-2">Rp ${formatRupiahStr(r.nilai_realisasi_keuangan)}</td>
-                        <td class="px-4 py-2">${st}</td>
-                        <td class="px-4 py-2">${r.keterangan || '-'}</td>
+                    <tr class="border-b bg-white hover:bg-slate-50 transition-colors">
+                        <td class="px-4 py-3 text-xs whitespace-nowrap text-slate-500">${date}</td>
+                        <td class="px-4 py-3 text-xs font-semibold text-blue-600">${r.nilai_realisasi_fisik}%</td>
+                        <td class="px-4 py-3 text-xs font-semibold text-green-600 whitespace-nowrap">Rp ${formatRupiahStr(r.nilai_realisasi_keuangan)}</td>
+                        <td class="px-4 py-3 text-xs min-w-[200px]">
+                            <div class="font-semibold text-indigo-700 mb-1 leading-snug">${r.kegiatan || '-'}</div>
+                            <div class="text-[10px] text-slate-500 leading-snug">${r.sub_kegiatan || '-'}</div>
+                        </td>
+                        <td class="px-4 py-3 text-xs">${st}</td>
+                        <td class="px-4 py-3 text-xs text-slate-600">${r.keterangan || '-'}</td>
                     </tr>
                 `;
                 });
             } else {
-                rows = '<tr><td colspan="5" class="text-center py-3 text-gray-500">Belum ada riwayat realisasi</td></tr>';
+                rows = '<tr><td colspan="6" class="text-center py-3 text-gray-500">Belum ada riwayat realisasi</td></tr>';
             }
             document.getElementById('det_riwayat_body').innerHTML = rows;
 

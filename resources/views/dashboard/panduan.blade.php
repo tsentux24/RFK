@@ -249,7 +249,7 @@
                                         <div class="step-circle bg-info shadow">2</div>
                                         <div class="ms-4">
                                             <h5 class="fw-bold text-info">Menunggu Approval</h5>
-                                            <p class="text-secondary">Program diajukan masuk ke antrean Kepala OPD. Jika disetujui, status menjadi <span class="badge bg-success">APPROVE</span>. Jika ditolak, menjadi <span class="badge bg-danger">REJECT</span> dan wajib Anda perbaiki.</p>
+                                            <p class="text-secondary">Program diajukan masuk ke antrean Kepala OPD. Jika disetujui, status menjadi <span class="badge bg-success">APPROVE</span>. Jika ditolak, menjadi <span class="badge bg-danger">REJECT</span> dan wajib Anda perbaiki. Apabila program telah mencapai target 100% secara keseluruhan (Fisik dan Keuangan), status otomatis menjadi <span class="badge bg-primary">SELESAI</span>.</p>
                                         </div>
                                     </div>
                                     <div class="d-flex">
@@ -343,6 +343,16 @@
                                     <li>Pilih pengajuan dari Staff.</li>
                                     <li>Klik <button class="btn btn-sm btn-success py-0">Approve</button> jika sesuai, atau <button class="btn btn-sm btn-danger py-0">Reject</button> jika perlu revisi.</li>
                                 </ol>
+                            </div>
+                            @endif
+
+                            @if(in_array($role, ['superadmin', 'administrator']))
+                            <hr class="my-5 text-muted">
+                            <div class="mb-5">
+                                <h5 class="fw-bold text-primary mb-3"><i class="fas fa-history me-2"></i> Riwayat & Audit Trail</h5>
+                                <p class="text-secondary" style="line-height: 1.8;">
+                                    Masuk ke menu <strong>Riwayat RFK</strong>. Anda dapat memantau log aktivitas secara detail termasuk <strong>Kode Program</strong>, <strong>Kegiatan & Sub Kegiatan</strong>, beserta status perubahannya (seperti perubahan dari PENDING menjadi APPROVE, REJECT, atau SELESAI).
+                                </p>
                             </div>
                             @endif
 

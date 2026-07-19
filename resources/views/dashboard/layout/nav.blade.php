@@ -1,43 +1,69 @@
 <!-- Main Content -->
 <div class="main-content min-h-screen">
     <!-- Header -->
-    <header class="shadow-sm sticky top-0 z-30" style="background-color: #31326F;">
+    <header class="shadow-sm sticky top-0 z-30" style="background-color: {{ in_array(Auth::user()->role, ['superadmin', 'administrator']) ? '#2563EB' : '#31326F' }};">
         <div class="flex items-center justify-between p-4">
             <div class="flex items-center gap-4">
                 <button id="sidebar-toggle" class="lg:hidden text-white">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
-                <h1 class="text-xl font-semibold text-white">Dashboard Administrator</h1>
+                @php
+                    $roleNames = [
+                        'superadmin' => 'Super Administrator',
+                        'administrator' => 'Administrator',
+                        'kepala_opd' => 'Kepala OPD',
+                        'staff' => 'Staff OPD'
+                    ];
+                    $displayRole = $roleNames[Auth::user()->role] ?? 'Administrator';
+                @endphp
+                <h1 class="text-xl font-semibold text-white">{{ $title ?? 'Dashboard ' . $displayRole }}</h1>
             </div>
 
             <div class="flex items-center gap-4">
-                @if(Auth::user()->role !== 'superadmin')
-                <div class="hidden md:flex items-center relative">
-                    <i class="fas fa-search absolute left-3 text-gray-300"></i>
-                    <input type="text" placeholder="Cari..." class="rounded-full pl-10 pr-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48 border border-gray-300">
-                </div>
+                @if(in_array(Auth::user()->role, ['superadmin', 'administrator']))
+                    <div class="hidden md:flex items-center relative" id="global-search-container">
+                        <i class="fas fa-search absolute left-3 text-gray-300"></i>
+                        <input type="text" id="global-search-input" placeholder="Cari program / realisasi (min 3 huruf)..."
+                            class="rounded-full pl-10 pr-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-64 border border-gray-300 transition-all duration-300" autocomplete="off">
+                        
+                        <!-- Search Results Dropdown -->
+                        <div id="global-search-results" class="absolute top-full left-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-100 z-[100] hidden flex flex-col max-h-[70vh] overflow-hidden transform opacity-0 scale-95 transition-all duration-200">
+                            <div class="px-4 py-3 bg-indigo-50 border-b border-indigo-100 flex justify-between items-center flex-shrink-0">
+                                <span class="text-xs font-bold text-indigo-800 uppercase tracking-wider">Hasil Pencarian</span>
+                                <span id="search-loading" class="hidden"><i class="fas fa-circle-notch fa-spin text-indigo-500"></i></span>
+                            </div>
+                            <div id="search-results-body" class="overflow-y-auto flex-1 p-2 space-y-2">
+                                <!-- Results will be populated here -->
+                            </div>
+                        </div>
+                    </div>
                 @endif
 
                 <div class="flex items-center gap-2">
                     <!-- Notification Button with Modal -->
-                    <button id="notification-button" class="h-10 w-10 rounded-full bg-info bg-opacity-20 flex items-center justify-center text-white relative hover:bg-opacity-30 transition-colors">
+                    <button id="notification-button"
+                        class="h-10 w-10 rounded-full bg-info bg-opacity-20 flex items-center justify-center text-white relative hover:bg-opacity-30 transition-colors">
                         <i class="fas fa-bell"></i>
-                        <span class="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
+                        <span
+                            class="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
                     </button>
 
                     <!-- Notification Modal -->
-                    <div id="notification-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-                        <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-96 overflow-hidden">
-                            <div class="flex items-center justify-between p-4 border-b">
+                    <div id="notification-modal"
+                        class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+                        <div
+                            class="bg-white rounded-lg shadow-xl w-full max-w-md flex flex-col max-h-[90vh] overflow-hidden">
+                            <div class="flex items-center justify-between p-4 border-b flex-shrink-0">
                                 <h3 class="text-lg font-semibold text-gray-800">Notifikasi</h3>
                                 <button id="close-notification" class="text-gray-400 hover:text-gray-600">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
-                            <div class="overflow-y-auto max-h-80">
+                            <div class="overflow-y-auto flex-1">
                                 <div class="p-4 space-y-3">
                                     <div class="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mt-1">
+                                        <div
+                                            class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mt-1">
                                             <i class="fas fa-info-circle"></i>
                                         </div>
                                         <div class="flex-1">
@@ -47,7 +73,8 @@
                                         </div>
                                     </div>
                                     <div class="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-1">
+                                        <div
+                                            class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-1">
                                             <i class="fas fa-check-circle"></i>
                                         </div>
                                         <div class="flex-1">
@@ -57,7 +84,8 @@
                                         </div>
                                     </div>
                                     <div class="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg">
-                                        <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 mt-1">
+                                        <div
+                                            class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 mt-1">
                                             <i class="fas fa-exclamation-circle"></i>
                                         </div>
                                         <div class="flex-1">
@@ -68,8 +96,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="p-4 border-t">
-                                <button id="mark-all-read-btn" class="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                            <div class="p-4 border-t flex-shrink-0">
+                                <button id="mark-all-read-btn"
+                                    class="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
                                     Tandai sudah dibaca
                                 </button>
                             </div>
@@ -77,9 +106,11 @@
                     </div>
 
                     <!-- Notification Detail Modal -->
-                    <div id="notif-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex items-center justify-center p-4">
-                        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform scale-95 transition-transform duration-300" id="notif-detail-content">
-                            <div class="bg-indigo-600 px-6 py-4 flex items-center justify-between">
+                    <div id="notif-detail-modal"
+                        class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex items-center justify-center p-4">
+                        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh] overflow-hidden transform scale-95 transition-transform duration-300"
+                            id="notif-detail-content">
+                            <div class="bg-indigo-600 px-6 py-4 flex items-center justify-between flex-shrink-0">
                                 <h3 class="text-lg font-bold text-white flex items-center gap-2">
                                     <i class="fas fa-file-invoice-dollar"></i> Detail Pengajuan RFK
                                 </h3>
@@ -87,23 +118,26 @@
                                     <i class="fas fa-times text-xl"></i>
                                 </button>
                             </div>
-                            <div class="p-6">
+                            <div class="p-6 overflow-y-auto flex-1">
                                 <div id="notif-detail-body" class="space-y-4">
                                     <!-- Dynamic content -->
                                 </div>
                             </div>
-                            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end">
-                                <button id="close-notif-detail-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm transition shadow-sm">Tutup</button>
+                            <div class="px-6 py-4 bg-gray-50 border-t flex justify-end flex-shrink-0">
+                                <button id="close-notif-detail-btn"
+                                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg text-sm transition shadow-sm">Tutup</button>
                             </div>
                         </div>
                     </div>
 
                     <!-- User Dropdown -->
                     <div class="relative">
-                        <button id="user-menu-button" class="h-10 w-10 rounded-full bg-info bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-30 transition-colors">
+                        <button id="user-menu-button"
+                            class="h-10 w-10 rounded-full bg-info bg-opacity-20 flex items-center justify-center text-white hover:bg-opacity-30 transition-colors">
                             <i class="fas fa-user"></i>
                         </button>
-                        <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-50 hidden border border-gray-200">
+                        <div id="user-dropdown"
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-50 hidden border border-gray-200">
                             <div class="py-2">
                                 <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i class="fas fa-user-circle w-5 text-gray-400 mr-3"></i>
@@ -114,12 +148,12 @@
                                     <span>Pengaturan</span>
                                 </a>
                                 <div class="border-t border-gray-100 my-1"></div>
-                                <form action ="{{ route('logout') }}" method="POST">
+                                <form action="{{ route('logout') }}" method="POST">
                                     @csrf
-                                <button class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                    <i class="fas fa-sign-out-alt w-5 text-red-400 mr-3"></i>
-                                    <span>Logout</span>
-                                </button>
+                                    <button class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt w-5 text-red-400 mr-3"></i>
+                                        <span>Logout</span>
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -155,7 +189,9 @@
         }
 
         /* Notification Items Hover */
-        .bg-blue-50:hover, .bg-green-50:hover, .bg-yellow-50:hover {
+        .bg-blue-50:hover,
+        .bg-green-50:hover,
+        .bg-yellow-50:hover {
             transform: translateX(2px);
             transition: transform 0.2s ease;
         }
@@ -171,7 +207,7 @@
     </style>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Elements
             const userMenuButton = document.getElementById('user-menu-button');
             const userDropdown = document.getElementById('user-dropdown');
@@ -181,7 +217,7 @@
             const sidebarToggle = document.getElementById('sidebar-toggle');
 
             // Toggle User Dropdown
-            userMenuButton.addEventListener('click', function(e) {
+            userMenuButton.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const isVisible = userDropdown.classList.contains('show');
 
@@ -195,19 +231,19 @@
             });
 
             // Toggle Notification Modal
-            notificationButton.addEventListener('click', function() {
+            notificationButton.addEventListener('click', function () {
                 notificationModal.classList.add('show');
                 document.body.style.overflow = 'hidden'; // Prevent background scrolling
             });
 
             // Close Notification Modal
-            closeNotification.addEventListener('click', function() {
+            closeNotification.addEventListener('click', function () {
                 notificationModal.classList.remove('show');
                 document.body.style.overflow = ''; // Re-enable scrolling
             });
 
             // Close modal when clicking outside
-            notificationModal.addEventListener('click', function(e) {
+            notificationModal.addEventListener('click', function (e) {
                 if (e.target === notificationModal) {
                     notificationModal.classList.remove('show');
                     document.body.style.overflow = '';
@@ -215,14 +251,14 @@
             });
 
             // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!e.target.closest('.relative') && !e.target.closest('#user-menu-button')) {
                     closeAllDropdowns();
                 }
             });
 
             // Close dropdowns when pressing Escape key
-            document.addEventListener('keydown', function(e) {
+            document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') {
                     closeAllDropdowns();
                     if (notificationModal.classList.contains('show')) {
@@ -233,7 +269,7 @@
             });
 
             // Sidebar toggle functionality
-            sidebarToggle.addEventListener('click', function() {
+            sidebarToggle.addEventListener('click', function () {
                 const sidebar = document.querySelector('.sidebar');
                 sidebar.classList.toggle('active');
             });
@@ -244,7 +280,7 @@
             }
 
             // Prevent dropdown from closing when clicking inside
-            userDropdown.addEventListener('click', function(e) {
+            userDropdown.addEventListener('click', function (e) {
                 e.stopPropagation();
             });
 
@@ -325,7 +361,7 @@
             }
 
             // Show Notif Detail Modal
-            window.showNotifDetail = function(encodedItem) {
+            window.showNotifDetail = function (encodedItem) {
                 const item = JSON.parse(decodeURIComponent(encodedItem));
                 const modal = document.getElementById('notif-detail-modal');
                 const body = document.getElementById('notif-detail-body');
@@ -375,7 +411,7 @@
             document.getElementById('close-notif-detail-btn').addEventListener('click', closeNotifDetail);
 
             // Mark as Read Logic
-            document.getElementById('mark-all-read-btn').addEventListener('click', async function() {
+            document.getElementById('mark-all-read-btn').addEventListener('click', async function () {
                 try {
                     const response = await fetch('/dashboard/rfk/pending');
                     if (response.ok) {
@@ -402,5 +438,122 @@
 
             // Poll every 30 seconds
             setInterval(loadNotifications, 30000);
+
+            // Global Search Logic
+            const searchInput = document.getElementById('global-search-input');
+            const searchResults = document.getElementById('global-search-results');
+            const searchBody = document.getElementById('search-results-body');
+            const searchLoading = document.getElementById('search-loading');
+            let searchTimeout = null;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function (e) {
+                    const query = e.target.value.trim();
+                    
+                    if (query.length < 3) {
+                        searchResults.classList.add('hidden');
+                        searchResults.classList.remove('opacity-100', 'scale-100');
+                        searchResults.classList.add('opacity-0', 'scale-95');
+                        return;
+                    }
+
+                    // Show dropdown and loading
+                    searchResults.classList.remove('hidden');
+                    setTimeout(() => {
+                        searchResults.classList.remove('opacity-0', 'scale-95');
+                        searchResults.classList.add('opacity-100', 'scale-100');
+                    }, 10);
+                    
+                    searchLoading.classList.remove('hidden');
+
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(async () => {
+                        try {
+                            const response = await fetch(`/dashboard/search?q=${encodeURIComponent(query)}`);
+                            const result = await response.json();
+
+                            if (result.success) {
+                                renderSearchResults(result.data);
+                            } else {
+                                searchBody.innerHTML = '<div class="text-center py-4 text-xs text-red-500">Gagal mengambil data</div>';
+                            }
+                        } catch (error) {
+                            console.error('Search error:', error);
+                            searchBody.innerHTML = '<div class="text-center py-4 text-xs text-red-500">Terjadi kesalahan jaringan</div>';
+                        } finally {
+                            searchLoading.classList.add('hidden');
+                        }
+                    }, 400); // 400ms debounce
+                });
+
+                // Hide when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!e.target.closest('#global-search-container')) {
+                        searchResults.classList.add('hidden');
+                        searchResults.classList.remove('opacity-100', 'scale-100');
+                        searchResults.classList.add('opacity-0', 'scale-95');
+                    }
+                });
+                
+                // Show again when clicking input if there's text
+                searchInput.addEventListener('click', function () {
+                    if (searchInput.value.trim().length >= 3) {
+                        searchResults.classList.remove('hidden');
+                        setTimeout(() => {
+                            searchResults.classList.remove('opacity-0', 'scale-95');
+                            searchResults.classList.add('opacity-100', 'scale-100');
+                        }, 10);
+                    }
+                });
+            }
+
+            function renderSearchResults(data) {
+                if (data.length === 0) {
+                    searchBody.innerHTML = `
+                        <div class="text-center py-6 px-4">
+                            <i class="fas fa-box-open text-3xl text-gray-300 mb-2"></i>
+                            <p class="text-sm text-gray-500 font-medium">Tidak ada data ditemukan</p>
+                            <p class="text-xs text-gray-400 mt-1">Coba gunakan kata kunci lain</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                data.forEach(item => {
+                    const formatRp = (angka) => {
+                        return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(angka);
+                    };
+                    
+                    const badgeIcon = item.type === 'master' ? 'fa-cube' : 'fa-history';
+                    const badgeText = item.type === 'master' ? 'Master' : 'Realisasi';
+                    
+                    html += `
+                        <div class="p-3 bg-white border border-gray-100 rounded-lg hover:bg-${item.badge_color}-50 hover:border-${item.badge_color}-200 transition-colors cursor-pointer group shadow-sm hover:shadow">
+                            <div class="flex justify-between items-start mb-1">
+                                <h4 class="text-sm font-bold text-gray-800 line-clamp-1 group-hover:text-${item.badge_color}-700" title="${item.title}">
+                                    ${item.title}
+                                </h4>
+                                <span class="bg-${item.badge_color}-100 text-${item.badge_color}-700 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider flex-shrink-0 ml-2 border border-${item.badge_color}-200">
+                                    <i class="fas ${badgeIcon} mr-1"></i>${badgeText}
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500 font-medium mb-2 line-clamp-1"><i class="fas fa-building mr-1"></i>${item.subtitle}</p>
+                            
+                            <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-100">
+                                <div>
+                                    <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-0.5">Pagu Alokasi</p>
+                                    <p class="text-xs font-bold text-gray-700">Rp ${formatRp(item.pagu)}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-${item.badge_color}-500 uppercase font-bold tracking-wider mb-0.5">Realisasi</p>
+                                    <p class="text-xs font-bold text-${item.badge_color}-600">Rp ${formatRp(item.realisasi)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                searchBody.innerHTML = html;
+            }
         });
     </script>
