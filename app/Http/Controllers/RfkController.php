@@ -170,6 +170,20 @@ class RfkController extends Controller
                 $data = $this->applyTriwulanFilter($data, $request->triwulan);
             }
 
+            if ($request->filled('fisik')) {
+                $data = $data->filter(function($item) use ($request) {
+                    $fisik = (float) $item->realisasi_fisik;
+                    switch($request->fisik) {
+                        case '0-25': return $fisik >= 0 && $fisik <= 25;
+                        case '26-50': return $fisik > 25 && $fisik <= 50;
+                        case '51-75': return $fisik > 50 && $fisik <= 75;
+                        case '76-99': return $fisik > 75 && $fisik < 100;
+                        case '100': return $fisik == 100;
+                        default: return true;
+                    }
+                })->values();
+            }
+
             // Calculate Grand Totals
             $grandPagu = $data->sum('pagu');
             $grandRealisasiKeuangan = $data->sum('realisasi_keuangan');
@@ -247,6 +261,20 @@ class RfkController extends Controller
 
         if ($request->filled('triwulan')) {
             $data = $this->applyTriwulanFilter($data, $request->triwulan);
+        }
+
+        if ($request->filled('fisik')) {
+            $data = $data->filter(function($item) use ($request) {
+                $fisik = (float) $item->realisasi_fisik;
+                switch($request->fisik) {
+                    case '0-25': return $fisik >= 0 && $fisik <= 25;
+                    case '26-50': return $fisik > 25 && $fisik <= 50;
+                    case '51-75': return $fisik > 50 && $fisik <= 75;
+                    case '76-99': return $fisik > 75 && $fisik < 100;
+                    case '100': return $fisik == 100;
+                    default: return true;
+                }
+            })->values();
         }
 
         $fileName = 'Laporan_RFK_' . date('Y_m_d_H_i_s') . '.csv';
@@ -532,6 +560,146 @@ class RfkController extends Controller
             return strcmp($a['nama_opd'], $b['nama_opd']);
         });
 
+        
+        $hist = [0, 0, 0, 0];
+        foreach ($allPrograms as $p) {
+            if ($p->pagu < 100000000) {
+                $hist[0]++;
+            } elseif ($p->pagu <= 500000000) {
+                $hist[1]++;
+            } elseif ($p->pagu <= 1000000000) {
+                $hist[2]++;
+            } else {
+                $hist[3]++;
+            }
+        }
+        
+        // --- 16 Kategori Rincian Alokasi Dana ---
+        $rincianAlokasi = [
+            'apbd_operasi' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'apbd_modal' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'belanja_pegawai' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'belanja_barang_jasa' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'belanja_hibah' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'modal_peralatan' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'modal_jalan' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'modal_gedung' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            
+            'apbn_dau' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'apbn_modal' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'apbn_dak' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'apbn_dak_fisik' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'apbn_dak_non_fisik' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'apbn_dbh' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'apbn_dekom' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+            'apbn_tp' => ['pagu' => 0, 'realisasi' => 0, 'programs' => []],
+        ];
+
+        foreach ($allPrograms as $p) {
+            $sd = strtoupper($p->sumber_dana ?? '');
+            $kat = ''; $sub = ''; $detail = '';
+            if ($p->realisasis && $p->realisasis->count() > 0) {
+                $lastReal = $p->realisasis->sortByDesc('id')->first();
+                $kat = strtoupper($lastReal->kategori_anggaran ?? '');
+                $sub = strtoupper($lastReal->sub_kategori_anggaran ?? '');
+                $detail = strtoupper($lastReal->sumber_dana_detail ?? '');
+            }
+
+            $progData = [
+                'opd' => $p->opd->nama_opd ?? '-',
+                'nama' => $p->nama_program ?? 'Program Tanpa Nama',
+                'pagu' => (float)($p->pagu ?? 0),
+                'realisasi' => (float)($p->realisasi_keuangan ?? 0),
+                'persen' => ($p->pagu > 0) ? round(((float)($p->realisasi_keuangan ?? 0) / $p->pagu) * 100, 2) : 0
+            ];
+
+            if ($sd === 'APBD') {
+                if ($kat === 'BELANJA_OPERASI' || strpos($kat, 'OPERASI') !== false) {
+                    $rincianAlokasi['apbd_operasi']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbd_operasi']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbd_operasi']['programs'][] = $progData;
+                    
+                    if ($sub === 'BELANJA_PEGAWAI' || strpos($sub, 'PEGAWAI') !== false) {
+                        $rincianAlokasi['belanja_pegawai']['pagu'] += $progData['pagu'];
+                        $rincianAlokasi['belanja_pegawai']['realisasi'] += $progData['realisasi'];
+                        $rincianAlokasi['belanja_pegawai']['programs'][] = $progData;
+                    } elseif ($sub === 'BELANJA_BARANG_JASA' || strpos($sub, 'BARANG') !== false || strpos($sub, 'JASA') !== false) {
+                        $rincianAlokasi['belanja_barang_jasa']['pagu'] += $progData['pagu'];
+                        $rincianAlokasi['belanja_barang_jasa']['realisasi'] += $progData['realisasi'];
+                        $rincianAlokasi['belanja_barang_jasa']['programs'][] = $progData;
+                    } elseif ($sub === 'BELANJA_HIBAH' || strpos($sub, 'HIBAH') !== false || strpos($kat, 'HIBAH') !== false) {
+                        $rincianAlokasi['belanja_hibah']['pagu'] += $progData['pagu'];
+                        $rincianAlokasi['belanja_hibah']['realisasi'] += $progData['realisasi'];
+                        $rincianAlokasi['belanja_hibah']['programs'][] = $progData;
+                    }
+                } elseif ($kat === 'BELANJA_MODAL' || strpos($kat, 'MODAL') !== false) {
+                    $rincianAlokasi['apbd_modal']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbd_modal']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbd_modal']['programs'][] = $progData;
+                    
+                    if ($sub === 'BELANJA_MODAL_PERALATAN_MESIN' || strpos($sub, 'MESIN') !== false) {
+                        $rincianAlokasi['modal_peralatan']['pagu'] += $progData['pagu'];
+                        $rincianAlokasi['modal_peralatan']['realisasi'] += $progData['realisasi'];
+                        $rincianAlokasi['modal_peralatan']['programs'][] = $progData;
+                    } elseif ($sub === 'BELANJA_MODAL_JALAN_IRIGASI' || strpos($sub, 'JALAN') !== false || strpos($sub, 'IRIGASI') !== false) {
+                        $rincianAlokasi['modal_jalan']['pagu'] += $progData['pagu'];
+                        $rincianAlokasi['modal_jalan']['realisasi'] += $progData['realisasi'];
+                        $rincianAlokasi['modal_jalan']['programs'][] = $progData;
+                    } elseif ($sub === 'BELANJA_MODAL_BANGUNAN_GEDUNG' || strpos($sub, 'GEDUNG') !== false) {
+                        $rincianAlokasi['modal_gedung']['pagu'] += $progData['pagu'];
+                        $rincianAlokasi['modal_gedung']['realisasi'] += $progData['realisasi'];
+                        $rincianAlokasi['modal_gedung']['programs'][] = $progData;
+                    }
+                }
+            } elseif ($sd === 'APBN') {
+                if ($detail === 'DAU' || strpos($detail, 'UMUM') !== false) {
+                    $rincianAlokasi['apbn_dau']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_dau']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_dau']['programs'][] = $progData;
+                } elseif ($detail === 'DAK_FISIK' || (strpos($detail, 'DAK') !== false && strpos($detail, 'NON') === false)) {
+                    $rincianAlokasi['apbn_dak_fisik']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_dak_fisik']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_dak_fisik']['programs'][] = $progData;
+                    
+                    $rincianAlokasi['apbn_dak']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_dak']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_dak']['programs'][] = $progData;
+                } elseif ($detail === 'DAK_NON_FISIK' || (strpos($detail, 'DAK') !== false && strpos($detail, 'NON') !== false)) {
+                    $rincianAlokasi['apbn_dak_non_fisik']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_dak_non_fisik']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_dak_non_fisik']['programs'][] = $progData;
+                    
+                    $rincianAlokasi['apbn_dak']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_dak']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_dak']['programs'][] = $progData;
+                } elseif ($detail === 'DBH' || strpos($detail, 'HASIL') !== false) {
+                    $rincianAlokasi['apbn_dbh']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_dbh']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_dbh']['programs'][] = $progData;
+                } elseif ($detail === 'DEKONSENTRASI' || strpos($detail, 'DEKOM') !== false) {
+                    $rincianAlokasi['apbn_dekom']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_dekom']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_dekom']['programs'][] = $progData;
+                } elseif ($detail === 'TUGAS_PEMBANTUAN' || strpos($detail, 'TUGAS') !== false) {
+                    $rincianAlokasi['apbn_tp']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_tp']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_tp']['programs'][] = $progData;
+                }
+                
+                if (strpos($kat, 'MODAL') !== false || strpos($detail, 'MODAL') !== false) {
+                    $rincianAlokasi['apbn_modal']['pagu'] += $progData['pagu'];
+                    $rincianAlokasi['apbn_modal']['realisasi'] += $progData['realisasi'];
+                    $rincianAlokasi['apbn_modal']['programs'][] = $progData;
+                }
+            }
+            
+            if ($sd === 'APBD' && (strpos($kat, 'HIBAH') !== false || strpos($sub, 'HIBAH') !== false) && !in_array($progData, $rincianAlokasi['belanja_hibah']['programs'])) {
+                 $rincianAlokasi['belanja_hibah']['pagu'] += $progData['pagu'];
+                 $rincianAlokasi['belanja_hibah']['realisasi'] += $progData['realisasi'];
+                 $rincianAlokasi['belanja_hibah']['programs'][] = $progData;
+            }
+        }
+
         $lastUpdated = $allPrograms->max('updated_at');
         $lastUpdatedAtFormatted = $lastUpdated ? \Carbon\Carbon::parse($lastUpdated)->isoFormat('D MMMM YYYY, HH:mm') . ' WIB' : 'Belum ada data';
 
@@ -699,6 +867,7 @@ class RfkController extends Controller
                 'top_reject_opds' => $topRejectOpds->toArray(),
                 'top_10_paket' => $top10Paket->toArray(),
                 'top10_opd_pagu' => $top10OpdPagu->toArray(),
+                'hist' => $hist,
                 'peta_sebaran' => $mapData->toArray(),
                 'serapan_tertinggi' => $serapanTertinggi->toArray(),
                 'serapan_terendah' => $serapanTerendah->toArray(),
@@ -709,6 +878,7 @@ class RfkController extends Controller
                     'detail' => $trafficLight
                 ],
                 'ranking_opd' => $rankingOpd,
+                'rincian_alokasi' => $rincianAlokasi,
                 'opds' => $opdsData
             ])
         ]);
@@ -792,11 +962,11 @@ class RfkController extends Controller
                 return response()->json(['success' => false, 'message' => 'Akses ditolak. Program ini bukan milik OPD Anda.'], 403);
             }
 
-            // Validasi status Master: Hanya bisa tambah jika status APPROVE
-            if ($rfk->status !== 'APPROVE') {
+            // Validasi status Master: Hanya bisa tambah jika status APPROVE atau REJECT (perbaikan)
+            if (!in_array($rfk->status, ['APPROVE', 'REJECT'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Status program saat ini adalah ' . $rfk->status . '. Tambahan realisasi hanya dapat dilakukan jika status sudah APPROVE.'
+                    'message' => 'Status program saat ini adalah ' . $rfk->status . '. Tambahan realisasi hanya dapat dilakukan jika status sudah APPROVE atau REJECT.'
                 ], 422);
             }
 

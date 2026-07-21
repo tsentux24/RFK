@@ -490,6 +490,7 @@
                         <th class="px-8 py-4 font-bold uppercase tracking-wider text-xs text-right">Realisasi Keuangan</th>
                         <th class="px-8 py-4 font-bold uppercase tracking-wider text-xs text-right">Sisa Anggaran</th>
                         <th class="px-8 py-4 font-bold uppercase tracking-wider text-xs text-center">Rata-rata Fisik</th>
+                        <th class="px-8 py-4 font-bold uppercase tracking-wider text-xs text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="global-summary-body" class="divide-y divide-slate-100">
@@ -573,6 +574,26 @@
     </div>
 </div>
 
+
+<!-- Sub Modal: Program Detail -->
+    <div id="programDetailModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[60] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300 relative">
+            <div class="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-800">Rincian Lengkap Program</h2>
+                </div>
+                <button onclick="closeProgramDetail()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-8 overflow-y-auto modern-scroll flex-1 bg-white" id="programDetailContent">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -835,6 +856,11 @@
                                 <span class="font-bold text-indigo-700 text-sm w-12">${opd.rata_rata_fisik || 0}%</span>
                             </div>
                         </td>
+                        <td class="px-8 py-5 text-center">
+                            <button onclick="openOpdPrograms(${opd.id})" class="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg text-xs font-bold transition-colors shadow-sm">
+                                <i class="fas fa-list"></i> Lihat Program
+                            </button>
+                        </td>
                     </tr>
                 `).join('');
                 tbody.innerHTML = rows;
@@ -845,9 +871,179 @@
         }
     };
 
+    window.openOpdPrograms = function(opdId) {
+        closeModal('global-summary-modal');
+        setTimeout(() => {
+            const opd = superadminData.find(o => o.id === opdId);
+            if (!opd) return;
+
+            // Reset tab styling to 'ALL' (for visual correctness)
+            ['ALL', 'SELESAI', 'PENDING', 'APPROVE', 'REJECT'].forEach(s => {
+                const btn = document.getElementById('tab-status-' + s);
+                if(btn) {
+                    if(s === 'ALL') {
+                        btn.className = `px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors bg-slate-800 text-white`;
+                    } else {
+                        btn.className = `px-5 py-2 bg-white border rounded-lg text-sm font-bold transition-colors ${s==='SELESAI' ? 'text-blue-600 border-blue-200 hover:bg-blue-50' : (s==='PENDING' ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : (s==='APPROVE' ? 'text-emerald-600 border-emerald-200 hover:bg-emerald-50' : 'text-rose-600 border-rose-200 hover:bg-rose-50'))}`;
+                    }
+                }
+            });
+
+            const tbody = document.getElementById('status-breakdown-body');
+            const programs = opd.programs || [];
+
+            if (programs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-slate-500 font-medium"><i class="fas fa-folder-open text-3xl mb-3 text-slate-300 block"></i> Tidak ada program pada OPD ini.</td></tr>`;
+            } else {
+                let rows = programs.map(p => `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-5 whitespace-normal min-w-[180px]">
+                            <p class="font-bold text-slate-800 text-xs mb-1" title="${opd.nama_opd || '-'}">${opd.nama_opd || '-'}</p>
+                        </td>
+                        <td class="px-6 py-5 whitespace-normal min-w-[250px]">
+                            <p class="font-bold text-slate-800 text-[13px] mb-1 line-clamp-2" title="${p.nama || '-'}">${p.nama || '-'}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-[10px] font-mono text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded font-semibold border border-indigo-100">${p.kode || '-'}</span>
+                                <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">TA: ${p.tahun_anggaran || '-'}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 whitespace-normal min-w-[180px]">
+                            <p class="text-[11px] font-bold text-slate-700 leading-tight mb-1" title="${p.sub_kategori_program || '-'}">${p.sub_kategori_program || '-'}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight mb-0.5"><span class="font-bold">Kegiatan:</span> ${p.kegiatan || '-'}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight"><span class="font-bold">Sub Kegiatan:</span> ${p.sub_kegiatan || '-'}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight mt-1"><span class="font-bold">Ket:</span> ${p.keterangan || '-'}</p>
+                        </td>
+                        <td class="px-6 py-5 whitespace-normal min-w-[150px]">
+                            <p class="text-[11px] font-bold text-slate-800 mb-0.5">${p.sumber_dana || '-'}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight">${p.sumber_dana_detail || '-'}</p>
+                        </td>
+                        <td class="px-6 py-5 whitespace-normal min-w-[160px]">
+                            <p class="text-[11px] font-bold text-slate-700 leading-tight mb-0.5">${p.kategori_anggaran || '-'}</p>
+                            <p class="text-[10px] text-slate-500 leading-tight">${p.sub_kategori_anggaran || '-'}</p>
+                        </td>
+                        <td class="px-6 py-5 text-right font-bold text-slate-600">Rp ${formatRp(p.pagu)}</td>
+                        <td class="px-6 py-5 text-right">
+                            <p class="font-bold text-emerald-600">Rp ${formatRp(p.realisasi)}</p>
+                            <p class="text-[10px] font-black text-indigo-500 mt-1">${p.fisik || 0}% Fisik</p>
+                        </td>
+                        <td class="px-6 py-5 text-center">
+                            <span class="px-3 py-1.5 rounded-md text-[10px] font-black tracking-widest uppercase border shadow-sm ${getBadgeClass(p.status)}">${p.status || 'PENDING'}</span>
+                        </td>
+                        <td class="px-6 py-5 text-center">
+                            <button onclick="openProgramDetail(${p.id})" class="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-bold transition-colors shadow-sm">
+                                <i class="fas fa-search"></i> Detail
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                tbody.innerHTML = rows;
+            }
+            openModal('status-breakdown-modal');
+        }, 300); // Tunggu modal pertama hilang
+    };
+
     window.openStatusBreakdownModal = function() {
         filterStatusModal('ALL');
         openModal('status-breakdown-modal');
+    };
+
+    window.openProgramDetail = function(id) {
+        const p = allProgramsFlat.find(prog => prog.id === id);
+        if(!p) return;
+
+        let statusBadge = '';
+        if(p.status === 'SELESAI') statusBadge = '<span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-bold">SELESAI</span>';
+        else if(p.status === 'APPROVE') statusBadge = '<span class="px-3 py-1 bg-green-100 text-green-700 rounded-md text-xs font-bold">APPROVE</span>';
+        else if(p.status === 'PENDING') statusBadge = '<span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-md text-xs font-bold">PENDING</span>';
+        else if(p.status === 'REJECT') statusBadge = '<span class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-bold">REJECT</span>';
+
+        const contentHtml = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Kolom Kiri -->
+                <div class="space-y-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Instansi (OPD)</p>
+                        <p class="text-sm font-semibold text-slate-800">${p.nama_opd}</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Kode & Nama Program</p>
+                        <p class="text-xs font-mono text-blue-600 mb-1">${p.kode || '-'}</p>
+                        <p class="text-sm font-semibold text-slate-800">${p.nama || '-'}</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Kegiatan / Sub Kegiatan</p>
+                        <p class="text-sm font-semibold text-slate-800 mb-1">Kegiatan: <span class="font-normal text-slate-600">${p.kegiatan || '-'}</span></p>
+                        <p class="text-sm font-semibold text-slate-800">Sub: <span class="font-normal text-slate-600">${p.sub_kegiatan || '-'}</span></p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Keterangan / Deskripsi</p>
+                        <p class="text-sm text-slate-600 whitespace-pre-wrap">${p.keterangan || '-'}</p>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan -->
+                <div class="space-y-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Status Pelaporan</p>
+                            ${statusBadge}
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Tahun Anggaran</p>
+                            <p class="text-lg font-bold text-slate-800">${p.tahun_anggaran || '-'}</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">Klasifikasi Anggaran</p>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div><span class="text-slate-500 text-xs">Sumber Dana:</span><br><span class="font-semibold text-slate-800">${p.sumber_dana || '-'}</span></div>
+                            <div><span class="text-slate-500 text-xs">Rincian Dana:</span><br><span class="font-semibold text-slate-800">${p.sumber_dana_detail || '-'}</span></div>
+                            <div><span class="text-slate-500 text-xs">Kategori:</span><br><span class="font-semibold text-slate-800">${p.kategori_anggaran || '-'}</span></div>
+                            <div><span class="text-slate-500 text-xs">Sub Kategori:</span><br><span class="font-semibold text-slate-800">${p.sub_kategori_anggaran || '-'}</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                        <p class="text-[10px] uppercase font-bold text-blue-600 mb-3">Rincian Keuangan & Fisik</p>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center border-b border-blue-100 pb-2">
+                                <span class="text-sm font-medium text-slate-600">Pagu Anggaran</span>
+                                <span class="font-bold text-slate-800">Rp ${formatRp(p.pagu)}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-blue-100 pb-2">
+                                <span class="text-sm font-medium text-slate-600">Realisasi Keuangan</span>
+                                <span class="font-bold text-emerald-600">Rp ${formatRp(p.realisasi)}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-b border-blue-100 pb-2">
+                                <span class="text-sm font-medium text-slate-600">Sisa Pagu</span>
+                                <span class="font-bold text-rose-500">Rp ${formatRp(p.sisa)}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-medium text-slate-600">Capaian Fisik</span>
+                                <span class="font-black text-xl text-blue-600">${p.fisik || 0}%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('programDetailContent').innerHTML = contentHtml;
+        const modal = document.getElementById('programDetailModal');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.firstElementChild.classList.remove('scale-95');
+        }, 10);
+    };
+
+    window.closeProgramDetail = function() {
+        const modal = document.getElementById('programDetailModal');
+        modal.classList.add('opacity-0');
+        modal.firstElementChild.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
     };
 
     window.filterStatusModal = function(status) {
@@ -902,6 +1098,11 @@
                         </td>
                         <td class="px-6 py-5 text-center">
                             <span class="px-3 py-1.5 rounded-md text-[10px] font-black tracking-widest uppercase border shadow-sm ${getBadgeClass(p.status)}">${p.status || 'PENDING'}</span>
+                        </td>
+                        <td class="px-6 py-5 text-center">
+                            <button onclick="openProgramDetail(${p.id})" class="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-bold transition-colors shadow-sm">
+                                <i class="fas fa-search"></i> Detail
+                            </button>
                         </td>
                     </tr>
                 `).join('');

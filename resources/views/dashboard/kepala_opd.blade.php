@@ -220,13 +220,26 @@
         </div>
 
 
-        <!-- Top 10 Program -->
-        <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100 mb-8">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <i class="fas fa-chart-bar text-indigo-600"></i> Top 10 Program (Berdasarkan Pagu)
-            </h3>
-            <div class="chart-container" style="height: 350px;">
-                <canvas id="top10Chart"></canvas>
+        <!-- Charts and Top 10 Latest Realizations -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Top 10 Program Pagu -->
+            <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-chart-bar text-indigo-600"></i> Top 10 Program (Berdasarkan Pagu)
+                </h3>
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="top10Chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top 10 Realisasi Terbaru -->
+            <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100 flex flex-col">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b border-gray-100 pb-3">
+                    <i class="fas fa-history text-green-600"></i> Top 10 Data Realisasi Terbaru
+                </h3>
+                <div class="overflow-y-auto flex-1 pr-2" style="max-height: 350px;" id="latestRealisasiContainer">
+                    <div class="text-center py-4 text-gray-500">Memuat...</div>
+                </div>
             </div>
         </div>
 
@@ -268,15 +281,56 @@
 
         <!-- Data Program RFK -->
         <div class="bg-white rounded-2xl p-5 shadow-md border border-gray-100 mb-8">
-            <div class="flex justify-between items-center mb-5">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-3">
                 <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-chart-bar text-indigo-600"></i>
-                    Data Program RFK
+                    Data Program RFK (Filter & Laporan)
                 </h3>
-                <button onclick="loadAllData()"
-                    class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg transition-colors">
-                    <i class="fas fa-sync-alt mr-1"></i> Refresh
-                </button>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="exportCsvOPD()" class="text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg transition-colors flex items-center">
+                        <i class="fas fa-file-csv mr-1"></i> Export CSV
+                    </button>
+                    <button onclick="exportPdfOPD()" id="btn-export-pdf-opd" class="text-sm bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1.5 rounded-lg transition-colors flex items-center">
+                        <i class="fas fa-file-pdf mr-1"></i> Export PDF
+                    </button>
+                    <button onclick="loadAllData()"
+                        class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg transition-colors">
+                        <i class="fas fa-sync-alt mr-1"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-5 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Kode / Nama Program</label>
+                    <input type="text" id="filterProgram" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Cari program..." onkeyup="applyFilterToCards()">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Tahun Anggaran</label>
+                    <input type="text" id="filterTahun" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="Tahun..." onkeyup="applyFilterToCards()">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Triwulan</label>
+                    <select id="filterTriwulan" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" onchange="loadAllData()">
+                        <option value="">Semua Triwulan (Tahunan)</option>
+                        <option value="1">Triwulan 1 (Jan - Mar)</option>
+                        <option value="2">Triwulan 2 (Apr - Jun)</option>
+                        <option value="3">Triwulan 3 (Jul - Sep)</option>
+                        <option value="4">Triwulan 4 (Okt - Des)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Realisasi Fisik (%)</label>
+                    <select id="filterFisik" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" onchange="applyFilterToCards()">
+                        <option value="">Semua Persentase</option>
+                        <option value="0-25">0% - 25% (Awal)</option>
+                        <option value="26-50">26% - 50% (Sedang Berjalan)</option>
+                        <option value="51-75">51% - 75% (Lebih dari Setengah)</option>
+                        <option value="76-99">76% - 99% (Hampir Selesai)</option>
+                        <option value="100">100% (Selesai)</option>
+                    </select>
+                </div>
             </div>
 
             <div class="space-y-4" id="allDataContainer">
@@ -685,7 +739,9 @@
 
         async function loadAllData() {
             try {
-                const response = await fetch('{{ route("rfk.data") }}');
+                const twSearch = document.getElementById('filterTriwulan') ? document.getElementById('filterTriwulan').value : '';
+                const url = '{{ route("laporan.data") }}' + (twSearch ? '?triwulan=' + twSearch : '');
+                const response = await fetch(url);
                 const result = await response.json();
 
                 if (result.success) {
@@ -706,8 +762,12 @@
                         let statusBadgeClass = 'bg-green-100 text-green-800 border-green-200';
                         if (item.status === 'SELESAI') statusBadgeClass = 'bg-blue-100 text-blue-800 border-blue-200';
 
+                        // Add data attributes for filtering
+                        const programLower = (item.nama_program || '').toLowerCase() + ' ' + (item.kode_program || '').toLowerCase();
+                        const tahunStr = (item.tahun_anggaran || '').toString().toLowerCase();
+
                         html += `
-                    <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition">
+                    <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition opd-card-item" data-program="${programLower}" data-tahun="${tahunStr}" data-fisik="${fisik}">
                         <div class="flex justify-between items-start mb-2">
                             <h4 class="font-medium text-indigo-700">${item.nama_program}</h4>
                             <div class="flex items-center gap-2">
@@ -730,19 +790,24 @@
                     });
 
                     if (approvedData.length === 0) {
-                        html = '<div class="text-center py-4 text-gray-500">Tidak ada Program RFK dengan status APPROVED</div>';
+                        html = '<div class="text-center py-4 text-gray-500" id="empty-state-cards">Tidak ada Program RFK dengan status APPROVED</div>';
+                    } else {
+                        html += '<div class="text-center py-4 text-gray-500 hidden" id="empty-state-cards">Data tidak ditemukan berdasarkan filter</div>';
                     }
                     document.getElementById('allDataContainer').innerHTML = html;
 
-                    // Update Summary Cards
-                    if (result.statistics) {
-                        const stats = result.statistics;
-                        const statsHtml = `
+                    // Compute statistics client-side to fix the Memuat bug
+                    const totalProgram = approvedData.length;
+                    const totalPagu = approvedData.reduce((sum, item) => sum + (parseFloat(item.pagu) || 0), 0);
+                    const avgFisik = totalProgram > 0 ? (approvedData.reduce((sum, item) => sum + (parseFloat(item.realisasi_fisik) || 0), 0) / totalProgram).toFixed(2) : 0;
+                    const terlambat = approvedData.filter(item => (parseFloat(item.realisasi_fisik) || 0) < 30).length;
+
+                    const statsHtml = `
                         <div class="bg-white rounded-xl p-5 shadow-md border border-gray-100 card-hover">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-sm text-gray-500">Total Program</p>
-                                    <h3 class="text-2xl font-bold text-gray-800">${stats.total_program}</h3>
+                                    <h3 class="text-2xl font-bold text-gray-800">${totalProgram}</h3>
                                 </div>
                                 <div class="bg-indigo-100 p-3 rounded-lg"><i class="fas fa-folder-open text-indigo-600 text-xl"></i></div>
                             </div>
@@ -751,7 +816,7 @@
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-sm text-gray-500">Total Pagu</p>
-                                    <h3 class="text-lg font-bold text-gray-800">Rp ${formatRupiahStr(stats.total_pagu)}</h3>
+                                    <h3 class="text-lg font-bold text-gray-800">Rp ${formatRupiahStr(totalPagu)}</h3>
                                 </div>
                                 <div class="bg-cyan-100 p-3 rounded-lg"><i class="fas fa-chart-line text-cyan-600 text-xl"></i></div>
                             </div>
@@ -760,7 +825,7 @@
                             <div class="flex justify-between items-start">
                                 <div>
                                     <p class="text-sm text-gray-500">Rata-rata Fisik</p>
-                                    <h3 class="text-2xl font-bold text-gray-800">${stats.avg_fisik}%</h3>
+                                    <h3 class="text-2xl font-bold text-gray-800">${avgFisik}%</h3>
                                 </div>
                                 <div class="bg-green-100 p-3 rounded-lg"><i class="fas fa-percent text-green-600 text-xl"></i></div>
                             </div>
@@ -768,15 +833,66 @@
                         <div class="bg-white rounded-xl p-5 shadow-md border border-gray-100 card-hover">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <p class="text-sm text-gray-500">Program Terlambat</p>
-                                    <h3 class="text-2xl font-bold text-gray-800">${stats.terlambat}</h3>
+                                    <p class="text-sm text-gray-500">Program Terlambat (< 30%)</p>
+                                    <h3 class="text-2xl font-bold text-gray-800">${terlambat}</h3>
                                 </div>
                                 <div class="bg-red-100 p-3 rounded-lg"><i class="fas fa-exclamation-triangle text-red-600 text-xl"></i></div>
                             </div>
                         </div>
                     `;
-                        document.getElementById('summaryCardsContainer').innerHTML = statsHtml;
+                    document.getElementById('summaryCardsContainer').innerHTML = statsHtml;
+
+                    // Compute Top 10 Latest Realizations
+                    const allRealisasis = [];
+                    approvedData.forEach(item => {
+                        if (item.realisasis && item.realisasis.length > 0) {
+                            const approvedRealisasis = item.realisasis.filter(r => r.status === 'APPROVE');
+                            approvedRealisasis.forEach(r => {
+                                allRealisasis.push({
+                                    ...r,
+                                    nama_program: item.nama_program,
+                                    kode_program: item.kode_program,
+                                    user_name: item.user ? item.user.name : '-'
+                                });
+                            });
+                        }
+                    });
+
+                    const top10Latest = allRealisasis.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
+                    let latestHtml = '';
+                    top10Latest.forEach(r => {
+                        const dateStr = new Date(r.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'});
+                        latestHtml += `
+                            <div class="flex items-start gap-4 p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
+                                <div class="bg-indigo-100 p-2.5 rounded-full text-indigo-600">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-gray-800 text-sm mb-1">${r.nama_program}</h4>
+                                        <span class="text-xs text-gray-500 whitespace-nowrap ml-2">${dateStr}</span>
+                                    </div>
+                                    <div class="flex gap-4 mt-2">
+                                        <div class="text-xs">
+                                            <span class="text-gray-500">Fisik:</span>
+                                            <span class="font-bold text-blue-600">${r.nilai_realisasi_fisik}%</span>
+                                        </div>
+                                        <div class="text-xs">
+                                            <span class="text-gray-500">Keuangan:</span>
+                                            <span class="font-bold text-green-600">Rp ${formatRupiahStr(r.nilai_realisasi_keuangan)}</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1 italic">Diinput oleh: ${r.user_name}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    if (top10Latest.length === 0) {
+                        latestHtml = '<div class="text-center py-4 text-gray-500">Belum ada data realisasi terbaru</div>';
                     }
+                    const latestContainer = document.getElementById('latestRealisasiContainer');
+                    if (latestContainer) latestContainer.innerHTML = latestHtml;
 
                     setTimeout(() => {
                         const progressBars = document.querySelectorAll('.progress-bar');
@@ -786,10 +902,113 @@
                             setTimeout(() => { bar.style.width = width; }, 100);
                         });
                     }, 100);
+                    
+                    applyFilterToCards(); // Apply filters immediately if any exist
                 }
             } catch (e) {
                 console.error("Error fetching all data", e);
             }
+        }
+
+        function applyFilterToCards() {
+            const pSearch = document.getElementById('filterProgram') ? document.getElementById('filterProgram').value.toLowerCase() : '';
+            const tSearch = document.getElementById('filterTahun') ? document.getElementById('filterTahun').value.toLowerCase() : '';
+            const fSearch = document.getElementById('filterFisik') ? document.getElementById('filterFisik').value : '';
+
+            const cards = document.querySelectorAll('.opd-card-item');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const prog = card.getAttribute('data-program');
+                const tahun = card.getAttribute('data-tahun');
+                const fisik = parseFloat(card.getAttribute('data-fisik')) || 0;
+
+                let show = true;
+                if(pSearch && !prog.includes(pSearch)) show = false;
+                if(tSearch && !tahun.includes(tSearch)) show = false;
+                
+                if(fSearch) {
+                    if(fSearch === '0-25' && !(fisik >= 0 && fisik <= 25)) show = false;
+                    else if(fSearch === '26-50' && !(fisik > 25 && fisik <= 50)) show = false;
+                    else if(fSearch === '51-75' && !(fisik > 50 && fisik <= 75)) show = false;
+                    else if(fSearch === '76-99' && !(fisik > 75 && fisik < 100)) show = false;
+                    else if(fSearch === '100' && fisik !== 100) show = false;
+                }
+
+                if(show) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const emptyState = document.getElementById('empty-state-cards');
+            if (emptyState && cards.length > 0) {
+                if(visibleCount === 0) emptyState.classList.remove('hidden');
+                else emptyState.classList.add('hidden');
+            }
+        }
+
+        async function exportPdfOPD() {
+            const btn = document.getElementById('btn-export-pdf-opd');
+            if(!btn) return;
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Proses...';
+
+            const pSearch = document.getElementById('filterProgram') ? document.getElementById('filterProgram').value : '';
+            const tSearch = document.getElementById('filterTahun') ? document.getElementById('filterTahun').value : '';
+            const twSearch = document.getElementById('filterTriwulan') ? document.getElementById('filterTriwulan').value : '';
+            const fSearch = document.getElementById('filterFisik') ? document.getElementById('filterFisik').value : '';
+
+            try {
+                const formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                if(pSearch) formData.append('program', pSearch);
+                if(tSearch) formData.append('tahun', tSearch);
+                if(twSearch) formData.append('triwulan', twSearch);
+                if(fSearch) formData.append('fisik', fSearch);
+
+                const response = await fetch('{{ route("laporan.pdf") }}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const link = document.createElement('a');
+                    link.href = result.url;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    Swal.fire('Gagal!', 'Gagal membuat PDF: ' + (result.message || ''), 'error');
+                }
+            } catch (e) {
+                console.error(e);
+                Swal.fire('Error!', 'Terjadi kesalahan saat mengekspor.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }
+
+        function exportCsvOPD() {
+            const pSearch = document.getElementById('filterProgram') ? document.getElementById('filterProgram').value : '';
+            const tSearch = document.getElementById('filterTahun') ? document.getElementById('filterTahun').value : '';
+            const twSearch = document.getElementById('filterTriwulan') ? document.getElementById('filterTriwulan').value : '';
+            const fSearch = document.getElementById('filterFisik') ? document.getElementById('filterFisik').value : '';
+            
+            let url = '{{ route("laporan.csv") }}?';
+            if(pSearch) url += '&program=' + encodeURIComponent(pSearch);
+            if(tSearch) url += '&tahun=' + encodeURIComponent(tSearch);
+            if(twSearch) url += '&triwulan=' + encodeURIComponent(twSearch);
+            if(fSearch) url += '&fisik=' + encodeURIComponent(fSearch);
+            
+            window.location.href = url;
         }
 
         // Modal Logic
