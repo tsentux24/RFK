@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Isi form dengan data yang diterima
                     document.getElementById('modalBody').innerHTML = `
-                        <form id="editOpdForm">
+                        <form autocomplete="off" id="editOpdForm">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="_method" value="PUT">
                             <input type="hidden" name="id" id="edit_id" value="${data.opd.id}">

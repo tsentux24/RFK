@@ -2,6 +2,8 @@
 <html lang="id">
 
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('images/malut.webp') }}">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -418,18 +420,41 @@
 
 <body>
 
-  <div class="app-header">
-    <div class="container">
-      <div class="logo-container">
-        <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo" class="logo-img">
-        <div>
-          <h2 class="fw-bold mb-0">SI-RAFIKA (Realisasi Fisik Dan Keuangan)</h2>
-          <p class="mb-0 opacity-75">Biro Administrasi Pembangunan Setda Provinsi Maluku Utara</p>
+  <div class="app-header"
+    style="background: linear-gradient(135deg, var(--primary) 0%, #1F8ECD 100%); position: relative; overflow: hidden;">
+    <!-- Dekorasi Background -->
+    <div
+      style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%; blur: 20px;">
+    </div>
+    <div
+      style="position: absolute; bottom: -50px; left: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%;">
+    </div>
+
+    <div class="container position-relative">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="logo-container mb-0">
+          <img src="{{ asset('images/malut.webp') }}" alt="Logo" class="logo-img"
+            style="height: 45px;">
+          <div>
+            <h4 class="fw-bold mb-0 text-white shadow-sm" style="letter-spacing: 0.5px;">SI-RAFIKA Staff Dashboard</h4>
+            <p class="mb-0 text-white-50" style="font-size: 0.85rem;">Sistem Informasi Realisasi Fisik & Keuangan</p>
+          </div>
         </div>
+        <button id="toggleMode" class="mode-toggle shadow-sm"><i class="fas fa-moon"></i></button>
       </div>
-      <div class="d-flex justify-content-between align-items-center mt-2">
-        <p class="mb-0">Selamat datang, {{ Auth::user()->name }} - {{ Auth::user()->opd->nama_opd ?? 'OPD' }}</p>
-        <button id="toggleMode" class="mode-toggle"><i class="fas fa-moon"></i></button>
+
+      <div class="row align-items-center mt-3 p-3"
+        style="background: rgba(255, 255, 255, 0.1); border-radius: 16px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+        <div class="col-md-8">
+          <h5 class="fw-bold text-white mb-1">Selamat Bekerja, {{ Auth::user()->name }}! </h5>
+          <p class="text-white-50 mb-0" style="font-size:0.95rem;"><i
+              class="fas fa-building me-2"></i>{{ Auth::user()->opd->nama_opd ?? 'Instansi OPD' }}</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+          <div class="badge bg-white text-primary p-2 px-3 rounded-pill shadow-sm" style="font-size: 0.85rem;">
+            <i class="fas fa-calendar-alt me-1"></i> {{ date('d M Y') }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -491,6 +516,99 @@
       </div>
     </div>
 
+    <!-- WIDGET TOP 10 REALISASI TERBARU -->
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+        <h5 class="section-title mb-0">10 Data Realisasi Terbaru</h5>
+    </div>
+    <div class="card-custom p-0 mb-4 shadow-sm" style="overflow: hidden;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="font-size: 0.85rem;">
+                <thead style="background: rgba(49, 50, 111, 0.05);">
+                    <tr>
+                        <th class="ps-3 py-3 border-0">Program & Kode</th>
+                        <th class="py-3 border-0">Realisasi (Rp)</th>
+                        <th class="py-3 border-0">Fisik (%)</th>
+                        <th class="py-3 border-0">Waktu Realisasi</th>
+                        <th class="pe-3 py-3 border-0 text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="topRealisasiBody">
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            <i class="fas fa-spinner fa-spin me-2"></i>Memuat data...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    
+    <!-- LAPORAN REALISASI -->
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+        <h5 class="section-title mb-0">Laporan Realisasi RFK</h5>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="cetakLaporanPdf()">
+            <i class="fas fa-file-pdf me-1"></i> Cetak PDF
+        </button>
+    </div>
+    
+    <div class="card-custom p-3 mb-4 shadow-sm">
+        <!-- FILTER BARS -->
+        <div class="row g-2 mb-3">
+            <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm" id="filterPencarian" placeholder="Cari Nama / Kode..." onkeyup="filterLaporanTable()">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select form-select-sm" id="filterTahun" onchange="filterLaporanTable()">
+                    <option value="">Semua Tahun</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select form-select-sm" id="filterTriwulan" onchange="filterLaporanTable()">
+                    <option value="">Semua Triwulan</option>
+                    <option value="1">Triwulan I</option>
+                    <option value="2">Triwulan II</option>
+                    <option value="3">Triwulan III</option>
+                    <option value="4">Triwulan IV</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select form-select-sm" id="filterFisik" onchange="filterLaporanTable()">
+                    <option value="">Semua Realisasi Fisik</option>
+                    <option value="0-25">0% - 25%</option>
+                    <option value="26-50">26% - 50%</option>
+                    <option value="51-75">51% - 75%</option>
+                    <option value="76-99">76% - 99%</option>
+                    <option value="100">100% Selesai</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive bg-white rounded border">
+            <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.85rem;" id="laporanTable">
+                <thead class="table-light">
+                <tr>
+                    <th class="ps-2">Kode</th>
+                    <th>Program</th>
+                    <th>Tahun</th>
+                    <th>Fisik %</th>
+                    <th>Realisasi (Rp)</th>
+                    <th>Sisa Pagu (Rp)</th>
+                    <th>Status</th>
+                    <th class="pe-2">Aksi</th>
+                </tr>
+                </thead>
+                <tbody id="laporanTableBody">
+                    <tr><td colspan="8" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Memuat data laporan...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <h5 class="section-title">Menu Pilihan</h5>
     <div class="row g-3 mb-5">
       <div class="col-6 col-md-4">
@@ -499,12 +617,7 @@
           <p>Input RFK</p>
         </div>
       </div>
-      <div class="col-6 col-md-4">
-        <div class="card-custom menu-card" id="laporanSayaBtn">
-          <div class="menu-icon"><i class="fas fa-chart-bar"></i></div>
-          <p>Laporan Saya</p>
-        </div>
-      </div>
+
       <div class="col-6 col-md-4">
         <a href="{{ route('panduan') }}" style="text-decoration: none; color: inherit;">
           <div class="card-custom menu-card">
@@ -521,7 +634,7 @@
     <a href="#" class="active"><i class="fas fa-home footer-icon"></i><span>Beranda</span></a>
     <a href="#"><i class="fas fa-user footer-icon"></i><span>Profil</span></a>
     <a href="#"><i class="fas fa-bell footer-icon"></i><span>Notifikasi</span></a>
-    <form action="{{ route('logout') }}" method="POST">
+    <form autocomplete="off" action="{{ route('logout') }}" method="POST">
       @csrf
       <button class="logout-btn">
         <svg xmlns="http://w3.org" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -546,7 +659,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
         <div class="modal-body pt-3">
-          <form id="rfkForm">
+          <form autocomplete="off" id="rfkForm">
             @csrf
 
             <!-- Section 1: Sumber Dana & Anggaran -->
@@ -577,7 +690,8 @@
               <div class="form-section-title"><i class="fas fa-sticky-note me-2"></i>Keterangan</div>
               <div class="row">
                 <div class="col-12">
-                  <textarea class="form-control" id="keterangan" rows="3" placeholder="Catatan tambahan...">SKPD</textarea>
+                  <textarea class="form-control" id="keterangan" rows="3"
+                    placeholder="Catatan tambahan...">SKPD</textarea>
                 </div>
               </div>
             </div>
@@ -601,7 +715,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
         <div class="modal-body pt-3">
-          <form id="formEditRealisasi">
+          <form autocomplete="off" id="formEditRealisasi">
             <input type="hidden" id="er_realisasi_id">
             <input type="hidden" id="er_sumber_dana">
 
@@ -692,7 +806,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
         <div class="modal-body pt-3">
-          <form id="formTambahRealisasi">
+          <form autocomplete="off" id="formTambahRealisasi">
             <input type="hidden" id="tr_rfk_id">
             <input type="hidden" id="tr_sumber_dana">
 
@@ -952,10 +1066,76 @@
 
           // Update chart
           updateChart(data);
+          renderTop10Widget(data);
         }
       } catch (error) {
         console.error('Error loading data:', error);
       }
+    }
+
+    
+    // ============ RENDER TOP 10 WIDGET ============
+    function renderTop10Widget(data) {
+        let allRealisasis = [];
+        data.forEach(item => {
+            if (item.realisasis && item.realisasis.length > 0) {
+                item.realisasis.forEach(r => {
+                    r.program_keterangan = item.keterangan || item.nama_program;
+                    r.program_kode = item.kode_program || r.kode_program;
+                    r.sub_kat = item.sub_kategori_program || '-';
+                    r.master_status = item.status;
+                    allRealisasis.push(r);
+                });
+            }
+        });
+        
+        // Sort by id / created_at desc
+        allRealisasis.sort((a, b) => b.id - a.id);
+        const top10 = allRealisasis.slice(0, 10);
+        
+        const tbody = document.getElementById('topRealisasiBody');
+        if(top10.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Belum ada realisasi.</td></tr>`;
+            return;
+        }
+        
+        let html = '';
+        top10.forEach(r => {
+            let statusBadge = '';
+            if (r.status === 'APPROVE') statusBadge = '<span class="badge bg-success">Approve</span>';
+            else if (r.status === 'REJECT') statusBadge = '<span class="badge bg-danger">Reject</span>';
+            else statusBadge = '<span class="badge bg-warning text-dark">Pending</span>';
+            
+            const dateObj = new Date(r.created_at);
+            const dateStr = dateObj.toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'});
+            const timeStr = dateObj.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'});
+            const fisik = r.nilai_realisasi_fisik ? r.nilai_realisasi_fisik + '%' : '0%';
+            
+            html += `
+            <tr class="align-middle">
+                <td class="ps-3 py-3">
+                    <div class="fw-semibold text-primary mb-1">${r.program_kode}</div>
+                    <div class="text-muted" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;" title="${r.program_keterangan}">
+                        ${r.program_keterangan}
+                    </div>
+                    <div class="mt-1" style="font-size: 0.75rem;">
+                        <span class="badge bg-light text-dark border me-1" title="Sub Kategori Program"><i class="fas fa-tags text-secondary"></i> ${r.sub_kat}</span>
+                        <span class="badge bg-light text-dark border" title="Kegiatan"><i class="fas fa-clipboard-list text-secondary"></i> ${r.kegiatan || '-'}</span>
+                    </div>
+                </td>
+                <td class="py-3 fw-bold text-success">Rp ${formatRupiah(r.nilai_realisasi_keuangan)}</td>
+                <td class="py-3 fw-bold text-info">${fisik}</td>
+                <td class="py-3 text-muted">
+                    <div class="d-flex flex-column">
+                        <span><i class="far fa-calendar-alt me-1 text-primary"></i> ${dateStr}</span>
+                        <small class="text-secondary mt-1"><i class="far fa-clock me-1 text-warning"></i> ${timeStr} WIB</small>
+                    </div>
+                </td>
+                <td class="pe-3 py-3 text-center">${statusBadge}</td>
+            </tr>`;
+        });
+        
+        tbody.innerHTML = html;
     }
 
     function updateChart(data) {
@@ -982,113 +1162,151 @@
       }
     }
 
-    // ============ LAPORAN ============
-    const laporanBtn = document.getElementById('laporanSayaBtn');
-    laporanBtn.addEventListener('click', async () => {
-      try {
-        const response = await fetch('{{ route("rfk.data") }}');
-        const result = await response.json();
-
-        if (result.success && result.data.length > 0) {
-          window.rfkListData = {};
-          let tableRows = '';
-          result.data.forEach(item => {
-            window.rfkListData[item.id] = item;
-            const statusBadge = getStatusBadge(item.status);
-
-            let actionBtn = '';
-            let deleteBtn = '';
-
-            const rRealisasiId = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].id : null;
-            const rRealisasiStatus = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].status : null;
-            const hasApproved = item.realisasis && item.realisasis.some(r => r.status === 'APPROVE');
-
-            if (item.status === 'PENDING') {
-              actionBtn = `<span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> Menunggu Approval</span>`;
-
-              if (rRealisasiId && rRealisasiStatus !== 'APPROVE') {
-                deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusRealisasi(${rRealisasiId})" title="Hapus Pengajuan Realisasi ini"><i class="fas fa-trash"></i></button>`;
-              }
-              if (!hasApproved && !rRealisasiId) {
-                deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusProgram(${item.id})" title="Hapus Program Keseluruhan"><i class="fas fa-trash"></i></button>`;
-              }
-            } else if (item.status === 'REJECT') {
-              if (rRealisasiId) {
-                actionBtn = `<button class="btn btn-sm btn-outline-danger" onclick="bukaModalEditRealisasiData(${item.id})"><i class="fas fa-edit"></i> Perbaiki</button>`;
-                if (rRealisasiStatus !== 'APPROVE') {
-                  deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusRealisasi(${rRealisasiId})" title="Hapus Pengajuan Realisasi ini"><i class="fas fa-trash"></i></button>`;
-                }
-              } else {
-                actionBtn = `<button class="btn btn-sm btn-outline-danger" onclick="bukaModalPerbaikanRealisasiBaru(${item.id})"><i class="fas fa-edit"></i> Perbaiki</button>`;
-                if (!hasApproved) {
-                  deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusProgram(${item.id})" title="Hapus Program Keseluruhan"><i class="fas fa-trash"></i></button>`;
-                }
-              }
-            } else if (item.sisa_pagu <= 0) {
-              actionBtn = `<span class="badge bg-success"><i class="fas fa-check-double"></i> Pagu Habis</span>`;
-            } else {
-              actionBtn = `<button class="btn btn-sm btn-outline-primary" onclick="bukaModalRealisasiData(${item.id})"><i class="fas fa-plus"></i> Tambah Realisasi</button>`;
-              if (!hasApproved) {
-                deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusProgram(${item.id})" title="Hapus Program Keseluruhan"><i class="fas fa-trash"></i></button>`;
-              }
+    // ============ LAPORAN & FILTER ============
+    // Fungsi untuk memfilter tabel
+    window.filterLaporanTable = function() {
+        const search = document.getElementById('filterPencarian').value.toLowerCase();
+        const tahun = document.getElementById('filterTahun').value;
+        const triwulan = document.getElementById('filterTriwulan').value;
+        const fisik = document.getElementById('filterFisik').value;
+        
+        const rows = document.querySelectorAll('#laporanTableBody tr');
+        rows.forEach(row => {
+            const rowTahun = row.getAttribute('data-tahun') || '';
+            const rowTriwulan = row.getAttribute('data-triwulan') || '';
+            const rowFisik = parseFloat(row.getAttribute('data-fisik')) || 0;
+            const rowText = row.innerText.toLowerCase();
+            
+            const matchSearch = search === '' || rowText.includes(search);
+            const matchTahun = tahun === '' || rowTahun === tahun;
+            
+            let matchTriwulan = true;
+            if (triwulan !== '') {
+                // Triwulan filter checks if any item is matching triwulan (this might need to just check months if available)
+                // For simplicity on client-side, since we don't have all details per row, we assume all match if no month data is on row.
+                // Or better, let's leave matchTriwulan always true on client-side for row visibility and rely on backend for exact if needed, or if we encode it.
+                // Actually we can encode month or triwulan in data-triwulan if we have it. Let's just leave it true for now if not encoded.
+                matchTriwulan = rowTriwulan === '' || rowTriwulan.includes(triwulan);
             }
 
-            tableRows += `
-          <tr>
-            <td class="small">${item.kode_program}</td>
-            <td class="small fw-semibold">
-                ${item.nama_program.substring(0, 40)}
-            </td>
-            <td class="small">${item.sumber_dana}</td>
-            <td class="small">${item.realisasi_fisik}%</td>
-            <td class="small">Rp ${formatRupiah(item.realisasi_keuangan)}</td>
-            <td class="small">Rp ${formatRupiah(item.sisa_pagu)}</td>
-            <td class="small">${statusBadge}</td>
-            <td class="small text-nowrap">${actionBtn} ${deleteBtn}</td>
-          </tr>
-        `;
-          });
+            let matchFisik = true;
+            if (fisik !== '') {
+                switch(fisik) {
+                    case '0-25': matchFisik = rowFisik >= 0 && rowFisik <= 25; break;
+                    case '26-50': matchFisik = rowFisik > 25 && rowFisik <= 50; break;
+                    case '51-75': matchFisik = rowFisik > 50 && rowFisik <= 75; break;
+                    case '76-99': matchFisik = rowFisik > 75 && rowFisik < 100; break;
+                    case '100': matchFisik = rowFisik == 100; break;
+                }
+            }
+            
+            if(matchSearch && matchTahun && matchTriwulan && matchFisik) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    };
 
-          const modalLaporan = document.createElement('div');
-          modalLaporan.className = 'modal fade';
-          modalLaporan.id = 'laporanModalInstance';
-          modalLaporan.innerHTML = `
-        <div class="modal-dialog modal-dialog-scrollable modal-xl">
-          <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
-              <h5 class="modal-title"><i class="fas fa-chart-line me-2"></i>Laporan Realisasi RFK</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <div class="table-responsive">
-                <table class="table table-sm table-hover">
-                  <thead class="table-light">
-                    <tr>
-                      <th>Kode</th><th>Program</th><th>Sumber Dana</th><th>Fisik %</th>
-                      <th>Realisasi (Rp)</th><th>Sisa Pagu (Rp)</th><th>Status</th><th>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>${tableRows}</tbody>
-                </table>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            </div>
-          </div>
-        </div>
-      `;
-          document.body.appendChild(modalLaporan);
-          const modalInstance = new bootstrap.Modal(modalLaporan);
-          modalInstance.show();
-          modalLaporan.addEventListener('hidden.bs.modal', () => modalLaporan.remove());
-        } else {
-          showToast('Belum ada data RFK. Silakan input terlebih dahulu.', 'info');
+    // Fungsi Cetak PDF dengan filter yang aktif
+    window.cetakLaporanPdf = function() {
+        const search = document.getElementById('filterPencarian').value;
+        const tahun = document.getElementById('filterTahun').value;
+        const triwulan = document.getElementById('filterTriwulan').value;
+        const fisik = document.getElementById('filterFisik').value;
+        
+        let url = '{{ route("laporan.export.pdf") }}' + '?';
+        const params = new URLSearchParams();
+        if(search) params.append('search', search);
+        if(tahun) params.append('tahun', tahun);
+        if(triwulan) params.append('triwulan', triwulan);
+        if(fisik) params.append('fisik', fisik);
+        
+        window.open(url + params.toString(), '_blank');
+    };
+
+    // Fungsi memuat data laporan ke dalam tabel di beranda
+    window.loadLaporanData = async function() {
+        try {
+            const response = await fetch('{{ route("rfk.data") }}');
+            const result = await response.json();
+            
+            const tbody = document.getElementById('laporanTableBody');
+            if (!result.success || result.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">Belum ada data RFK.</td></tr>';
+                return;
+            }
+
+            window.rfkListData = window.rfkListData || {};
+            let tableRows = '';
+            result.data.forEach(item => {
+                window.rfkListData[item.id] = item;
+                const statusBadge = getStatusBadge(item.status);
+                let actionBtn = '';
+                let deleteBtn = '';
+                
+                const rRealisasiId = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].id : null;
+                const rRealisasiStatus = (item.realisasis && item.realisasis.length > 0) ? item.realisasis[0].status : null;
+                const hasApproved = item.realisasis && item.realisasis.some(r => r.status === 'APPROVE');
+
+                // Menentukan triwulan berdasarkan bulan realisasi terbaru jika ada (hanya sebagai aproksimasi)
+                let latestMonth = item.realisasis && item.realisasis.length > 0 ? new Date(item.realisasis[0].created_at).getMonth() + 1 : 0;
+                let triwulanTag = '';
+                if(latestMonth >= 1 && latestMonth <= 3) triwulanTag = '1';
+                else if(latestMonth >= 4 && latestMonth <= 6) triwulanTag = '2';
+                else if(latestMonth >= 7 && latestMonth <= 9) triwulanTag = '3';
+                else if(latestMonth >= 10 && latestMonth <= 12) triwulanTag = '4';
+
+                // Aksi (opsional)
+                if (item.status === 'PENDING') {
+                    actionBtn = `<span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> Menunggu Approval</span>`;
+                    if (rRealisasiId && rRealisasiStatus !== 'APPROVE') {
+                        deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusRealisasi(${rRealisasiId})" title="Hapus Pengajuan Realisasi ini"><i class="fas fa-trash"></i></button>`;
+                    }
+                    if (!hasApproved && !rRealisasiId) {
+                        deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusProgram(${item.id})" title="Hapus Program Keseluruhan"><i class="fas fa-trash"></i></button>`;
+                    }
+                } else if (item.status === 'REJECT') {
+                    if (rRealisasiId) {
+                        actionBtn = `<button class="btn btn-sm btn-outline-danger" onclick="bukaModalEditRealisasiData(${item.id})"><i class="fas fa-edit"></i> Perbaiki</button>`;
+                        if (rRealisasiStatus !== 'APPROVE') {
+                            deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusRealisasi(${rRealisasiId})" title="Hapus Pengajuan Realisasi ini"><i class="fas fa-trash"></i></button>`;
+                        }
+                    } else {
+                        actionBtn = `<button class="btn btn-sm btn-outline-danger" onclick="bukaModalPerbaikanRealisasiBaru(${item.id})"><i class="fas fa-edit"></i> Perbaiki</button>`;
+                        if (!hasApproved) {
+                            deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusProgram(${item.id})" title="Hapus Program Keseluruhan"><i class="fas fa-trash"></i></button>`;
+                        }
+                    }
+                } else if (item.sisa_pagu <= 0) {
+                    actionBtn = `<span class="badge bg-success"><i class="fas fa-check-double"></i> Pagu Habis</span>`;
+                } else {
+                    actionBtn = `<button class="btn btn-sm btn-outline-primary" onclick="bukaModalRealisasiData(${item.id})"><i class="fas fa-plus"></i> Tambah Realisasi</button>`;
+                    if (!hasApproved) {
+                        deleteBtn = `<button class="btn btn-sm btn-outline-danger ms-1" onclick="hapusProgram(${item.id})" title="Hapus Program Keseluruhan"><i class="fas fa-trash"></i></button>`;
+                    }
+                }
+
+                tableRows += `
+                <tr data-tahun="${item.tahun_anggaran}" data-triwulan="${triwulanTag}" data-fisik="${item.realisasi_fisik}">
+                    <td class="small fw-bold">${item.kode_program}</td>
+                    <td class="small">${item.nama_program.substring(0, 40)}</td>
+                    <td class="small text-center">${item.tahun_anggaran}</td>
+                    <td class="small text-center">${item.realisasi_fisik}%</td>
+                    <td class="small text-end">Rp ${formatRupiah(item.realisasi_keuangan)}</td>
+                    <td class="small text-end">Rp ${formatRupiah(item.sisa_pagu)}</td>
+                    <td class="small text-center">${statusBadge}</td>
+                    <td class="small text-center text-nowrap">${actionBtn} ${deleteBtn}</td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = tableRows;
+        } catch (error) {
+            console.error(error);
+            document.getElementById('laporanTableBody').innerHTML = '<tr><td colspan="8" class="text-center py-4 text-danger">Gagal memuat laporan.</td></tr>';
         }
-      } catch (error) {
-        showToast('Gagal memuat laporan', 'error');
-      }
-    });
+    };
+    
 
     // ============ FUNGSI HAPUS PROGRAM & REALISASI ============
     async function hapusProgram(id) {
@@ -1275,7 +1493,7 @@
       }
       const item = window.rfkListData[itemId];
       if (!item) return;
-      
+
       const id = item.id;
       const sumberDana = item.sumber_dana;
       const kodeProgram = item.kode_program;
@@ -1298,11 +1516,11 @@
       document.getElementById('tr_sisa_pagu_display').value = 'Rp ' + formatRupiah(sisaPagu);
       document.getElementById('tr_sisa_pagu').value = sisaPagu;
       document.getElementById('tr_nilai').value = '';
-      
+
       const sisaBaruDisplay = document.getElementById('tr_sisa_pagu_baru_display');
       sisaBaruDisplay.value = 'Rp ' + formatRupiah(sisaPagu);
       sisaBaruDisplay.classList.remove('text-danger');
-      
+
       document.getElementById('tr_kegiatan').value = '';
       document.getElementById('tr_sub_kegiatan').value = '';
       document.getElementById('tr_keterangan').value = '';
@@ -1395,7 +1613,7 @@
         showToast('Data master tidak ditemukan.', 'error');
         return;
       }
-      
+
       if (!item.realisasis || item.realisasis.length === 0) {
         showToast('Data realisasi tidak ditemukan.', 'error');
         return;
@@ -1408,12 +1626,12 @@
       const namaProgram = item.nama_program;
       const subKategoriProgram = item.sub_kategori_program;
       const sisaPagu = item.sisa_pagu;
-      
+
       const nilaiLama = r.nilai_realisasi_keuangan;
       const ketLama = r.keterangan;
       const kegLama = r.kegiatan;
       const subKegLama = r.sub_kegiatan;
-      
+
       const katAnggaran = item.kategori_anggaran;
       const subKatAnggaran = item.sub_kategori_anggaran;
       const sumberDanaDetail = item.sumber_dana_detail;
@@ -1422,7 +1640,7 @@
         showToast('Data realisasi tidak valid.', 'error');
         return;
       }
-      
+
       const laporanModal = bootstrap.Modal.getInstance(document.getElementById('laporanModalInstance'));
       if (laporanModal) laporanModal.hide();
 
@@ -1529,9 +1747,28 @@
       }
     });
 
+    // ============ AUTO-REFRESH ============
+    function startAutoRefresh() {
+        setInterval(() => {
+            // Cek apakah ada modal yang sedang terbuka (mencegah gangguan saat input)
+            const isModalOpen = document.body.classList.contains('modal-open') || document.querySelector('.modal.show') !== null;
+            if (!isModalOpen) {
+                // Refresh data secara silent
+                loadDashboardData();
+                loadLaporanData().then(() => {
+                    if(typeof filterLaporanTable === 'function') {
+                        filterLaporanTable();
+                    }
+                }).catch(e => console.error(e));
+            }
+        }, 15000); // Refresh setiap 15 detik
+    }
+
     // ============ INIT ============
     document.addEventListener('DOMContentLoaded', () => {
+      loadLaporanData();
       loadDashboardData();
+      startAutoRefresh();
     });
 
     // Dark mode toggle

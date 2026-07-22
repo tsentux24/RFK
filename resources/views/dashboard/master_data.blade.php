@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('images/malut.webp') }}">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Biro Administrasi Pembangunan</title>
@@ -205,7 +207,7 @@
         <a href="#" class="hover:text-gray-200 transition-colors px-3 py-2 rounded"><i class="fas fa-user-circle mr-2"></i> Profil</a>
         <a href="#" class="hover:text-gray-200 transition-colors px-3 py-2 rounded"><i class="fas fa-cog mr-2"></i> Pengaturan</a>
         <div class="dropdown-divider"></div>
-         <form action ="{{ route('logout') }}" method="POST">
+         <form autocomplete="off" action ="{{ route('logout') }}" method="POST">
             @csrf
         <button class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
         <i class="fas fa-sign-out-alt w-5 text-red-400 mr-3"></i>

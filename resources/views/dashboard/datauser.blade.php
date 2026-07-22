@@ -124,7 +124,7 @@
         </div>
 
         <div class="p-5">
-            <form id="user-form" onsubmit="return false;">
+            <form autocomplete="off" id="user-form" onsubmit="return false;">
                 @csrf
                 <input type="hidden" id="user-id" name="user_id">
 

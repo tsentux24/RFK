@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/malut.webp') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -248,7 +248,7 @@
         <!-- Logo Container -->
         <div class="logo-container">
             <div class="logo-icon">
-                <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo Maluku Utara">
+                <img src="{{ asset('images/malut.webp') }}" alt="Logo Maluku Utara">
             </div>
             <div class="logo-text">
                 <h1 class="logo-title">Sistem Manajemen</h1>

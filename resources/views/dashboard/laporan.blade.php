@@ -51,7 +51,7 @@
 
     <!-- Print Header (Hidden on Screen) -->
     <div class="print-header">
-        <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo Maluku Utara">
+        <img src="{{ asset('images/malut.webp') }}" alt="Logo Maluku Utara">
         <div class="text-center text-black">
             <h1>PEMERINTAH PROVINSI MALUKU UTARA</h1>
             <h2>LAPORAN REKAPITULASI REALISASI FISIK DAN KEUANGAN (SI-RAFIKA)</h2>
@@ -72,8 +72,8 @@
             <button onclick="window.print()" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2">
                 <i class="fas fa-print"></i> Cetak Laporan
             </button>
-            <button onclick="exportCsv()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2 font-medium">
-                <i class="fas fa-file-csv text-lg"></i> Export CSV
+            <button onclick="exportExcel()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2 font-medium">
+                <i class="fas fa-file-excel text-lg"></i> Export Excel
             </button>
             @if(Auth::user()->role === 'superadmin' || Auth::user()->role === 'administrator')
             <button onclick="exportPdfDownload()" id="btn-export-pdf" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition shadow-sm flex items-center gap-2 font-medium">
@@ -582,7 +582,7 @@
         }
     }
 
-    function exportCsv() {
+    function exportExcel() {
         const pSearch = document.getElementById('filterProgram').value;
         const oSearch = document.getElementById('filterOPD') ? document.getElementById('filterOPD').value : '';
         const tSearch = document.getElementById('filterTahun').value;
@@ -590,7 +590,7 @@
         const twSearch = document.getElementById('filterTriwulan').value;
         const fSearch = document.getElementById('filterFisik') ? document.getElementById('filterFisik').value : '';
         
-        let url = '{{ route("laporan.csv") }}?';
+        let url = '{{ route("laporan.excel") }}?';
         if(pSearch) url += '&program=' + encodeURIComponent(pSearch);
         if(oSearch) url += '&opd=' + encodeURIComponent(oSearch);
         if(tSearch) url += '&tahun=' + encodeURIComponent(tSearch);

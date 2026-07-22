@@ -115,74 +115,91 @@ class RfkController extends Controller
         ]);
     }
 
+        private function applyExportFilters($request)
+    {
+        $query = InputRfk::with(['opd', 'user', 'realisasis' => function($q) {
+            $q->orderBy('created_at', 'asc');
+        }]);
+        
+        $user = \Illuminate\Support\Facades\Auth::user();
+        if (in_array($user->role, ['staff', 'kepala_opd']) && $user->opd_id) {
+            $query->where('opd_id', $user->opd_id);
+        }
+
+        // Program Filter
+        $programSearch = $request->program ?? $request->search;
+        if (!empty($programSearch)) {
+            $query->whereHas('realisasis', function($q) use ($programSearch) {
+                $q->where('nama_program', 'LIKE', '%' . $programSearch . '%')
+                  ->orWhere('kode_program', 'LIKE', '%' . $programSearch . '%');
+            });
+        }
+
+        // OPD Filter (Hanya untuk Superadmin & Administrator)
+        $opdSearch = $request->opd ?? $request->opd_id;
+        if (!empty($opdSearch) && in_array($user->role, ['superadmin', 'administrator'])) {
+            if (is_numeric($opdSearch)) {
+                $query->where('opd_id', $opdSearch);
+            } else {
+                $query->whereHas('opd', function($q) use ($opdSearch) {
+                    $q->where('nama_opd', 'LIKE', '%' . $opdSearch . '%');
+                });
+            }
+        }
+
+        // Tahun Filter
+        if ($request->filled('tahun')) {
+            $query->where('tahun_anggaran', $request->tahun);
+        }
+
+        // Status Filter
+        if ($request->filled('status')) {
+            if ($request->status === 'SELESAI') {
+                $query->where('status', 'APPROVE')
+                      ->whereColumn('realisasi_keuangan', '>=', 'pagu')
+                      ->where('realisasi_fisik', '>=', 100)
+                      ->where('pagu', '>', 0);
+            } elseif ($request->status === 'APPROVE') {
+                $query->where('status', 'APPROVE')
+                      ->where(function($q) {
+                          $q->whereColumn('realisasi_keuangan', '<', 'pagu')
+                            ->orWhere('realisasi_fisik', '<', 100)
+                            ->orWhere('pagu', '<=', 0);
+                      });
+            } else {
+                $query->where('status', $request->status);
+            }
+        }
+
+        $data = $query->orderBy('opd_id')->orderBy('created_at', 'desc')->get();
+
+        // Triwulan Filter
+        if ($request->filled('triwulan')) {
+            $data = $this->applyTriwulanFilter($data, $request->triwulan);
+        }
+
+        // Fisik Filter
+        if ($request->filled('fisik')) {
+            $data = $data->filter(function($item) use ($request) {
+                $fisik = (float) $item->realisasi_fisik;
+                switch($request->fisik) {
+                    case '0-25': return $fisik >= 0 && $fisik <= 25;
+                    case '26-50': return $fisik > 25 && $fisik <= 50;
+                    case '51-75': return $fisik > 50 && $fisik <= 75;
+                    case '76-99': return $fisik > 75 && $fisik < 100;
+                    case '100': return $fisik == 100;
+                    default: return true;
+                }
+            })->values();
+        }
+
+        return $data;
+    }
+
     public function generateLaporanPdf(Request $request)
     {
         try {
-            $query = InputRfk::with(['opd', 'user', 'realisasis' => function($q) {
-                $q->orderBy('created_at', 'asc');
-            }])
-            ->whereIn('status', ['APPROVE', 'PENDING']);
-
-            $user = Auth::user();
-            if (in_array($user->role, ['staff', 'kepala_opd']) && $user->opd_id) {
-                $query->where('opd_id', $user->opd_id);
-            }
-
-            // Apply Filters from Frontend
-            if ($request->filled('program')) {
-                $query->whereHas('realisasis', function($q) use ($request) {
-                    $q->where('nama_program', 'LIKE', '%' . $request->program . '%')
-                      ->orWhere('kode_program', 'LIKE', '%' . $request->program . '%');
-                });
-            }
-
-            if ($request->filled('opd')) {
-                $query->whereHas('opd', function($q) use ($request) {
-                    $q->where('nama_opd', 'LIKE', '%' . $request->opd . '%');
-                });
-            }
-
-            if ($request->filled('tahun')) {
-                $query->where('tahun_anggaran', $request->tahun);
-            }
-
-            if ($request->filled('status')) {
-                if ($request->status === 'SELESAI') {
-                    $query->where('status', 'APPROVE')
-                          ->whereColumn('realisasi_keuangan', '>=', 'pagu')
-                          ->where('realisasi_fisik', '>=', 100)
-                          ->where('pagu', '>', 0);
-                } elseif ($request->status === 'APPROVE') {
-                    $query->where('status', 'APPROVE')
-                          ->where(function($q) {
-                              $q->whereColumn('realisasi_keuangan', '<', 'pagu')
-                                ->orWhere('realisasi_fisik', '<', 100)
-                                ->orWhere('pagu', '<=', 0);
-                          });
-                } else {
-                    $query->where('status', $request->status);
-                }
-            }
-
-            $data = $query->orderBy('opd_id')->orderBy('created_at', 'desc')->get();
-
-            if ($request->filled('triwulan')) {
-                $data = $this->applyTriwulanFilter($data, $request->triwulan);
-            }
-
-            if ($request->filled('fisik')) {
-                $data = $data->filter(function($item) use ($request) {
-                    $fisik = (float) $item->realisasi_fisik;
-                    switch($request->fisik) {
-                        case '0-25': return $fisik >= 0 && $fisik <= 25;
-                        case '26-50': return $fisik > 25 && $fisik <= 50;
-                        case '51-75': return $fisik > 50 && $fisik <= 75;
-                        case '76-99': return $fisik > 75 && $fisik < 100;
-                        case '100': return $fisik == 100;
-                        default: return true;
-                    }
-                })->values();
-            }
+            $data = $this->applyExportFilters($request);
 
             // Calculate Grand Totals
             $grandPagu = $data->sum('pagu');
@@ -200,11 +217,9 @@ class RfkController extends Controller
 
             $fileName = 'Laporan_RFK_' . time() . '.pdf';
             
-            // Simpan file secara lokal di public/storage/pdfs
             if (!\Storage::disk('public')->exists('pdfs')) {
                 \Storage::disk('public')->makeDirectory('pdfs');
             }
-            
             \Storage::disk('public')->put('pdfs/' . $fileName, $pdf->output());
 
             $url = asset('storage/pdfs/' . $fileName);
@@ -223,102 +238,103 @@ class RfkController extends Controller
         }
     }
 
-    public function exportCsv(Request $request)
+    public function exportPdf(Request $request)
     {
-        $query = InputRfk::with(['opd', 'user', 'realisasis']);
+        $data = $this->applyExportFilters($request);
+        $opd_name = \Illuminate\Support\Facades\Auth::user()->opd ? \Illuminate\Support\Facades\Auth::user()->opd->nama_opd : 'Semua OPD';
+        $fileName = 'Laporan_RFK_' . date('Y_m_d_H_i_s') . '.pdf';
+        
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.laporan_rfk', compact('data', 'opd_name'))
+                   ->setPaper('a4', 'landscape');
+                   
+        return $pdf->download($fileName);
+    }
 
-        $role = Auth::user()->role;
-        if ($role === 'staff' || $role === 'kepala_opd') {
-            $query->where('opd_id', Auth::user()->opd_id);
-        }
+    public function exportExcel(Request $request)
+    {
+        $data = $this->applyExportFilters($request);
 
-        if ($request->filled('program') || $request->filled('search')) {
-            $searchTerm = $request->program ?? $request->search;
-            $query->whereHas('realisasis', function($q) use ($searchTerm) {
-                $q->where('nama_program', 'like', "%{$searchTerm}%")
-                  ->orWhere('kode_program', 'like', "%{$searchTerm}%");
-            });
+        $fileName = 'Laporan_RFK_' . date('Y_m_d_H_i_s') . '.xls';
+        
+        $html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+        $html .= '<head><meta charset="UTF-8">';
+        $html .= '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Laporan RFK</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
+        $html .= '<style>
+            table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; }
+            th, td { border: 1px solid #000; padding: 5px; }
+            th { background-color: #4F81BD; color: #FFFFFF; font-weight: bold; text-align: center; }
+            .num { mso-number-format: "\#\,\#\#0\.00"; }
+            .text { mso-number-format: "\@"; }
+        </style>';
+        $html .= '</head><body>';
+        
+        $html .= '<table style="border: none; margin-bottom: 20px;"><tr>';
+        $html .= '<td colspan="2" style="border: none; text-align: center;">';
+        $logo_path = public_path('images/malut.png');
+        if(file_exists($logo_path)) {
+            $html .= '<img src="data:image/png;base64,' . base64_encode(file_get_contents($logo_path)) . '" width="80" height="80">';
         }
-        if (($request->filled('opd') || $request->filled('opd_id')) && $role === 'superadmin') {
-            $opdTerm = $request->opd ?? $request->opd_id;
-            // opd_id could be numeric or text, if it's text we should query the relation
-            if (is_numeric($opdTerm)) {
-                $query->where('opd_id', $opdTerm);
-            } else {
-                $query->whereHas('opd', function($q) use ($opdTerm) {
-                    $q->where('nama_opd', 'LIKE', '%' . $opdTerm . '%');
-                });
-            }
-        }
-        if ($request->filled('tahun')) {
-            $query->where('tahun_anggaran', $request->tahun);
-        }
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $data = $query->orderBy('created_at', 'desc')->get();
-
-        if ($request->filled('triwulan')) {
-            $data = $this->applyTriwulanFilter($data, $request->triwulan);
-        }
-
-        if ($request->filled('fisik')) {
-            $data = $data->filter(function($item) use ($request) {
-                $fisik = (float) $item->realisasi_fisik;
-                switch($request->fisik) {
-                    case '0-25': return $fisik >= 0 && $fisik <= 25;
-                    case '26-50': return $fisik > 25 && $fisik <= 50;
-                    case '51-75': return $fisik > 50 && $fisik <= 75;
-                    case '76-99': return $fisik > 75 && $fisik < 100;
-                    case '100': return $fisik == 100;
-                    default: return true;
-                }
-            })->values();
-        }
-
-        $fileName = 'Laporan_RFK_' . date('Y_m_d_H_i_s') . '.csv';
-        $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+        $html .= '</td>';
+        $html .= '<td colspan="14" style="border: none; text-align: center; vertical-align: middle;">';
+        $html .= '<h2 style="margin: 0;">PEMERINTAH PROVINSI MALUKU UTARA</h2>';
+        $html .= '<h3 style="margin: 0;">Laporan Rekapitulasi Realisasi Fisik dan Keuangan (SI-RAFIKA)</h3>';
+        $html .= '</td></tr></table>';
+        $html .= '<table>';
+    
+        $html .= '<thead><tr>';
+        
+        $columns = [
+            'No', 'Kode Program', 'Nama Program Utama', 'Sub Kategori Program', 
+            'Kategori Anggaran', 'Sub Kategori Anggaran', 'Rincian Sumber Dana', 
+            'Nama Kegiatan', 'Sub Kegiatan', 'Keterangan/Catatan Realisasi',
+            'Instansi / OPD', 'Tahun Anggaran', 'Update Terakhir',
+            'Pagu Total (Rp)', 'Realisasi Keuangan (Rp)', 'Realisasi Fisik (%)', 
+            'Sisa Pagu (Rp)', 'Status Program'
         ];
+        
+        foreach($columns as $col) {
+            $html .= "<th>{$col}</th>";
+        }
+        $html .= '</tr></thead><tbody>';
 
-        $columns = ['Kode', 'Program', 'Kegiatan', 'Sub Kegiatan', 'OPD', 'Tahun', 'Pagu (Rp)', 'Realisasi Keuangan (Rp)', 'Realisasi Fisik (%)', 'Sisa Pagu (Rp)', 'Status', 'Keterangan'];
-
-        $callback = function() use($data, $columns) {
-            $file = fopen('php://output', 'w');
-            // Gunakan pemisah ';' karena angka menggunakan ',' untuk desimal (Format Indonesia)
-            fputcsv($file, $columns, ';');
-
-            foreach ($data as $item) {
-                $latestRealisasi = $item->realisasis->sortByDesc('created_at')->first();
-                $row['Kode']  = $latestRealisasi ? $latestRealisasi->kode_program : '-';
-                $row['Program'] = $latestRealisasi ? $latestRealisasi->nama_program : $item->keterangan;
-                $row['Kegiatan'] = $latestRealisasi ? $latestRealisasi->kegiatan : '-';
-                $row['Sub Kegiatan'] = $latestRealisasi ? $latestRealisasi->sub_kegiatan : '-';
-                $row['OPD'] = $item->opd ? $item->opd->nama_opd : '-';
-                $row['Tahun'] = $item->tahun_anggaran;
-                $row['Pagu (Rp)'] = number_format($item->pagu, 0, ',', '.');
-                $row['Realisasi Keuangan (Rp)'] = number_format($item->realisasi_keuangan, 0, ',', '.');
-                $row['Realisasi Fisik (%)'] = number_format($item->realisasi_fisik, 2, ',', '.');
-                $row['Sisa Pagu (Rp)'] = number_format($item->sisa_pagu, 0, ',', '.');
-                $statusVal = $item->status;
-                if ($item->pagu > 0 && $item->realisasi_keuangan >= $item->pagu && $item->realisasi_fisik >= 100 && $item->status === 'APPROVE') {
-                    $statusVal = 'SELESAI';
-                }
-                $row['Status'] = $statusVal;
-                $row['Keterangan'] = $latestRealisasi ? $latestRealisasi->keterangan : '-';
-
-                fputcsv($file, array($row['Kode'], $row['Program'], $row['Kegiatan'], $row['Sub Kegiatan'], $row['OPD'], $row['Tahun'], $row['Pagu (Rp)'], $row['Realisasi Keuangan (Rp)'], $row['Realisasi Fisik (%)'], $row['Sisa Pagu (Rp)'], $row['Status'], $row['Keterangan']), ';');
+        foreach ($data as $index => $item) {
+            $latestRealisasi = $item->realisasis->sortByDesc('created_at')->first();
+            
+            $statusVal = $item->status;
+            if ($item->pagu > 0 && $item->realisasi_keuangan >= $item->pagu && $item->realisasi_fisik >= 100 && $item->status === 'APPROVE') {
+                $statusVal = 'SELESAI';
             }
 
-            fclose($file);
-        };
+            $html .= '<tr>';
+            $html .= "<td>" . ($index + 1) . "</td>";
+            $html .= "<td class='text'>" . ($latestRealisasi ? $latestRealisasi->kode_program : '-') . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->nama_program : $item->keterangan) . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->sub_kategori_program : '-') . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->kategori_anggaran : '-') . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->sub_kategori_anggaran : '-') . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->sumber_dana_detail : '-') . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->kegiatan : '-') . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->sub_kegiatan : '-') . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->keterangan : '-') . "</td>";
+            $html .= "<td>" . ($item->opd ? $item->opd->nama_opd : '-') . "</td>";
+            $html .= "<td class='text'>" . $item->tahun_anggaran . "</td>";
+            $html .= "<td>" . ($latestRealisasi ? $latestRealisasi->created_at->format('d/m/Y H:i') : '-') . "</td>";
+            $html .= "<td class='num'>" . $item->pagu . "</td>";
+            $html .= "<td class='num'>" . $item->realisasi_keuangan . "</td>";
+            $html .= "<td class='num'>" . $item->realisasi_fisik . "</td>";
+            $html .= "<td class='num'>" . $item->sisa_pagu . "</td>";
+            
+            $color = $statusVal === 'SELESAI' ? '#C6EFCE' : ($statusVal === 'APPROVE' ? '#C6EFCE' : ($statusVal === 'PENDING' ? '#FFEB9C' : ''));
+            $textColor = $statusVal === 'SELESAI' ? '#006100' : ($statusVal === 'APPROVE' ? '#006100' : ($statusVal === 'PENDING' ? '#9C5700' : ''));
+            $html .= "<td style='background-color: {$color}; color: {$textColor}; font-weight: bold; text-align:center;'>" . $statusVal . "</td>";
+            $html .= '</tr>';
+        }
 
-        return response()->stream($callback, 200, $headers);
+        $html .= '</tbody></table></body></html>';
+
+        return response($html)
+            ->header('Content-Type', 'application/vnd.ms-excel; charset=utf-8')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
     }
 
     public function getDashboardStats(Request $request)

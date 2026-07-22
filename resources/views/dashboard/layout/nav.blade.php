@@ -148,7 +148,7 @@
                                     <span>Pengaturan</span>
                                 </a>
                                 <div class="border-t border-gray-100 my-1"></div>
-                                <form action="{{ route('logout') }}" method="POST">
+                                <form autocomplete="off" action="{{ route('logout') }}" method="POST">
                                     @csrf
                                     <button class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                                         <i class="fas fa-sign-out-alt w-5 text-red-400 mr-3"></i>

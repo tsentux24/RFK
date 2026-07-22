@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    
+
     <meta charset="UTF-8">
     <title>Laporan Rekapitulasi RFK</title>
     <style>
@@ -232,11 +234,18 @@
     </style>
 </head>
 <body>
+<?php 
+$logo_path = public_path('images/malut.png');
+$logo_base64 = '';
+if(file_exists($logo_path)) {
+    $logo_base64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logo_path));
+}
+?>
 
     <table class="header-table">
         <tr>
             <td class="logo-container">
-                <img src="{{ public_path('assets/images/malut.png') }}" class="logo" alt="Logo" onerror="this.src='https://e-rekrutmen.malutprov.go.id/assets/images/malut.png'">
+                <img src="{{ $logo_base64 }}" class="logo" alt="Logo Maluku Utara" style="width: 80px; height: auto;">
             </td>
             <td class="title-container">
                 <h1 class="title">PEMERINTAH PROVINSI MALUKU UTARA</h1>

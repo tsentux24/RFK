@@ -2,6 +2,8 @@
 <html lang="id">
 
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('images/malut.webp') }}">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - RFK Provinsi Maluku Utara</title>
@@ -400,7 +402,7 @@
     <!-- Header -->
     <header>
         <div class="logo">
-            <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png"
+            <img src="{{ asset('images/malut.webp') }}"
                 alt="Logo Pemerintah Provinsi Maluku Utara" class="logo-img">
             <span>Pemerintah Provinsi Maluku Utara</span>
         </div>
@@ -419,7 +421,7 @@
         <section class="login-section">
             <div class="login-card">
                 <h2 class="login-title">Login ke SI-RAFIKA</h2>
-                <form method="POST" action="{{ route('login') }}">
+                <form autocomplete="off" method="POST" action="{{ route('login') }}">
                     @csrf
                     @error('email')
                         <div class="error-title">{{ $message }}

@@ -2,6 +2,8 @@
 <html lang="id">
 
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('images/malut.webp') }}">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -112,7 +114,7 @@
         <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
             <div class="flex items-center gap-3">
                 <div class="bg-white p-1.5 rounded-lg">
-                    <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo Maluku Utara"
+                    <img src="{{ asset('images/malut.webp') }}" alt="Logo Maluku Utara"
                         class="h-8">
                 </div>
                 <div>
@@ -152,7 +154,7 @@
                             <i class="fas fa-cog"></i> Pengaturan
                         </a>
                         <div class="dropdown-divider"></div>
-                        <form action="{{ route('logout') }}" method="POST">
+                        <form autocomplete="off" action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                                 <i class="fas fa-sign-out-alt w-5 text-red-400 mr-3"></i>
@@ -182,7 +184,7 @@
                 <a href="#" class="hover:text-gray-200 transition-colors px-3 py-2 rounded"><i
                         class="fas fa-cog mr-2"></i> Pengaturan</a>
                 <div class="dropdown-divider"></div>
-                <form action="{{ route('logout') }}" method="POST">
+                <form autocomplete="off" action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                         <i class="fas fa-sign-out-alt w-5 text-red-400 mr-3"></i>
@@ -287,8 +289,8 @@
                     Data Program RFK (Filter & Laporan)
                 </h3>
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="exportCsvOPD()" class="text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg transition-colors flex items-center">
-                        <i class="fas fa-file-csv mr-1"></i> Export CSV
+                    <button onclick="exportExcelOPD()" class="text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg transition-colors flex items-center">
+                        <i class="fas fa-file-excel mr-1"></i> Export Excel
                     </button>
                     <button onclick="exportPdfOPD()" id="btn-export-pdf-opd" class="text-sm bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1.5 rounded-lg transition-colors flex items-center">
                         <i class="fas fa-file-pdf mr-1"></i> Export PDF
@@ -418,7 +420,7 @@
                                 id="appr_staff" class="font-medium text-gray-900"></span></p>
                     </div>
                     <div class="flex-1">
-                        <form id="approvalForm">
+                        <form autocomplete="off" id="approvalForm">
                             <input type="hidden" id="appr_id">
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Ubah Status</label>
@@ -996,13 +998,13 @@
             }
         }
 
-        function exportCsvOPD() {
+        function exportExcelOPD() {
             const pSearch = document.getElementById('filterProgram') ? document.getElementById('filterProgram').value : '';
             const tSearch = document.getElementById('filterTahun') ? document.getElementById('filterTahun').value : '';
             const twSearch = document.getElementById('filterTriwulan') ? document.getElementById('filterTriwulan').value : '';
             const fSearch = document.getElementById('filterFisik') ? document.getElementById('filterFisik').value : '';
             
-            let url = '{{ route("laporan.csv") }}?';
+            let url = '{{ route("laporan.excel") }}?';
             if(pSearch) url += '&program=' + encodeURIComponent(pSearch);
             if(tSearch) url += '&tahun=' + encodeURIComponent(tSearch);
             if(twSearch) url += '&triwulan=' + encodeURIComponent(twSearch);

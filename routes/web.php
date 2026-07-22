@@ -45,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/laporan', [RfkController::class, 'laporanPage'])->name('laporan.index');
     Route::get('/dashboard/laporan/data', [RfkController::class, 'getLaporanData'])->name('laporan.data');
     Route::post('/dashboard/laporan/generate-pdf', [RfkController::class, 'generateLaporanPdf'])->name('laporan.pdf');
-    Route::get('/dashboard/laporan/export-csv', [RfkController::class, 'exportCsv'])->name('laporan.csv');
+    Route::get('/dashboard/laporan/export-excel', [RfkController::class, 'exportExcel'])->name('laporan.excel');
+    Route::get('/dashboard/laporan/export-pdf', [RfkController::class, 'exportPdf'])->name('laporan.export.pdf');
     Route::get('/dashboard/stats', [RfkController::class, 'getDashboardStats'])->name('dashboard.stats');
     Route::get('/dashboard/superadmin/data', [RfkController::class, 'getSuperadminData'])->name('superadmin.data');
     Route::get('/dashboard/search', [RfkController::class, 'globalSearch'])->name('dashboard.search');

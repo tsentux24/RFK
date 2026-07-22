@@ -2,6 +2,8 @@
 <html lang="id">
 
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('images/malut.webp') }}">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -121,7 +123,7 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
       <div class="flex items-center gap-3">
         <div class="bg-white p-1.5 rounded-lg">
-          <img src="https://e-rekrutmen.malutprov.go.id/assets/images/malut.png" alt="Logo Maluku Utara" class="h-8">
+          <img src="{{ asset('images/malut.webp') }}" alt="Logo Maluku Utara" class="h-8">
         </div>
         <div>
           <h2 class="text-xl font-bold">Biro Administrasi Pembangunan</h2>
@@ -157,7 +159,7 @@
               <i class="fas fa-user-circle"></i> Profil
             </a>
             <div class="dropdown-divider"></div>
-            <form action="{{ route('logout') }}" method="POST">
+            <form autocomplete="off" action="{{ route('logout') }}" method="POST">
               @csrf
               <button type="submit" class="dropdown-item w-full text-left text-red-600">
                 <i class="fas fa-sign-out-alt text-red-400"></i> Logout
@@ -177,7 +179,7 @@
           class="hover:text-gray-200 transition-colors px-3 py-2 rounded bg-purple-700"><i class="fas fa-book mr-2"></i>
           Panduan</a>
         <div class="dropdown-divider"></div>
-        <form action="{{ route('logout') }}" method="POST">
+        <form autocomplete="off" action="{{ route('logout') }}" method="POST">
           @csrf
           <button type="submit" class="flex items-center px-3 py-2 text-red-400 hover:text-red-300">
             <i class="fas fa-sign-out-alt mr-2"></i> Logout
